@@ -2,8 +2,13 @@
 #include "comp_dict.h"
 #include "comp_list.h"
 #include "comp_tree.h"
+#include "tokens.h"
 
 int main (int argc, char **argv)
 {
+  int token = TOKEN_ERRO;
+  while (token = yylex()){
+    printf ("token <%d> at %d\n", token, getLineNumber());
+  }
   return 0;
 }
