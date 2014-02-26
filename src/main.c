@@ -4,6 +4,12 @@
 #include "comp_tree.h"
 #include "tokens.h"
 
+int getLineNumber ()
+{
+  //mude aqui a implementação desta função
+  return 0;
+}
+
 int main (int argc, char **argv)
 {
   int token = TOKEN_ERRO;
