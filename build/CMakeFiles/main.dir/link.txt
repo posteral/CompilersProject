@@ -1,0 +1,1 @@
+/usr/bin/gcc      CMakeFiles/main.dir/src/main.c.o CMakeFiles/main.dir/src/comp_dict.c.o CMakeFiles/main.dir/src/comp_list.c.o CMakeFiles/main.dir/src/comp_tree.c.o  -o main -rdynamic 
