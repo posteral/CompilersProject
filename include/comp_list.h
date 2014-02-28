@@ -1,7 +1,9 @@
-typedef struct comp_list_t {
+typedef struct comp_list_t_t {
 	int data;
-	struct comp_list_t* nextNode;
-	struct comp_list_t* previousNode;
+	struct comp_list_t_t* next;
 } comp_list_t;
 
-comp_list_t* listCreate();
+struct comp_list_t_t *listCreate();
+int			listEmpty(struct comp_list_t_t *head);
+void 			listPush(struct comp_list_t_t  **head, int data);
+void 			listPrint(struct comp_list_t_t *head);
