@@ -16,6 +16,5 @@ int main (int argc, char **argv)
   while (token = yylex()){
     printf ("token <%d> at %d\n", token, getLineNumber());
   }
->>>>>>> 352954f6ea187047b4861839b035be8ca58e825a
   return 0;
 }

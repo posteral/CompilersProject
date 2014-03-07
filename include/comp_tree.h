@@ -1,5 +1,6 @@
 typedef struct comp_tree_t {
 	int id;
+	int nbChildren;
 	struct comp_tree_t *children[];
 } comp_tree_t;
 
