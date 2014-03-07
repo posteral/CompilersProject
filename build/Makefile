@@ -111,6 +111,30 @@ main/fast:
 	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/build
 .PHONY : main/fast
 
+lexer.o: lexer.c.o
+.PHONY : lexer.o
+
+# target to build an object file
+lexer.c.o:
+	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/lexer.c.o
+.PHONY : lexer.c.o
+
+lexer.i: lexer.c.i
+.PHONY : lexer.i
+
+# target to preprocess a source file
+lexer.c.i:
+	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/lexer.c.i
+.PHONY : lexer.c.i
+
+lexer.s: lexer.c.s
+.PHONY : lexer.s
+
+# target to generate assembly for a file
+lexer.c.s:
+	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/lexer.c.s
+.PHONY : lexer.c.s
+
 src/comp_dict.o: src/comp_dict.c.o
 .PHONY : src/comp_dict.o
 
@@ -216,6 +240,9 @@ help:
 	@echo "... edit_cache"
 	@echo "... main"
 	@echo "... rebuild_cache"
+	@echo "... lexer.o"
+	@echo "... lexer.i"
+	@echo "... lexer.s"
 	@echo "... src/comp_dict.o"
 	@echo "... src/comp_dict.i"
 	@echo "... src/comp_dict.s"

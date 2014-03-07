@@ -4,6 +4,7 @@ SET(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 SET(CMAKE_DEPENDS_CHECK_C
+  "/home/filipe/compil-2014-1/build/lexer.c" "/home/filipe/compil-2014-1/build/CMakeFiles/main.dir/lexer.c.o"
   "/home/filipe/compil-2014-1/src/comp_dict.c" "/home/filipe/compil-2014-1/build/CMakeFiles/main.dir/src/comp_dict.c.o"
   "/home/filipe/compil-2014-1/src/comp_list.c" "/home/filipe/compil-2014-1/build/CMakeFiles/main.dir/src/comp_list.c.o"
   "/home/filipe/compil-2014-1/src/comp_tree.c" "/home/filipe/compil-2014-1/build/CMakeFiles/main.dir/src/comp_tree.c.o"

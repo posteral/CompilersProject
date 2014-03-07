@@ -49,9 +49,37 @@ include CMakeFiles/main.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/main.dir/flags.make
 
+lexer.c: ../scanner.l
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/filipe/compil-2014-1/build/CMakeFiles $(CMAKE_PROGRESS_1)
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "[FLEX][scanner] Building scanner with flex 2.5.35"
+	cd /home/filipe/compil-2014-1 && /usr/bin/flex -o/home/filipe/compil-2014-1/build/lexer.c scanner.l
+
+CMakeFiles/main.dir/lexer.c.o: CMakeFiles/main.dir/flags.make
+CMakeFiles/main.dir/lexer.c.o: lexer.c
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/filipe/compil-2014-1/build/CMakeFiles $(CMAKE_PROGRESS_2)
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building C object CMakeFiles/main.dir/lexer.c.o"
+	/usr/bin/gcc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/main.dir/lexer.c.o   -c /home/filipe/compil-2014-1/build/lexer.c
+
+CMakeFiles/main.dir/lexer.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/main.dir/lexer.c.i"
+	/usr/bin/gcc  $(C_DEFINES) $(C_FLAGS) -E /home/filipe/compil-2014-1/build/lexer.c > CMakeFiles/main.dir/lexer.c.i
+
+CMakeFiles/main.dir/lexer.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/main.dir/lexer.c.s"
+	/usr/bin/gcc  $(C_DEFINES) $(C_FLAGS) -S /home/filipe/compil-2014-1/build/lexer.c -o CMakeFiles/main.dir/lexer.c.s
+
+CMakeFiles/main.dir/lexer.c.o.requires:
+.PHONY : CMakeFiles/main.dir/lexer.c.o.requires
+
+CMakeFiles/main.dir/lexer.c.o.provides: CMakeFiles/main.dir/lexer.c.o.requires
+	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/lexer.c.o.provides.build
+.PHONY : CMakeFiles/main.dir/lexer.c.o.provides
+
+CMakeFiles/main.dir/lexer.c.o.provides.build: CMakeFiles/main.dir/lexer.c.o
+
 CMakeFiles/main.dir/src/main.c.o: CMakeFiles/main.dir/flags.make
 CMakeFiles/main.dir/src/main.c.o: ../src/main.c
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/filipe/compil-2014-1/build/CMakeFiles $(CMAKE_PROGRESS_1)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/filipe/compil-2014-1/build/CMakeFiles $(CMAKE_PROGRESS_3)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building C object CMakeFiles/main.dir/src/main.c.o"
 	/usr/bin/gcc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/main.dir/src/main.c.o   -c /home/filipe/compil-2014-1/src/main.c
 
@@ -74,7 +102,7 @@ CMakeFiles/main.dir/src/main.c.o.provides.build: CMakeFiles/main.dir/src/main.c.
 
 CMakeFiles/main.dir/src/comp_dict.c.o: CMakeFiles/main.dir/flags.make
 CMakeFiles/main.dir/src/comp_dict.c.o: ../src/comp_dict.c
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/filipe/compil-2014-1/build/CMakeFiles $(CMAKE_PROGRESS_2)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/filipe/compil-2014-1/build/CMakeFiles $(CMAKE_PROGRESS_4)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building C object CMakeFiles/main.dir/src/comp_dict.c.o"
 	/usr/bin/gcc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/main.dir/src/comp_dict.c.o   -c /home/filipe/compil-2014-1/src/comp_dict.c
 
@@ -97,7 +125,7 @@ CMakeFiles/main.dir/src/comp_dict.c.o.provides.build: CMakeFiles/main.dir/src/co
 
 CMakeFiles/main.dir/src/comp_list.c.o: CMakeFiles/main.dir/flags.make
 CMakeFiles/main.dir/src/comp_list.c.o: ../src/comp_list.c
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/filipe/compil-2014-1/build/CMakeFiles $(CMAKE_PROGRESS_3)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/filipe/compil-2014-1/build/CMakeFiles $(CMAKE_PROGRESS_5)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building C object CMakeFiles/main.dir/src/comp_list.c.o"
 	/usr/bin/gcc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/main.dir/src/comp_list.c.o   -c /home/filipe/compil-2014-1/src/comp_list.c
 
@@ -120,7 +148,7 @@ CMakeFiles/main.dir/src/comp_list.c.o.provides.build: CMakeFiles/main.dir/src/co
 
 CMakeFiles/main.dir/src/comp_tree.c.o: CMakeFiles/main.dir/flags.make
 CMakeFiles/main.dir/src/comp_tree.c.o: ../src/comp_tree.c
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/filipe/compil-2014-1/build/CMakeFiles $(CMAKE_PROGRESS_4)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/filipe/compil-2014-1/build/CMakeFiles $(CMAKE_PROGRESS_6)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building C object CMakeFiles/main.dir/src/comp_tree.c.o"
 	/usr/bin/gcc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/main.dir/src/comp_tree.c.o   -c /home/filipe/compil-2014-1/src/comp_tree.c
 
@@ -143,6 +171,7 @@ CMakeFiles/main.dir/src/comp_tree.c.o.provides.build: CMakeFiles/main.dir/src/co
 
 # Object files for target main
 main_OBJECTS = \
+"CMakeFiles/main.dir/lexer.c.o" \
 "CMakeFiles/main.dir/src/main.c.o" \
 "CMakeFiles/main.dir/src/comp_dict.c.o" \
 "CMakeFiles/main.dir/src/comp_list.c.o" \
@@ -151,11 +180,13 @@ main_OBJECTS = \
 # External object files for target main
 main_EXTERNAL_OBJECTS =
 
+main: CMakeFiles/main.dir/lexer.c.o
 main: CMakeFiles/main.dir/src/main.c.o
 main: CMakeFiles/main.dir/src/comp_dict.c.o
 main: CMakeFiles/main.dir/src/comp_list.c.o
 main: CMakeFiles/main.dir/src/comp_tree.c.o
 main: CMakeFiles/main.dir/build.make
+main: /usr/lib/x86_64-linux-gnu/libfl.so
 main: CMakeFiles/main.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --red --bold "Linking C executable main"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/main.dir/link.txt --verbose=$(VERBOSE)
@@ -164,6 +195,7 @@ main: CMakeFiles/main.dir/link.txt
 CMakeFiles/main.dir/build: main
 .PHONY : CMakeFiles/main.dir/build
 
+CMakeFiles/main.dir/requires: CMakeFiles/main.dir/lexer.c.o.requires
 CMakeFiles/main.dir/requires: CMakeFiles/main.dir/src/main.c.o.requires
 CMakeFiles/main.dir/requires: CMakeFiles/main.dir/src/comp_dict.c.o.requires
 CMakeFiles/main.dir/requires: CMakeFiles/main.dir/src/comp_list.c.o.requires
@@ -174,7 +206,7 @@ CMakeFiles/main.dir/clean:
 	$(CMAKE_COMMAND) -P CMakeFiles/main.dir/cmake_clean.cmake
 .PHONY : CMakeFiles/main.dir/clean
 
-CMakeFiles/main.dir/depend:
+CMakeFiles/main.dir/depend: lexer.c
 	cd /home/filipe/compil-2014-1/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/filipe/compil-2014-1 /home/filipe/compil-2014-1 /home/filipe/compil-2014-1/build /home/filipe/compil-2014-1/build /home/filipe/compil-2014-1/build/CMakeFiles/main.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/main.dir/depend
 
