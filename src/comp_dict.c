@@ -65,6 +65,30 @@ int dictRemoveItem(struct comp_dict_t *dictionary, const char *key){
      return 0;
 }
 
+void dictPrint(struct comp_dict_t *dictionary)
+{
+     comp_dict_item_t *printed_item;
+     printed_item = dictionary->start;
+     
+     while(printed_item != NULL)
+     {
+      printf("\nKEY: %s \nVALUE: %s", printed_item->key, printed_item->data);
+      printed_item = printed_item->next;
+     }
+}
+
+void dictEmpty(struct comp_dict_t *dictionary)
+{
+     comp_dict_item_t *removed_element;
+     removed_item = dictionary->start;
+     
+     while(removed_item != NULL)
+     {
+      dictRemoveItem(dictionary, removed_item->key);
+      removed_item = removed_item->next;
+     }
+}
+
 int dictGetHashValue(const char *key)
 {
     int hash_value;
