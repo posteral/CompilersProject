@@ -1,5 +1,5 @@
 #include <stdlib.h>
-#include "comp_dict.h"
+#include "../include/comp_dict.h"
 
 struct comp_dict_t* dictCreate(void){
 	comp_dict_t *newDict;
@@ -49,7 +49,7 @@ int dictRemoveItem(struct comp_dict_t *dictionary, const char *key){
           // Last element
           if(dictionary->hash[dictGetHashValue(key)]->next == NULL) 
           {   
-            removed_element = dictionary->hash[dictGetHashValue(key);   
+            removed_element = dictionary->hash[dictGetHashValue(key)];   
             dictionary->end->previous->next = NULL;   
             dictionary->end = dictionary->end->previous;   
           }
@@ -63,4 +63,12 @@ int dictRemoveItem(struct comp_dict_t *dictionary, const char *key){
      free(removed_element->data);   
      free(removed_element);     
      return 0;
+}
+
+int dictGetHashValue(const char *key)
+{
+    int hash_value;
+    for (hash_value = 0; *key != '\0'; key++)
+      hash_value = *key + 31 * hash_value;
+    return hash_value % HASH_SIZE;   
 }
