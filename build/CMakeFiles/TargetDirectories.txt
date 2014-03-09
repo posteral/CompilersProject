@@ -1,1 +1,0 @@
-/home/filipe/compil-2014-1/build/CMakeFiles/main.dir
