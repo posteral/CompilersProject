@@ -1,0 +1,16 @@
+%{
+#include "tokens.h"
+%}
+%%
+int { return TK_PR_INT; }
+. { return TOKEN_ERRO; }
+%%
+
+/* * * * * * * * * * * 
+ * * * USER CODE * * *
+ * * * * * * * * * * *
+ */
+int main(int argc, char *argv[]) {
+  yylex();
+}
+
