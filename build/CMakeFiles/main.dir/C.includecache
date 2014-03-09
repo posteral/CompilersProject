@@ -6,21 +6,13 @@
 
 #IncludeRegexTransform: 
 
-../include/tokens.h
+../include/comp_dict.h
 
-/home/filipe/compil-2014-1/build/lexer.c
-stdio.h
--
-string.h
--
-errno.h
--
+/home/filipe/compil-2014-1/src/comp_dict.c
 stdlib.h
 -
-inttypes.h
+stdio.h
 -
-tokens.h
-/home/filipe/compil-2014-1/build/tokens.h
-unistd.h
--
+comp_dict.h
+/home/filipe/compil-2014-1/src/comp_dict.h
 

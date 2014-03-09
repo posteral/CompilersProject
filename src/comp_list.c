@@ -16,7 +16,6 @@ void listPush(struct comp_list_t_t **head, int data){
 	comp_list_t* current = *head;
 	
 	if(*head==NULL){
-		//printf("\noi");
 		*head = (comp_list_t*)malloc(sizeof(comp_list_t));
 		(*head)->data = data;
 		(*head)->next = NULL;

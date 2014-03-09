@@ -1,5 +1,6 @@
 #include <stdlib.h>
-#include "../include/comp_dict.h"
+#include <stdio.h>
+#include "comp_dict.h"
 
 struct comp_dict_t* dictCreate(void){
 	comp_dict_t *newDict;
@@ -72,7 +73,8 @@ void dictPrint(struct comp_dict_t *dictionary)
      
      while(printed_item != NULL)
      {
-      printf("\nKEY: %s \nVALUE: %s", printed_item->key, printed_item->data);
+      //printf("\nKEY: %s \nVALUE: %s", printed_item->key, printed_item->data); 
+      printf("\nTo be tested");
       printed_item = printed_item->next;
      }
 }
@@ -80,12 +82,12 @@ void dictPrint(struct comp_dict_t *dictionary)
 void dictEmpty(struct comp_dict_t *dictionary)
 {
      comp_dict_item_t *removed_element;
-     removed_item = dictionary->start;
+     removed_element = dictionary->start;
      
-     while(removed_item != NULL)
+     while(removed_element != NULL)
      {
-      dictRemoveItem(dictionary, removed_item->key);
-      removed_item = removed_item->next;
+      dictRemoveItem(dictionary, removed_element->key);
+      removed_element = removed_element->next;
      }
 }
 
@@ -94,5 +96,5 @@ int dictGetHashValue(const char *key)
     int hash_value;
     for (hash_value = 0; *key != '\0'; key++)
       hash_value = *key + 31 * hash_value;
-    return hash_value % HASH_SIZE;   
+    return hash_value % MAX_HASH_SLOT; //is this right?  
 }
