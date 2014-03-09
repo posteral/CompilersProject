@@ -1,5 +1,5 @@
 #include <stdlib.h>
-#include "../include/comp_dict.h"
+#include "comp_dict.h"
 
 struct comp_dict_t* dictCreate(void){
 	comp_dict_t *newDict;
@@ -11,26 +11,32 @@ struct comp_dict_t* dictCreate(void){
 
 void dictAddItem(struct comp_dict_t *dictionary, const char *key, int data){
      comp_dict_item_t *item = (comp_dict_item_t *)malloc(sizeof(comp_dict_item_t));
+     item->key = key;
      item->data = data;
      item->next = NULL;
      
-     if (dictionary->start == NULL) {        
+     if (dictionary->start == NULL) 
+     {
+        printf("\nNOTE: First element on the dictionary!"); 
+        dictionary->start = item;      
         item->previous = NULL;
      }   
-     else {
+     else 
+     {
           item->previous = dictionary->end;
           dictionary->end->next = item;
-          }
+     }
           
      dictionary->hash[dictGetHashValue(key)] = item;
      dictionary->end = item; 
+     printf("\nNOTE: Element (%s,%d) added on the dictionary!", dictionary->hash[dictGetHashValue(key)]->key, dictionary->hash[dictGetHashValue(key)]->data);
 }
 
 int dictEditItem(struct comp_dict_t *dictionary, const char *key, int new_data)
 {
      if(dictionary->start == NULL || dictionary->hash[dictGetHashValue(key)] == NULL)
      { 
-       printf("WARNING: There is no element with this key in the dictionary!");
+       printf("\nWARNING: There is no element with this key in the dictionary to be edited!");
        return -1;   
      }
      
@@ -43,7 +49,7 @@ int dictRemoveItem(struct comp_dict_t *dictionary, const char *key){
 
      if(dictionary->start == NULL || dictionary->hash[dictGetHashValue(key)] == NULL)
      { 
-       printf("WARNING: There is no element with this key in the dictionary!");
+       printf("\nWARNING: There is no element with this key in the dictionary to be removed!");
        return -1;   
      }
      
@@ -80,14 +86,16 @@ void dictPrint(struct comp_dict_t *dictionary)
 {
      comp_dict_item_t *printed_item;
      printed_item = dictionary->start;
-     
+     if(!printed_item)
+                      printf("\nThe dictionary is empty!");
      while(printed_item != NULL)
      {
-      printf("\nKEY: %s \nVALUE: %d", printed_item->key, printed_item->data);
+      printf("\nKEY: %s VALUE: %d", printed_item->key, printed_item->data);
       printed_item = printed_item->next;
      }
 }
 
+//not working well
 void dictEmpty(struct comp_dict_t *dictionary)
 {
      comp_dict_item_t *removed_item;
@@ -96,6 +104,7 @@ void dictEmpty(struct comp_dict_t *dictionary)
      while(removed_item != NULL)
      {
       dictRemoveItem(dictionary, removed_item->key);
+      dictPrint(dictionary);
       removed_item = removed_item->next;
      }
 }
