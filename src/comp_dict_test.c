@@ -1,4 +1,4 @@
-#include "comp_dict.c"
+#include "comp_dict.h"
 
 int main ()
 {
@@ -26,7 +26,7 @@ int main ()
                        break;
                   case 1:
                        system("cls");
-                       char key[10];
+                       char *key = malloc(sizeof(char) * 100);;
                        int value;
                        printf("\n\n--------------------------------------");
                        printf("\n            ADD ITEMS");    
@@ -46,6 +46,7 @@ int main ()
                        printf("\nKey? (string) ");
                        scanf("%s", key);
                        dictRemoveItem(dictionary, key);
+                       printf("\nThe item was removed!");
                        getch();
                        break; 
                   case 3:
@@ -70,7 +71,7 @@ int main ()
                        getch();
                        break;
                   case 5:    
-                       dictEmpty(dictionary);
+                       //dictEmpty(dictionary);
                        printf("\nDictionary was emptied!");
                        getch();
                        break;
@@ -80,46 +81,6 @@ int main ()
                        
                   }
     }
-    // Adding items :
-    int data;
-    data = 100;
-    dictAddItem(dictionary, "int", data);
-    data = 200;
-    dictAddItem(dictionary, "float", data);
     
-    //Printing:
-    printf("\n\n--------------------------------------");
-    printf("\nCreating the dictionary ...");    
-    printf("\n--------------------------------------");
-    dictPrint(dictionary);
-    
-    //Removing:
-    dictRemoveItem(dictionary, "int");
-    
-    //Printing:
-    printf("\n\n--------------------------------------");
-    printf("\nRemoving items from the dictionary ...");
-    printf("\n--------------------------------------");
-    dictPrint(dictionary);
-    
-    //Editing:
-    dictEditItem(dictionary, "float", 300);
-    
-    //Printing:
-    printf("\n\n--------------------------------------");
-    printf("\nEditing items from the dictionary ...");
-    printf("\n--------------------------------------");
-    dictPrint(dictionary);
-    
-    //Empting:
-    dictEmpty(dictionary);
-    
-    //Printing:
-    printf("\n\n--------------------------------------");
-    printf("\nEmpting the dictionary ...");
-    printf("\n--------------------------------------");
-    dictPrint(dictionary);
-    
-    getch();
     return 0;
 }

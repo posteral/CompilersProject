@@ -90,7 +90,7 @@ void dictPrint(struct comp_dict_t *dictionary)
                       printf("\nThe dictionary is empty!");
      while(printed_item != NULL)
      {
-      printf("\nKEY: %s VALUE: %d", printed_item->key, printed_item->data);
+      printf("\nKEY: %s\t VALUE: %d", printed_item->key, printed_item->data);
       printed_item = printed_item->next;
      }
 }
@@ -104,7 +104,6 @@ void dictEmpty(struct comp_dict_t *dictionary)
      while(removed_item != NULL)
      {
       dictRemoveItem(dictionary, removed_item->key);
-      dictPrint(dictionary);
       removed_item = removed_item->next;
      }
 }
