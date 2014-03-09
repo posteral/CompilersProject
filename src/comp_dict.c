@@ -9,7 +9,7 @@ struct comp_dict_t* dictCreate(void){
 	return newDict;
 }
 
-void dictAddItem(struct comp_dict_t *dictionary, const char *key, void *data){
+void dictAddItem(struct comp_dict_t *dictionary, const char *key, const char *data){
      comp_dict_item_t *item = (comp_dict_item_t *)malloc(sizeof(comp_dict_item_t));
      item->data = data;
      item->next = NULL;
@@ -26,10 +26,22 @@ void dictAddItem(struct comp_dict_t *dictionary, const char *key, void *data){
      dictionary->end = item; 
 }
 
+int dictEditItem(struct comp_dict_t *dictionary, const char *key, const char *new_data)
+{
+     if(dictionary->start == NULL || dictionary->hash[dictGetHashValue(key)] == NULL)
+     { 
+       printf("WARNING: There is no element with this key in the dictionary!");
+       return -1;   
+     }
+     
+     dictionary->hash[dictGetHashValue(key)]->data = new_data;
+     return 0;     
+}
+
 int dictRemoveItem(struct comp_dict_t *dictionary, const char *key){ 
      comp_dict_item_t *removed_element;   
 
-     if(dictionary->start == NULL)
+     if(dictionary->start == NULL || dictionary->hash[dictGetHashValue(key)] == NULL)
      { 
        printf("WARNING: There is no element with this key in the dictionary!");
        return -1;   
@@ -59,8 +71,7 @@ int dictRemoveItem(struct comp_dict_t *dictionary, const char *key){
               dictionary->hash[dictGetHashValue(key)]->previous->next = dictionary->hash[dictGetHashValue(key)]->next;   
               dictionary->hash[dictGetHashValue(key)]->next->previous = dictionary->hash[dictGetHashValue(key)]->previous;   
           }
-             
-     free(removed_element->data);   
+               
      free(removed_element);     
      return 0;
 }
@@ -79,7 +90,7 @@ void dictPrint(struct comp_dict_t *dictionary)
 
 void dictEmpty(struct comp_dict_t *dictionary)
 {
-     comp_dict_item_t *removed_element;
+     comp_dict_item_t *removed_item;
      removed_item = dictionary->start;
      
      while(removed_item != NULL)
