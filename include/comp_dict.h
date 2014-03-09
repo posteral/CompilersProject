@@ -4,7 +4,7 @@
 typedef struct comp_dict_item_t {
         struct comp_dict_item_t* next;
         struct comp_dict_item_t* previous;
-        const char* data;            
+        int data;            
         const char* key;  
 } comp_dict_item_t;
 
@@ -15,8 +15,8 @@ typedef struct comp_dict_t {
 } comp_dict_t;
 
 struct comp_dict_t* dictCreate();
-void                dictAddItem(struct comp_dict_t *dictionary, const char *key, const char *data);
-int                 dictEditItem(struct comp_dict_t *dictionary, const char *key, const char *new_data);
+void                dictAddItem(struct comp_dict_t *dictionary, const char *key, int data);
+int                 dictEditItem(struct comp_dict_t *dictionary, const char *key, int new_data);
 int                 dictRemoveItem(struct comp_dict_t *dictionary, const char *key);
 void                dictPrint(struct comp_dict_t *dictionary);
 void                dictEmpty(struct comp_dict_t *dictionary);

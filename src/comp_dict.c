@@ -9,7 +9,7 @@ struct comp_dict_t* dictCreate(void){
 	return newDict;
 }
 
-void dictAddItem(struct comp_dict_t *dictionary, const char *key, const char *data){
+void dictAddItem(struct comp_dict_t *dictionary, const char *key, int data){
      comp_dict_item_t *item = (comp_dict_item_t *)malloc(sizeof(comp_dict_item_t));
      item->data = data;
      item->next = NULL;
@@ -26,7 +26,7 @@ void dictAddItem(struct comp_dict_t *dictionary, const char *key, const char *da
      dictionary->end = item; 
 }
 
-int dictEditItem(struct comp_dict_t *dictionary, const char *key, const char *new_data)
+int dictEditItem(struct comp_dict_t *dictionary, const char *key, int new_data)
 {
      if(dictionary->start == NULL || dictionary->hash[dictGetHashValue(key)] == NULL)
      { 
@@ -83,7 +83,7 @@ void dictPrint(struct comp_dict_t *dictionary)
      
      while(printed_item != NULL)
      {
-      printf("\nKEY: %s \nVALUE: %s", printed_item->key, printed_item->data);
+      printf("\nKEY: %s \nVALUE: %d", printed_item->key, printed_item->data);
       printed_item = printed_item->next;
      }
 }
