@@ -16,7 +16,8 @@ int main ()
                  printf("\n[2] : REMOVE ITEMS");
                  printf("\n[3] : EDIT ITEMS");
                  printf("\n[4] : PRINT DICTIONARY");
-                 printf("\n[5] : DELETE DICTIONARY");
+                 printf("\n[5] : DELETE DICTIONARY");                
+                 printf("\n[6] : >>> RUN DEFAULT EXEMPLE <<<");
                  printf("\nPlease enter the option: ");
                  scanf("%d", &option);
                  
@@ -75,6 +76,26 @@ int main ()
                        printf("\nDictionary was emptied!");
                        getch();
                        break;
+                  case 6:
+                       system("cls");
+                       printf("\n\n--------------------------------------");
+                       printf("\n            ADD ITEMS 'int' AND 'float'");    
+                       printf("\n--------------------------------------\n");
+                       dictAddItem(dictionary, "int", 1);
+                       dictAddItem(dictionary, "float", 2);
+                       dictPrint(dictionary);
+                       printf("\n\n--------------------------------------");
+                       printf("\n            EDIT ITEM 'int'");    
+                       printf("\n--------------------------------------\n");
+                       dictEditItem(dictionary, "int", 0);
+                       dictPrint(dictionary);
+                       printf("\n\n--------------------------------------");
+                       printf("\n            REMOVE ITEM 'int'");    
+                       printf("\n--------------------------------------\n");
+                       dictRemoveItem(dictionary, "int");
+                       dictPrint(dictionary);
+                       getch();
+                       break;                       
                   default:
                           printf("\nInvalid option! Please enter numbers from 0 to 5.");
                           getch();

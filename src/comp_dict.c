@@ -18,7 +18,7 @@ void dictAddItem(struct comp_dict_t *dictionary, const char *key, int data){
      
      if (dictionary->start == NULL) 
      {
-        printf("\nNOTE: First element on the dictionary!"); 
+        printf("\nNOTE: First element added on the dictionary!"); 
         dictionary->start = item;      
         item->previous = NULL;
      }   
@@ -42,6 +42,7 @@ int dictEditItem(struct comp_dict_t *dictionary, const char *key, int new_data)
      }
      
      dictionary->hash[dictGetHashValue(key)]->data = new_data;
+     printf("\nNOTE: The element %s has changed its value to %d!", key, new_data);
      return 0;     
 }
 
@@ -80,7 +81,8 @@ int dictRemoveItem(struct comp_dict_t *dictionary, const char *key){
           }
 	  }
                
-     free(removed_element);     
+     free(removed_element);  
+     printf("\nNOTE: The element %s was removed!", key);  
      return 0;
 }
 
