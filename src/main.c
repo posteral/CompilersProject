@@ -1,20 +1,12 @@
-#include <stdio.h>
-#include "comp_dict.h"
-#include "comp_list.h"
-#include "comp_tree.h"
-#include "tokens.h"
+#include "main.h"
 
-int getLineNumber ()
+void yyerror (char const *mensagem)
 {
-  //mude aqui a implementação desta função
-  return 0;
+  fprintf (stderr, "%s\n", mensagem); //altere para que apareça a linha
 }
 
 int main (int argc, char **argv)
 {
-  int token = TOKEN_ERRO;
-  while (token = yylex()){
-    printf ("token <%d> at %d\n", token, getLineNumber());
-  }
-  return 0;
+  int resultado = yyparse();
+  return resultado;
 }
