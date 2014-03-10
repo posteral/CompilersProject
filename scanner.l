@@ -1,4 +1,5 @@
 /*DEFINITIONS*/
+%x MLCOMMENT
 %option   yylineno
 %{
 #include "tokens.h"
@@ -49,15 +50,25 @@ false	{ //dictAddItem(dictionary, "false", TK_LIT_FALSE);
 true	{ //dictAddItem(dictionary, "true", TK_LIT_TRUE); 
 		  return TK_LIT_TRUE;	}
 
-","|";"|":"	{ return yytext[0]; }
-"("|")"		{ return yytext[0]; }
-"["|"]"		{ return yytext[0]; }
-"{"|"}"		{ return yytext[0]; }
-"+"|"-"		{ return yytext[0]; }
-"*"|"/"		{ return yytext[0]; }
-"<"|">"		{ return yytext[0]; }
-"="|"!"		{ return yytext[0]; }
-"&"|"$"		{ return yytext[0]; }
+","		{ return yytext[0]; }
+";"		{ return yytext[0]; }
+":"		{ return yytext[0]; }
+"("		{ return yytext[0]; }
+")"		{ return yytext[0]; }
+"["		{ return yytext[0]; }
+"]"		{ return yytext[0]; }
+"{"		{ return yytext[0]; }
+"}"		{ return yytext[0]; }
+"+"		{ return yytext[0]; }
+"-"		{ return yytext[0]; }
+"*"		{ return yytext[0]; }
+"/"		{ return yytext[0]; }
+"<"		{ return yytext[0]; }
+">"		{ return yytext[0]; }
+"="		{ return yytext[0]; }
+"!"		{ return yytext[0]; }
+"&"		{ return yytext[0]; }
+"$"		{ return yytext[0]; }
 
 "<="	{ //dictAddItem(dictionary, "<=", TK_OC_LE); 
 		  return TK_OC_LE;	}
@@ -78,8 +89,16 @@ true	{ //dictAddItem(dictionary, "true", TK_LIT_TRUE);
 {CHAR}		{ return TK_LIT_CHAR;		}
 {STRING}	{ return TK_LIT_STRING;		}
 
-" "		{ };
-"\n"	{ };
+" "		{ }
+"\n"	{ }
+
+"/*"	        { BEGIN( MLCOMMENT ); }
+"//"[^\r\n]*    { }
+<MLCOMMENT>"*/" { BEGIN( INITIAL ); }
+<MLCOMMENT>.    {  }
+<MLCOMMENT>\n	{ }
+.               { return TOKEN_ERRO; }
+
 %%
 /*USER CODE*/
 
