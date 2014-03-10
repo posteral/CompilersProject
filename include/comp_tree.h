@@ -1,11 +1,14 @@
 typedef struct comp_tree_t {
-	int id;
+	int *data;
 	int nbChildren;
-	struct comp_tree_t *children[];
+	struct comp_tree_t **children;
 } comp_tree_t;
 
-struct comp_tree_t* treeCreate();
-int treeIsEmpty(comp_tree_t *tree);
-comp_tree_t* treeCreate(void);
-void treeAddNode(comp_tree_t *root);
-void treeRemoveNode(comp_tree_t *root);
+struct comp_tree_t* treeCreateNode(int children, int *data);
+int treeAppendNode(comp_tree_t *root, int *data);
+int treeInsertNode(comp_tree_t *root, int idx, int *data);
+void treeEditNode(comp_tree_t *root, int idx, int *new_data);
+void treeDeleteNode(comp_tree_t *root, int idx);
+void treeFree(comp_tree_t *tree);
+void treePrint(comp_tree_t *tree);
+int *createIntData(int data);

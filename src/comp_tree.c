@@ -2,75 +2,104 @@
 #include <stdlib.h>
 #include "comp_tree.h"
 
-//initializes tree
-struct comp_tree_t* treeCreate(){
-	comp_tree_t *newTree = NULL;
-	return newTree;
+struct comp_tree_t* treeCreateNode(int children, int *data)
+{
+      comp_tree_t *new_node = (comp_tree_t*)calloc(1,sizeof(comp_tree_t)) ;
+      new_node->data = data;
+      new_node->nbChildren = children;
+      new_node->children = (comp_tree_t**)calloc(children, sizeof(comp_tree_t*));
+      return new_node;
 }
 
-//checks if tree is empty
-int treeIsEmpty(comp_tree_t *tree){
-	return tree == NULL;
-}
-	
-void treeAddNode(comp_tree_t *root){
-     /*comp_tree_t * new_node;
-	 new_node = malloc(sizeof(comp_tree_t));
-	 new_node->nbChildren = 0; 
-     new_node->children = NULL;  
-     
-     //Empty tree:
-     if(root == NULL) 
-     {
-             new_node->id = 0;
-             root = new_node;             
-	 }
-	else
-	{
-        new_node->id = root->nbChildren;
-        root->children[new_node->id] = new_node;       
-        root->nbChildren++;
-	}   
-	*/  
+int treeAppendNode(comp_tree_t *root, int *data)
+{
+    root->nbChildren++;
+    root->children = (comp_tree_t**)realloc(root->children,(root->nbChildren)*sizeof(comp_tree_t*));
+    root->children[root->nbChildren-1] = treeCreateNode(0,data);
+    printf("\nNOTE: Node with data %d was appended!", *root->children[root->nbChildren-1]->data);
+    return root->nbChildren - 1;
 }
 
-void treeRemoveNode(comp_tree_t *root){
-	/*
-    // Empty node:
-    if(root == NULL)
+int treeInsertNode(comp_tree_t *root, int idx, int *data)
+{
+    unsigned i;
+    root->nbChildren++;
+    if(idx > root->nbChildren)
     {
- 	   printf("WARNING: Node doesn't exist!");
+     printf("\nWARNING: Invalid node index!");
     }
     else
     {
-        // Leaf node:
-    	if(root->children == NULL) 
-    	{
-    		free(root); 
-    		root = NULL;
-    	}
-    	else
-    	{
-            int child_index = 0
-			comp_tree_t *tmp_node = root->children[child_index]; 
-			// Removing childrens:
-			while(tmp_node != NULL)
-			{
-				if(tmp_node->children != NULL)
-					treeRemoveNode(tmp_descriptor->children); 
-					
-				last_node = tmp_node; 
-				child_index++;
-				tmp_node = root->children[child_index]; 
-				
-				if(last_node != NULL)
-					free(last_node); 
-				last_node = NULL; 
-			}
-			if(root != NULL)
-				free(root); 
-    	}
+     root->children = (comp_tree_t**)realloc(root->children,(root->nbChildren)*sizeof(comp_tree_t*));
+     for( i=root->nbChildren-1; i>idx ; --i)
+          root->children[i] = root->children[i-1];
+     root->children[i] = treeCreateNode(0,data);
+     printf("\nNOTE: Node with data %d was inserted on the position %d!", *root->children[i]->data, idx);
     }
-    */
-    
+    return i ;
+}
+
+void treeEditNode(comp_tree_t *root, int idx, int *new_data)
+{
+     if(root->children[idx])
+     {
+      free(root->children[idx]->data);
+      root->children[idx]->data = new_data;
+     }
+     else
+         printf("\nWARNING: This node doesn't exist!");
+}
+
+//Not working
+void treeDeleteNode(comp_tree_t *root, int idx)
+{
+   unsigned i ;
+   if(root->children[idx])
+     {
+      treeFree(root->children[idx]);
+      for( i=idx ; i<root->nbChildren-1 ; ++i)
+           root->children[i] = root->children[ i - 1 ] ;
+      root->nbChildren--;
+      root->children = (comp_tree_t**)realloc(root->children,(root->nbChildren)*sizeof(comp_tree_t*));
+     }
+   else
+       printf("\nWARNING: This node doesn't exist!");
+}
+
+//Not working
+void treeFree(comp_tree_t *tree)
+{
+   unsigned i ;
+   if(tree == NULL) return ;
+
+   for( i=0 ; i<tree->nbChildren ; ++i )
+   {
+        treeFree(tree->children[i]);
+   }
+   
+   free(tree->children);
+   free(tree->data);
+   free(tree);
+}
+
+void treePrint(comp_tree_t *tree)
+{
+ unsigned i;
+ if(tree->data)
+ {
+  printf("\n%d", *tree->data);
+ }
+ if(tree->nbChildren)
+                     printf("\nNew level: ");
+ for( i=0 ; i<tree->nbChildren ; ++i )
+ {
+  treePrint(tree->children[i]);
+ }
+}
+
+int *createIntData(int data)
+{
+ int *ptr = (int*)calloc(1,sizeof(int));
+ *ptr = data;
+ return ptr;
 }
