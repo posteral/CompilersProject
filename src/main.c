@@ -1,7 +1,7 @@
 #include <stdio.h>
-//#include "comp_dict.h"
+#include "comp_dict.h"
 #include "comp_list.h"
-//#include "comp_tree.h"
+#include "comp_tree.h"
 #include "tokens.h"
 extern char *yytext;
 extern int getLineNumber();
