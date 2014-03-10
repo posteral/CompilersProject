@@ -5,6 +5,7 @@
 #include "tokens.h"
 extern char *yytext;
 extern int getLineNumber();
+extern comp_dict_t *dictionary;
 #define print_nome(TOKEN) printf("%d " #TOKEN " [%s]\n", getLineNumber(), yytext);
 #define print_nome2(TOKEN) printf("%d %c\n", getLineNumber(), TOKEN);
 
@@ -78,5 +79,6 @@ int main (int argc, char **argv)
 			default: printf ("<Invalid Token with code %d>\n", token); return 1; break;
     }
   }
+  //dictPrint(dictionary);
   return 0;
 }

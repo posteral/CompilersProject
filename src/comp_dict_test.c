@@ -27,7 +27,7 @@ int main ()
                        break;
                   case 1:
                        system("cls");
-                       char *key = malloc(sizeof(char) * 100);;
+                       char *key = malloc(sizeof(char) * 100);
                        int value;
                        printf("\n\n--------------------------------------");
                        printf("\n            ADD ITEMS");    

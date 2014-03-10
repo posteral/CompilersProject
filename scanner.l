@@ -82,15 +82,33 @@ true	{ dictAddItem(&dictionary, "true", TK_LIT_TRUE);
 "||" 	{ dictAddItem(&dictionary, "||", TK_OC_OR); 
 		  return TK_OC_OR;	}
 
-{ID}		{ dictAddItem(&dictionary, yytext, TK_IDENTIFICADOR);
+{ID}		{ char *key = malloc(sizeof(char) * strlen(yytext));
+			  strcpy(key,yytext);
+			  dictAddItem(&dictionary, key, TK_IDENTIFICADOR);
 			  return TK_IDENTIFICADOR;	}
-{INT}		{ dictAddItem(&dictionary, yytext, TK_LIT_INT);
+{INT}		{ char *key = malloc(sizeof(char) * strlen(yytext));
+			  strcpy(key,yytext);
+			  dictAddItem(&dictionary, key, TK_LIT_INT);
 			  return TK_LIT_INT;		}
-{FLOAT}		{ dictAddItem(&dictionary, yytext, TK_LIT_FLOAT);
+{FLOAT}		{ char *key = malloc(sizeof(char) * strlen(yytext));
+			  strcpy(key,yytext);
+			  dictAddItem(&dictionary, key, TK_LIT_FLOAT);
 			  return TK_LIT_FLOAT;		}
-{CHAR}		{ dictAddItem(&dictionary, yytext, TK_LIT_CHAR);
+{CHAR}		{ char *key = malloc(sizeof(char) * strlen(yytext));
+			  strcpy(key,yytext);
+			  char *untreated_token = key;
+			  char *treated_token = untreated_token;
+			  memmove(treated_token, untreated_token+1, strlen(untreated_token)-2);
+			  treated_token[strlen(treated_token)-1] = 0;	
+			  dictAddItem(&dictionary, key, TK_LIT_CHAR);
 			  return TK_LIT_CHAR;		}
-{STRING}	{ dictAddItem(&dictionary, yytext, TK_LIT_STRING);
+{STRING}	{ char *key = malloc(sizeof(char) * strlen(yytext));
+			  strcpy(key,yytext);
+			  char *untreated_token = key;
+			  char *treated_token = untreated_token;
+			  memmove(treated_token, untreated_token+1, strlen(untreated_token)-2);
+			  treated_token[strlen(treated_token)-1] = 0;
+			  dictAddItem(&dictionary, key, TK_LIT_STRING);
 			  return TK_LIT_STRING;		}
 
 " "		{ }
