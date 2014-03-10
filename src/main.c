@@ -1,9 +1,8 @@
 #include <stdio.h>
-#include "comp_dict.h"
+//#include "comp_dict.h"
 #include "comp_list.h"
-#include "comp_tree.h"
+//#include "comp_tree.h"
 #include "tokens.h"
-
 extern char *yytext;
 extern int getLineNumber();
 #define print_nome(TOKEN) printf("%d " #TOKEN " [%s]\n", getLineNumber(), yytext);
@@ -27,7 +26,7 @@ int main (int argc, char **argv)
 
 int main (int argc, char **argv)
 {
-  int token = 0;
+	int token = 0;
   while (token = yylex()) {
     switch (token){
     case ',':

@@ -1,5 +1,6 @@
 #include <stdio.h>
-#include "../include/comp_tree.h"
+#include <stdlib.h>
+#include "comp_tree.h"
 
 //initializes tree
 struct comp_tree_t* treeCreate(){
@@ -8,12 +9,12 @@ struct comp_tree_t* treeCreate(){
 }
 
 //checks if tree is empty
-bool treeIsEmpty(comp_tree_t *tree){
+int treeIsEmpty(comp_tree_t *tree){
 	return tree == NULL;
 }
 	
 void treeAddNode(comp_tree_t *root){
-     comp_tree_t * new_node;
+     /*comp_tree_t * new_node;
 	 new_node = malloc(sizeof(comp_tree_t));
 	 new_node->nbChildren = 0; 
      new_node->children = NULL;  
@@ -29,12 +30,13 @@ void treeAddNode(comp_tree_t *root){
         new_node->id = root->nbChildren;
         root->children[new_node->id] = new_node;       
         root->nbChildren++;
-	}     
+	}   
+	*/  
 }
 
-void treeRemoveNode(comp_tree_t *root)
-{
-     // Empty node:
+void treeRemoveNode(comp_tree_t *root){
+	/*
+    // Empty node:
     if(root == NULL)
     {
  	   printf("WARNING: Node doesn't exist!");
@@ -69,4 +71,6 @@ void treeRemoveNode(comp_tree_t *root)
 				free(root); 
     	}
     }
+    */
+    
 }

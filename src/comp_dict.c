@@ -64,7 +64,7 @@ int dictRemoveItem(struct comp_dict_t *dictionary, const char *key){
          else   
                               dictionary->start->previous = NULL; 
      }
-     else 
+     else {
           // Last element
           if(dictionary->hash[dictGetHashValue(key)]->next == NULL) 
           {   
@@ -78,6 +78,7 @@ int dictRemoveItem(struct comp_dict_t *dictionary, const char *key){
               dictionary->hash[dictGetHashValue(key)]->previous->next = dictionary->hash[dictGetHashValue(key)]->next;   
               dictionary->hash[dictGetHashValue(key)]->next->previous = dictionary->hash[dictGetHashValue(key)]->previous;   
           }
+	  }
                
      free(removed_element);     
      return 0;
@@ -100,8 +101,8 @@ void dictPrint(struct comp_dict_t *dictionary)
 void dictEmpty(struct comp_dict_t *dictionary)
 {
 
-     comp_dict_item_t *removed_item;
-     removed_item = dictionary->start;
+     comp_dict_item_t *removed_element;
+     removed_element = dictionary->start;
 
      
      while(removed_element != NULL)
@@ -116,5 +117,5 @@ int dictGetHashValue(const char *key)
     int hash_value;
     for (hash_value = 0; *key != '\0'; key++)
       hash_value = *key + 31 * hash_value;
-    return hash_value % MAX_HASH_SLOT; //is this right?  
+    return hash_value % HASH_SIZE; 
 }
