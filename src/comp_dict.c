@@ -6,43 +6,47 @@ struct comp_dict_t* dictCreate(void){
 	comp_dict_t *newDict;
 	
 	newDict = (comp_dict_t*)malloc(sizeof(comp_dict_t));
-	
 	return newDict;
 }
 
-void dictAddItem(struct comp_dict_t *dictionary, const char *key, int data){
+void dictAddItem(struct comp_dict_t **dictionary, const char *key, int data){
      comp_dict_item_t *item = (comp_dict_item_t *)malloc(sizeof(comp_dict_item_t));
      item->key = key;
      item->data = data;
      item->next = NULL;
      
-     if (dictionary->start == NULL) 
+     if(*dictionary == NULL){
+		 *dictionary = dictCreate();
+	 }
+     
+     if ((*dictionary)->start == NULL) 
      {
-        printf("\nNOTE: First element added on the dictionary!"); 
-        dictionary->start = item;      
+        //printf("\nNOTE: First element added on the dictionary!"); 
+        (*dictionary)->start = item;      
         item->previous = NULL;
      }   
      else 
      {
-          item->previous = dictionary->end;
-          dictionary->end->next = item;
+          item->previous = (*dictionary)->end;
+          (*dictionary)->end->next = item;
      }
           
-     dictionary->hash[dictGetHashValue(key)] = item;
-     dictionary->end = item; 
-     printf("\nNOTE: Element (%s,%d) added on the dictionary!", dictionary->hash[dictGetHashValue(key)]->key, dictionary->hash[dictGetHashValue(key)]->data);
+     (*dictionary)->hash[dictGetHashValue(key)] = item;
+     (*dictionary)->end = item; 
+     //printf("\nNOTE: Element (%s,%d) added on the dictionary!", (*dictionary)->hash[dictGetHashValue(key)]->key, (*dictionary)->hash[dictGetHashValue(key)]->data);
+	
 }
 
 int dictEditItem(struct comp_dict_t *dictionary, const char *key, int new_data)
 {
      if(dictionary->start == NULL || dictionary->hash[dictGetHashValue(key)] == NULL)
      { 
-       printf("\nWARNING: There is no element with this key in the dictionary to be edited!");
+       //printf("\nWARNING: There is no element with this key in the dictionary to be edited!");
        return -1;   
      }
      
      dictionary->hash[dictGetHashValue(key)]->data = new_data;
-     printf("\nNOTE: The element %s has changed its value to %d!", key, new_data);
+     //printf("\nNOTE: The element %s has changed its value to %d!", key, new_data);
      return 0;     
 }
 
@@ -51,7 +55,7 @@ int dictRemoveItem(struct comp_dict_t *dictionary, const char *key){
 
      if(dictionary->start == NULL || dictionary->hash[dictGetHashValue(key)] == NULL)
      { 
-       printf("\nWARNING: There is no element with this key in the dictionary to be removed!");
+       //printf("\nWARNING: There is no element with this key in the dictionary to be removed!");
        return -1;   
      }
      
@@ -82,7 +86,7 @@ int dictRemoveItem(struct comp_dict_t *dictionary, const char *key){
 	  }
                
      free(removed_element);  
-     printf("\nNOTE: The element %s was removed!", key);  
+     //printf("\nNOTE: The element %s was removed!", key);  
      return 0;
 }
 

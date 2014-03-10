@@ -36,7 +36,7 @@ int main ()
                        scanf("%s", key);
                        printf("\nValue? (integer) ");
                        scanf("%d", &value);
-                       dictAddItem(dictionary, key, value);
+                       dictAddItem(&dictionary, key, value);
                        getch();
                        break; 
                   case 2:
@@ -81,8 +81,8 @@ int main ()
                        printf("\n\n--------------------------------------");
                        printf("\n            ADD ITEMS 'int' AND 'float'");    
                        printf("\n--------------------------------------\n");
-                       dictAddItem(dictionary, "int", 1);
-                       dictAddItem(dictionary, "float", 2);
+                       dictAddItem(&dictionary, "int", 1);
+                       dictAddItem(&dictionary, "float", 2);
                        dictPrint(dictionary);
                        printf("\n\n--------------------------------------");
                        printf("\n            EDIT ITEM 'int'");    
