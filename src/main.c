@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #include <stdio.h>
 #include "comp_dict.h"
 #include "comp_list.h"
@@ -13,9 +14,17 @@ extern comp_dict_t *dictionary;
 {
   return 0;
 }
+#include "main.h"
+
+void yyerror (char const *mensagem)
+{
+  fprintf (stderr, "%s\n", mensagem); //altere para que apareça a linha
+
+}
 
 int main (int argc, char **argv)
 {
+
   int token = TOKEN_ERRO;
   while (token = yylex()){	
     printf ("token <%d> at %d\n", token, getLineNumber());
@@ -81,4 +90,8 @@ int main (int argc, char **argv)
   }
   //dictPrint(dictionary);
   return 0;
+=======
+  int resultado = yyparse();
+  return resultado;
+>>>>>>> 2db105f88680013c46195e7de77ed633bfde9167
 }

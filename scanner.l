@@ -4,8 +4,9 @@
 %{
 #include "tokens.h"
 #include "comp_dict.h"
-
 comp_dict_t *dictionary;
+#include "parser.h" //arquivo automaticamente gerado pelo bison
+
 %}
 
 /* Regular Expressions*/
