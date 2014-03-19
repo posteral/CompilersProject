@@ -1,3 +1,6 @@
+#ifndef COMP_TREE_H
+#define COMP_TREE_H
+
 typedef struct comp_tree_t {
 	int *data;
 	int nbChildren;
@@ -12,3 +15,6 @@ void treeDeleteNode(comp_tree_t *root, int idx);
 void treeFree(comp_tree_t *tree);
 void treePrint(comp_tree_t *tree);
 int *createIntData(int data);
+
+
+#endif

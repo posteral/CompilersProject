@@ -1,9 +1,8 @@
-<<<<<<< HEAD
 #include <stdio.h>
 #include "comp_dict.h"
 #include "comp_list.h"
 #include "comp_tree.h"
-#include "tokens.h"
+#include "parser.h"
 extern char *yytext;
 extern int getLineNumber();
 extern comp_dict_t *dictionary;
@@ -24,7 +23,7 @@ void yyerror (char const *mensagem)
 
 int main (int argc, char **argv)
 {
-<<<<<<< HEAD
+
   int token = TOKEN_ERRO;
   while (token = yylex()){	
     printf ("token <%d> at %d\n", token, getLineNumber());
@@ -88,10 +87,7 @@ int main (int argc, char **argv)
 			default: printf ("<Invalid Token with code %d>\n", token); return 1; break;
     }
   }
-  //dictPrint(dictionary);
-  return 0;
-=======
+  
   int resultado = yyparse();
   return resultado;
->>>>>>> 2db105f88680013c46195e7de77ed633bfde9167
 }

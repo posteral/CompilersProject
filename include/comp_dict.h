@@ -1,3 +1,6 @@
+#ifndef COMP_DICT_H
+#define COMP_DICT_H
+
 #include "comp_list.h"
 
 #define MAX_HASH_SLOT 10000
@@ -24,3 +27,5 @@ int                 dictRemoveItem(struct comp_dict_t *dictionary, const char *k
 void                dictPrint(struct comp_dict_t *dictionary);
 void                dictEmpty(struct comp_dict_t *dictionary);
 int                 dictGetHashValue(const char *key);
+
+#endif

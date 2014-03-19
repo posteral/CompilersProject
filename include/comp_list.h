@@ -1,3 +1,6 @@
+#ifndef COMP_LIST_H
+#define COMP_LIST_H
+
 typedef struct comp_list_t_t {
 	int data;
 	struct comp_list_t_t* next;
@@ -8,3 +11,5 @@ int		listEmpty(struct comp_list_t_t *head);
 void	listPush(struct comp_list_t_t  **head, int data);
 struct comp_list_t_t *listDelete(struct comp_list_t_t *head, int data);
 void	listPrint(struct comp_list_t_t *head);
+
+#endif
