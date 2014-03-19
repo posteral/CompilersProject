@@ -6,14 +6,15 @@
 extern char *yytext;
 extern int getLineNumber();
 extern comp_dict_t *dictionary;
-#define print_nome(TOKEN) printf("%d " #TOKEN " [%s]\n", getLineNumber(), yytext);
-#define print_nome2(TOKEN) printf("%d %c\n", getLineNumber(), TOKEN);
+#define print_nome(TOKEN) printf("\n%d " #TOKEN " [%s]", getLineNumber(), yytext);
+#define print_nome2(TOKEN) printf("\n%d %c", getLineNumber(), TOKEN);
 
 #include "main.h"
 
 void yyerror (char const *mensagem)
 {
-  fprintf (stderr, "%s\n", mensagem); //altere para que apareça a linha
+	printf("\n %s, %d", yytext);
+	fprintf (stderr, "%s\n", mensagem); //altere para que apareça a linha
 
 }
 
@@ -31,6 +32,7 @@ void yyerror (char const *mensagem)
 
 int main (int argc, char **argv)
 {
+	/*
 	int token = 0;
 	while (token = yylex()) {
 		switch (token){
@@ -82,8 +84,10 @@ int main (int argc, char **argv)
 			case TOKEN_ERRO:  print_nome (TOKEN_ERRO); break;
 			default: printf ("<Invalid Token with code %d>\n", token); return 1; break;
     }
-  }
+  }*/
   
   int resultado = yyparse();
+  printf("\n resultado: %d", resultado);
+  
   return resultado;
 }

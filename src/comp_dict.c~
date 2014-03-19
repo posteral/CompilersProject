@@ -1,6 +1,3 @@
-#ifndef COMP_DICT_H
-#define COMP_DICT_H
-
 #include <stdlib.h>
 #include <stdio.h>
 #include "comp_dict.h"
@@ -45,7 +42,7 @@ void dictAddItem(struct comp_dict_t **dictionary, const char *key, int code, int
          printf("\nNOTE: Element (%s,%d) added on the dictionary!", (*dictionary)->hash[dictGetHashValue(key)]->key, (*dictionary)->hash[dictGetHashValue(key)]->code);
      }
      
-     listPush(&((*dictionary)->hash[dictGetHashValue(key)]->line_occurrences), line);
+     //listPush(&((*dictionary)->hash[dictGetHashValue(key)]->line_occurrences), line);
 }
 
 int dictEditItem(struct comp_dict_t *dictionary, const char *key, int new_code)
@@ -146,5 +143,3 @@ int dictGetHashValue(const char *key)
     return hash_value % HASH_SIZE; 
 }
 
-
-#endif

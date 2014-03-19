@@ -9,10 +9,6 @@ extern comp_dict_t *dictionary;
 #define print_nome(TOKEN) printf("%d " #TOKEN " [%s]\n", getLineNumber(), yytext);
 #define print_nome2(TOKEN) printf("%d %c\n", getLineNumber(), TOKEN);
 
-/*int getLineNumber ()
-{
-  return 0;
-}
 #include "main.h"
 
 void yyerror (char const *mensagem)
@@ -21,7 +17,7 @@ void yyerror (char const *mensagem)
 
 }
 
-int main (int argc, char **argv)
+/*int main (int argc, char **argv)
 {
 
   int token = TOKEN_ERRO;
