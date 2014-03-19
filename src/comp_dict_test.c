@@ -1,5 +1,6 @@
 #include "comp_dict.h"
 
+
 int main ()
 {
     comp_dict_t *dictionary = dictCreate();
@@ -27,8 +28,8 @@ int main ()
                        break;
                   case 1:
                        system("cls");
-                       char *key = malloc(sizeof(char) * 100);
-                       int value;
+                       char *key = malloc(sizeof(char) * 100);;
+                       int value, line;
                        printf("\n\n--------------------------------------");
                        printf("\n            ADD ITEMS");    
                        printf("\n--------------------------------------");
@@ -36,7 +37,10 @@ int main ()
                        scanf("%s", key);
                        printf("\nValue? (integer) ");
                        scanf("%d", &value);
-                       dictAddItem(&dictionary, key, value);
+                       printf("\nLine? (integer) ");
+                       scanf("%d", &line);
+                       dictAddItem(&dictionary, key, value, line);
+                       printf("\nThe item was added!");
                        getch();
                        break; 
                   case 2:
@@ -72,7 +76,7 @@ int main ()
                        getch();
                        break;
                   case 5:    
-                       //dictEmpty(dictionary);
+                       dictEmpty(dictionary);
                        printf("\nDictionary was emptied!");
                        getch();
                        break;
@@ -81,8 +85,8 @@ int main ()
                        printf("\n\n--------------------------------------");
                        printf("\n            ADD ITEMS 'int' AND 'float'");    
                        printf("\n--------------------------------------\n");
-                       dictAddItem(&dictionary, "int", 1);
-                       dictAddItem(&dictionary, "float", 2);
+                       dictAddItem(&dictionary, "int", 1, 1);
+                       dictAddItem(&dictionary, "float", 2, 2);
                        dictPrint(dictionary);
                        printf("\n\n--------------------------------------");
                        printf("\n            EDIT ITEM 'int'");    
