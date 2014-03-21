@@ -1,9 +1,8 @@
 #include "comp_dict.h"
 
-
 int main ()
 {
-    comp_dict_t *dictionary = dictCreate();
+    comp_dict_t *dictionary = NULL;
  
     int option = 1;
     while(option)
@@ -39,7 +38,7 @@ int main ()
                        scanf("%d", &value);
                        printf("\nLine? (integer) ");
                        scanf("%d", &line);
-                       dictAddItem(&dictionary, key, value, line);
+                       dictAddItem(&dictionary, key, 1, value, line);
                        printf("\nThe item was added!");
                        getch();
                        break; 
@@ -85,8 +84,8 @@ int main ()
                        printf("\n\n--------------------------------------");
                        printf("\n            ADD ITEMS 'int' AND 'float'");    
                        printf("\n--------------------------------------\n");
-                       dictAddItem(&dictionary, "int", 1, 1);
-                       dictAddItem(&dictionary, "float", 2, 2);
+                       dictAddItem(&dictionary, "int", 1, 1, 1);
+                       dictAddItem(&dictionary, "float", 1, 2, 2);
                        dictPrint(dictionary);
                        printf("\n\n--------------------------------------");
                        printf("\n            EDIT ITEM 'int'");    

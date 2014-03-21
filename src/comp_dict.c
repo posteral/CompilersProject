@@ -4,13 +4,17 @@
 
 struct comp_dict_t* dictCreate(void)
 {
+    int i;
 	comp_dict_t *newDict;
 	newDict = (comp_dict_t*)malloc(sizeof(comp_dict_t));
- 	
+	newDict->start=NULL;
+	newDict->end=NULL;
+	 	
 	return newDict;
 }
 
-void dictAddItem(struct comp_dict_t **dictionary, const char *key, int code, int line){
+void dictAddItem(struct comp_dict_t **dictionary, const char *key, int type, int code, int line){
+
      if(*dictionary == NULL)
      {
                     *dictionary = dictCreate();
@@ -22,12 +26,13 @@ void dictAddItem(struct comp_dict_t **dictionary, const char *key, int code, int
          comp_dict_item_t *item = (comp_dict_item_t *)malloc(sizeof(comp_dict_item_t));
          item->key = key;
          item->code = code;
+         item->type = type;
          item->line_occurrences = listCreate();
          item->next = NULL;     
                  
          if ((*dictionary)->start == NULL) 
          {
-            printf("\nNOTE: First element added on the dictionary!"); 
+            //printf("\nNOTE: First element added on the dictionary!"); 
             (*dictionary)->start = item;      
             item->previous = NULL;
          }   
@@ -39,7 +44,7 @@ void dictAddItem(struct comp_dict_t **dictionary, const char *key, int code, int
               
          (*dictionary)->hash[dictGetHashValue(key)] = item;
          (*dictionary)->end = item; 
-         printf("\nNOTE: Element (%s,%d) added on the dictionary!", (*dictionary)->hash[dictGetHashValue(key)]->key, (*dictionary)->hash[dictGetHashValue(key)]->code);
+         //printf("\nNOTE: Element (%s,%d) added on the dictionary!", (*dictionary)->hash[dictGetHashValue(key)]->key, (*dictionary)->hash[dictGetHashValue(key)]->code);
      }
      
      listPush(&((*dictionary)->hash[dictGetHashValue(key)]->line_occurrences), line);
@@ -94,7 +99,7 @@ int dictRemoveItem(struct comp_dict_t *dictionary, const char *key){
 	  }
       
      listEmpty(removed_element->line_occurrences);         
-     free(removed_element);  
+     removed_element = NULL;
      //printf("\nNOTE: The element %s was removed!", key);  
      return 0;
 }
@@ -107,7 +112,7 @@ void dictPrint(struct comp_dict_t *dictionary)
                       printf("\nThe dictionary is empty!");
      while(printed_item != NULL)
      {
-      printf("\nKEY: %s\t VALUE: %d", printed_item->key, printed_item->code);
+      printf("\nKEY: %s\t VALUE: %d\t TYPE: %d", printed_item->key, printed_item->code, printed_item->type);
       struct comp_list_t_t *line_list = printed_item->line_occurrences;
       printf(" LINES:");
       while(line_list)
