@@ -13,6 +13,42 @@ struct comp_dict_t* dictCreate(void)
 	return newDict;
 }
 
+void dictSetData(struct comp_dict_t *dictionary, char *key)
+{
+     switch(dictionary->hash[dictGetHashValue(key)]->type){
+                              case IKS_SIMBOLO_INDEFINIDO: 
+                                   dictionary->hash[dictGetHashValue(key)]->data.undefined_type = key;
+                                   //printf("%s", dictionary->hash[dictGetHashValue(key)]->data.undefined_type);
+                                   break; 
+                              case IKS_SIMBOLO_LITERAL_INT:
+                                   dictionary->hash[dictGetHashValue(key)]->data.int_type = atoi(key);
+                                   //printf("%d", dictionary->hash[dictGetHashValue(key)]->data.int_type);
+                                   break;   
+                              case IKS_SIMBOLO_LITERAL_FLOAT:
+                                   dictionary->hash[dictGetHashValue(key)]->data.float_type = atof(key);
+                                   //printf("%f", dictionary->hash[dictGetHashValue(key)]->data.float_type);
+                                   break;
+                              case IKS_SIMBOLO_LITERAL_CHAR:
+                                   dictionary->hash[dictGetHashValue(key)]->data.char_type = *key;
+                                   //printf("%c", dictionary->hash[dictGetHashValue(key)]->data.char_type);
+                                   break;
+                              case IKS_SIMBOLO_LITERAL_STRING:
+                                   dictionary->hash[dictGetHashValue(key)]->data.string_type = key;
+                                   //printf("%s", dictionary->hash[dictGetHashValue(key)]->data.string_type);
+                                   break;
+                              case IKS_SIMBOLO_LITERAL_BOOL: 
+                                   if( strcmp(key, "true") == 0 )
+                                                  dictionary->hash[dictGetHashValue(key)]->data.bool_type = 1;
+                                   else
+                                                  dictionary->hash[dictGetHashValue(key)]->data.bool_type = 0;
+                                   break;
+                              case IKS_SIMBOLO_IDENTIFICADOR:
+                                   dictionary->hash[dictGetHashValue(key)]->data.identifier_type = key;
+                                   //printf("%s", dictionary->hash[dictGetHashValue(key)]->data.identifier_type);
+                                   break;
+     } 
+}
+
 void dictAddItem(struct comp_dict_t **dictionary, const char *key, int type, int code, int line){
 
      if(*dictionary == NULL)
@@ -48,6 +84,7 @@ void dictAddItem(struct comp_dict_t **dictionary, const char *key, int type, int
      }
      
      listPush(&((*dictionary)->hash[dictGetHashValue(key)]->line_occurrences), line);
+     dictSetData(*dictionary, key);
 }
 
 int dictEditItem(struct comp_dict_t *dictionary, const char *key, int new_code)
@@ -147,4 +184,3 @@ int dictGetHashValue(const char *key)
       hash_value = *key + 31 * hash_value;
     return hash_value % HASH_SIZE; 
 }
-

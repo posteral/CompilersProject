@@ -28,7 +28,7 @@ int main ()
                   case 1:
                        system("cls");
                        char *key = malloc(sizeof(char) * 100);;
-                       int value, line;
+                       int value, line, type;
                        printf("\n\n--------------------------------------");
                        printf("\n            ADD ITEMS");    
                        printf("\n--------------------------------------");
@@ -38,7 +38,9 @@ int main ()
                        scanf("%d", &value);
                        printf("\nLine? (integer) ");
                        scanf("%d", &line);
-                       dictAddItem(&dictionary, key, 1, value, line);
+                       printf("\nType? (integer)");
+                       scanf("%d", &type);
+                       dictAddItem(&dictionary, key, type, value, line);
                        printf("\nThe item was added!");
                        getch();
                        break; 
