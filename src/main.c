@@ -1,11 +1,13 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "comp_dict.h"
 #include "comp_list.h"
 #include "comp_tree.h"
 #include "parser.h"
 extern char *yytext;
+extern int yylineno;
 extern int getLineNumber();
-extern comp_dict_t *dictionary;
+extern comp_dict_t *dictionary = NULL;
 #define print_nome(TOKEN) printf("\n%d " #TOKEN " [%s]", getLineNumber(), yytext);
 #define print_nome2(TOKEN) printf("\n%d %c", getLineNumber(), TOKEN);
 
@@ -13,9 +15,7 @@ extern comp_dict_t *dictionary;
 
 void yyerror (char const *mensagem)
 {
-	printf("\n %s, %d", yytext);
-	fprintf (stderr, "%s\n", mensagem); //altere para que apareça a linha
-
+	fprintf (stderr, "%s: an error occurred with token %s, line %d\n", mensagem, yytext, yylineno);
 }
 
 /*int main (int argc, char **argv)
@@ -32,7 +32,7 @@ void yyerror (char const *mensagem)
 
 int main (int argc, char **argv)
 {
-	/*
+	
 	int token = 0;
 	while (token = yylex()) {
 		switch (token){
@@ -84,10 +84,18 @@ int main (int argc, char **argv)
 			case TOKEN_ERRO:  print_nome (TOKEN_ERRO); break;
 			default: printf ("<Invalid Token with code %d>\n", token); return 1; break;
     }
-  }*/
+  }
+	int resultado = yyparse();
   
-  int resultado = yyparse();
-  printf("\n resultado: %d", resultado);
+	if(resultado)
+		exit(IKS_SYNTAX_ERRO);
+	else
+		exit(IKS_SYNTAX_SUCESSO);
+ 
+	
+	
+	dictPrint(dictionary);	
+	dictEmpty(dictionary);
   
-  return resultado;
+	return resultado;
 }

@@ -44,9 +44,9 @@ input	{ dictAddItem(&dictionary, "input", IKS_SIMBOLO_INDEFINIDO, TK_PR_INPUT, y
 		  return TK_PR_INPUT;	}
 return	{ dictAddItem(&dictionary, "return", IKS_SIMBOLO_INDEFINIDO, TK_PR_RETURN, yylineno); 
 		  return TK_PR_RETURN;	}
-false	{ dictAddItem(&dictionary, "false", IKS_SIMBOLO_BOOL, TK_LIT_FALSE, yylineno); 
+false	{ dictAddItem(&dictionary, "false", IKS_SIMBOLO_LITERAL_BOOL, TK_LIT_FALSE, yylineno); 
 		  return TK_LIT_FALSE;	}
-true	{ dictAddItem(&dictionary, "true", IKS_SIMBOLO_BOOL, TK_LIT_TRUE, yylineno); 
+true	{ dictAddItem(&dictionary, "true", IKS_SIMBOLO_LITERAL_BOOL, TK_LIT_TRUE, yylineno); 
 		  return TK_LIT_TRUE;	}
 
 ","		{ return yytext[0]; }
@@ -84,7 +84,7 @@ true	{ dictAddItem(&dictionary, "true", IKS_SIMBOLO_BOOL, TK_LIT_TRUE, yylineno)
 
 {ID}		{ char *key = malloc(sizeof(char) * strlen(yytext));
 			  strcpy(key,yytext);
-			  dictAddItem(&dictionary, key, IKS_SIMBOLO_LITERAL_IDENTIFICADOR, TK_IDENTIFICADOR, yylineno);
+			  dictAddItem(&dictionary, key, IKS_SIMBOLO_IDENTIFICADOR, TK_IDENTIFICADOR, yylineno);
 			  return TK_IDENTIFICADOR;	}
 {INT}		{ char *key = malloc(sizeof(char) * strlen(yytext));
 			  strcpy(key,yytext);
@@ -118,7 +118,7 @@ true	{ dictAddItem(&dictionary, "true", IKS_SIMBOLO_BOOL, TK_LIT_TRUE, yylineno)
 "/*"	        { BEGIN( MLCOMMENT ); }
 "//"[^\r\n]*    { }
 <MLCOMMENT>"*/" { BEGIN( INITIAL ); }
-<MLCOMMENT>.    {  }
+<MLCOMMENT>.    { }
 <MLCOMMENT>\n	{ }
 .               { return TOKEN_ERRO; }
 

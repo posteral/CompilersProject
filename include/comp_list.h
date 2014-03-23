@@ -2,6 +2,7 @@
 #define COMP_LIST_H
 
 typedef struct comp_list_t_t {
+	int symbol_type;
 	int data;
 	struct comp_list_t_t* next;
 } comp_list_t;
