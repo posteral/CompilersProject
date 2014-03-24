@@ -49,7 +49,7 @@
 	program : global_var_declaration program | function_declaration program | ;
 	
 	global_var_declaration : 	var_declaration ';' | vector_declaration ';';
-	var_declaration :	var_type TK_IDENTIFICADOR {$2 = 0;} {printf("var_declaration");}; 
+	var_declaration :	var_type TK_IDENTIFICADOR {$2 = 0;} {}; 
 	vector_declaration :		var_type TK_IDENTIFICADOR '[' TK_LIT_INT ']';
 	var_type : TK_PR_INT | TK_PR_FLOAT | TK_PR_BOOL | TK_PR_CHAR | TK_PR_STRING ;
 	
@@ -61,8 +61,10 @@
 	local_var_declaration : var_declaration ';' local_var_declaration | ;	
 	
 	command_block: '{' command_sequence '}';
-	command_sequence : command | command';' command_sequence | ;
-	command: command_block | func_call | control_flow | assignment | input | output | return | {printf("(comando)");}; 
+	command_sequence : statement | statement ';' command_sequence;
+	statement : non_void_command | void_command ;
+	non_void_command : command_block | func_call | control_flow | assignment | input | output | return {}; 
+	void_command : ;
 	assignment : TK_IDENTIFICADOR '=' expression | TK_IDENTIFICADOR '[' expression ']' '=' expression ;
 	input : TK_PR_INPUT expression ;
 	output : TK_PR_OUTPUT non_void_expression_list ;
@@ -74,10 +76,10 @@
 	non_empty_arg_list : arg ',' non_empty_arg_list | arg; 
 	arg: TK_LIT_INT | TK_LIT_FLOAT | TK_LIT_TRUE | TK_LIT_FALSE | TK_LIT_CHAR | TK_LIT_STRING | TK_IDENTIFICADOR ;
 	
-	control_flow :	TK_PR_IF '(' expression ')' TK_PR_THEN command |
-					TK_PR_IF '(' expression ')' TK_PR_THEN command TK_PR_ELSE command |  
-					TK_PR_WHILE '(' expression ')' TK_PR_DO command |
-					TK_PR_DO command TK_PR_WHILE '(' expression ')' ;
+	control_flow :	TK_PR_IF '(' expression ')' TK_PR_THEN non_void_command |
+					TK_PR_IF '(' expression ')' TK_PR_THEN non_void_command TK_PR_ELSE non_void_command |  
+					TK_PR_WHILE '(' expression ')' TK_PR_DO non_void_command |
+					TK_PR_DO non_void_command TK_PR_WHILE '(' expression ')' ;
 						
 	expression : 		TK_IDENTIFICADOR |
 						TK_IDENTIFICADOR '[' expression ']' |

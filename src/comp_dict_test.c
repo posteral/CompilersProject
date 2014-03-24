@@ -1,4 +1,7 @@
 #include "comp_dict.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
 
 int main ()
 {
@@ -38,11 +41,11 @@ int main ()
                        scanf("%d", &value);
                        printf("\nLine? (integer) ");
                        scanf("%d", &line);
-                       printf("\nType? (integer)");
+                       printf("\nType? (integer) ");
                        scanf("%d", &type);
                        dictAddItem(&dictionary, key, type, value, line);
                        printf("\nThe item was added!");
-                       getch();
+                       //getch();
                        break; 
                   case 2:
                        system("cls");
@@ -53,7 +56,7 @@ int main ()
                        scanf("%s", key);
                        dictRemoveItem(dictionary, key);
                        printf("\nThe item was removed!");
-                       getch();
+                       //getch();
                        break; 
                   case 3:
                        system("cls");
@@ -66,7 +69,7 @@ int main ()
                        scanf("%d", &value);
                        dictEditItem(dictionary, key, value);
                        printf("\nThe item was edited!"); 
-                       getch();
+                       //getch();
                        break;
                   case 4:
                        system("cls");
@@ -74,12 +77,12 @@ int main ()
                        printf("\n            PRINT DICTIONARY");    
                        printf("\n--------------------------------------");
                        dictPrint(dictionary);
-                       getch();
+                       //getch();
                        break;
                   case 5:    
                        dictEmpty(dictionary);
                        printf("\nDictionary was emptied!");
-                       getch();
+                       //getch();
                        break;
                   case 6:
                        system("cls");
@@ -99,11 +102,11 @@ int main ()
                        printf("\n--------------------------------------\n");
                        dictRemoveItem(dictionary, "int");
                        dictPrint(dictionary);
-                       getch();
+                       //getch();
                        break;                       
                   default:
                           printf("\nInvalid option! Please enter numbers from 0 to 5.");
-                          getch();
+                          //getch();
                        
                   }
     }

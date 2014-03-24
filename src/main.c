@@ -7,7 +7,7 @@
 extern char *yytext;
 extern int yylineno;
 extern int getLineNumber();
-extern comp_dict_t *dictionary = NULL;
+extern comp_dict_t *dictionary;
 #define print_nome(TOKEN) printf("\n%d " #TOKEN " [%s]", getLineNumber(), yytext);
 #define print_nome2(TOKEN) printf("\n%d %c", getLineNumber(), TOKEN);
 
@@ -32,7 +32,7 @@ void yyerror (char const *mensagem)
 
 int main (int argc, char **argv)
 {
-	
+	/*
 	int token = 0;
 	while (token = yylex()) {
 		switch (token){
@@ -85,16 +85,15 @@ int main (int argc, char **argv)
 			default: printf ("<Invalid Token with code %d>\n", token); return 1; break;
     }
   }
+  * */
+   
 	int resultado = yyparse();
   
 	if(resultado)
 		exit(IKS_SYNTAX_ERRO);
 	else
-		exit(IKS_SYNTAX_SUCESSO);
- 
+		exit(IKS_SYNTAX_SUCESSO);	
 	
-	
-	dictPrint(dictionary);	
 	dictEmpty(dictionary);
   
 	return resultado;

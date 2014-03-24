@@ -28,11 +28,11 @@ typedef union data_type {
 typedef struct comp_dict_item_t {
         struct comp_dict_item_t* next;
         struct comp_dict_item_t* previous;
-        struct comp_list_t_t *line_occurrences;
-        union data_type data;
-        int		type;
-        int		code;            
-        char	key[MAX_KEY_SIZE];  
+        struct comp_list_t_t*    line_occurrences;
+        union  data_type         data;
+        int                      type;
+        int                      code;            
+        char                     key[MAX_KEY_SIZE];  
 } comp_dict_item_t;
 
 typedef struct comp_dict_t {
@@ -43,12 +43,12 @@ typedef struct comp_dict_t {
 
 struct comp_dict_t* dictCreate();
 void                dictSetData(struct comp_dict_t *dictionary, char *key);
-void                dictAddItem(struct comp_dict_t **dictionary, const char *key, int type, int code, int line);
-int                 dictEditItem(struct comp_dict_t *dictionary, const char *key, int new_code);
-int                 dictRemoveItem(struct comp_dict_t *dictionary, const char *key);
+void                dictAddItem(struct comp_dict_t **dictionary, char *key, int type, int code, int line);
+int                 dictEditItem(struct comp_dict_t *dictionary, char *key, int new_code);
+int                 dictRemoveItem(struct comp_dict_t *dictionary, char *key);
+void                dictPrintElementData(comp_dict_t *dictionary, char *key, int type);
 void                dictPrint(struct comp_dict_t *dictionary);
 void                dictEmpty(struct comp_dict_t *dictionary);
-int                 dictGetHashValue(const char *key);
-
+int                 dictGetHashValue(char *key);
 
 #endif
