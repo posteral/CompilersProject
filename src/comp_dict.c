@@ -55,7 +55,7 @@ void dictSetData(struct comp_dict_t *dictionary, char *key)
 
 void dictAddItem(struct comp_dict_t **dictionary, char *key, int type, int code, int line){
 
-	 return;
+	 //return;
      if(*dictionary == NULL)
      {
                     *dictionary = dictCreate();
@@ -212,6 +212,7 @@ void dictEmpty(struct comp_dict_t *dictionary)
 
 int dictGetHashValue(char *key)
 {
+	//return 0;
     int hash_value;
     for (hash_value = 0; *key != '\0'; key++)
       hash_value = *key + 31 * hash_value;
