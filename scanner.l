@@ -3,15 +3,14 @@
 %option   yylineno
 %{
 #include "comp_dict.h"
-comp_dict_t *dictionary;
 #include "parser.h" //arquivo automaticamente gerado pelo bison
-
+comp_dict_t *dictionary;
 %}
 
 /* Regular Expressions*/
 ID          [_a-zA-Z][_a-zA-Z0-9]*
-INT         -?([0-9]+)
-FLOAT       -?([0-9]+"."[0-9]+)
+INT         ([0-9]+)
+FLOAT       ([0-9]+"."[0-9]+)
 CHAR        ("\'")[^\']?("\'")
 STRING      ("\"")[^\"]*("\"")
 WHITESPACE  [ \t\v\f]*
