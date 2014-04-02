@@ -33,6 +33,7 @@ void yyerror (char const *mensagem)
 
 int main (int argc, char **argv)
 {
+
 	/*
 	int token = 0;
 	while (token = yylex()) {
@@ -97,5 +98,14 @@ int main (int argc, char **argv)
 	
 	dictEmpty(dictionary);
   
+	return resultado;
+
+  	gv_init(NULL);
+	int resultado = yyparse();
+	gv_close();
+	if(resultado)
+		exit(IKS_SYNTAX_ERRO);
+	else
+		exit(IKS_SYNTAX_SUCESSO);
 	return resultado;
 }
