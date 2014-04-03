@@ -2,25 +2,33 @@
 #include <stdlib.h>
 #include "comp_tree.h"
 
-struct comp_tree_t* treeCreateNode(int children, int *data)
+/*struct comp_tree_t* treeCreateNode(int nbChildren, int *data)
 {
       comp_tree_t *new_node = (comp_tree_t*)calloc(1,sizeof(comp_tree_t)) ;
       new_node->data = data;
-      new_node->nbChildren = children;
-      new_node->children = (comp_tree_t**)calloc(children, sizeof(comp_tree_t*));
+      new_node->nbChildren = nbChildren;
+      new_node->children = (comp_tree_t**)calloc(nbChildren, sizeof(comp_tree_t*));
       return new_node;
+}*/
+
+comp_tree_t* treeCreateNode(int nbChildren, int type, comp_dict_item_t* symbol){
+	
+	comp_tree_t *newNode = (comp_tree_t*)malloc(sizeof(comp_tree_t));
+	newNode->type   = type;
+	newNode->symbol = symbol;
+	return newNode;
 }
 
-int treeAppendNode(comp_tree_t *root, int *data)
+int treeAppendNode(comp_tree_t *root, comp_tree_t *child)
 {
     root->nbChildren++;
     root->children = (comp_tree_t**)realloc(root->children,(root->nbChildren)*sizeof(comp_tree_t*));
-    root->children[root->nbChildren-1] = treeCreateNode(0,data);
-    printf("\nNOTE: Node with data %d was appended!", *root->children[root->nbChildren-1]->data);
+    root->children[root->nbChildren-1] = child;
     return root->nbChildren - 1;
 }
 
-int treeInsertNode(comp_tree_t *root, int idx, int *data)
+
+/*int treeInsertNode(comp_tree_t *root, int idx, int *data)
 {
     unsigned i;
     root->nbChildren++;
@@ -38,6 +46,7 @@ int treeInsertNode(comp_tree_t *root, int idx, int *data)
     }
     return i ;
 }
+* */
 
 void treeEditNode(comp_tree_t *root, int idx, int *new_data)
 {

@@ -1,6 +1,7 @@
 %{
 //#define YYDEBUG 1 
 #include <stdio.h>
+#include "iks_ast.h"
 //yydebug = 1;
 %}
 %require "2.5"
@@ -48,6 +49,9 @@
 
 %%
 	/* Regras (e ações) da gramática da Linguagem K */
+	s: program {	$$ = treeCreateNode(1, IKS_AST_PROGRAMA, NULL);
+					treeAppendNode($$, $0);
+				};
 	
 	program : global_var_declaration program | function_declaration program | ;
 	

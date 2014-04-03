@@ -1,15 +1,21 @@
 #ifndef COMP_TREE_H
 #define COMP_TREE_H
+#include "comp_dict.h"
 
 typedef struct comp_tree_t {
 	int *data;
+	int type;
+	comp_dict_item_t* symbol;
 	int nbChildren;
 	struct comp_tree_t **children;
 } comp_tree_t;
 
-struct comp_tree_t* treeCreateNode(int children, int *data);
-int treeAppendNode(comp_tree_t *root, int *data);
-int treeInsertNode(comp_tree_t *root, int idx, int *data);
+
+
+//struct comp_tree_t* treeCreateNode(int nbChildren, int *data);
+comp_tree_t* treeCreateNode(int nbChildren, int type, comp_dict_item_t* symbol);
+int treeAppendNode(comp_tree_t *root, comp_tree_t *child);
+//int treeInsertNode(comp_tree_t *root, int idx, int *data);
 void treeEditNode(comp_tree_t *root, int idx, int *new_data);
 void treeDeleteNode(comp_tree_t *root, int idx);
 void treeFree(comp_tree_t *tree);

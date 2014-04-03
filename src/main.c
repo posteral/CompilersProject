@@ -87,7 +87,7 @@ int main (int argc, char **argv)
 			default: printf ("<Invalid Token with code %d>\n", token); return 1; break;
     }
   }
-	dictPrint(dictionary);
+	//dictPrint(dictionary);
 
   	gv_init(NULL);
 	int resultado = yyparse();
