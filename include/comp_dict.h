@@ -5,7 +5,7 @@
 
 #define HASH_FUNCTION 101
 #define MAX_HASH_TABLE_SIZE 10000
-#define MAX_KEY_SIZE 1000
+#define MAX_KEY_SIZE 10000
 
 #define IKS_SIMBOLO_INDEFINIDO 0
 #define IKS_SIMBOLO_LITERAL_INT 1
@@ -49,6 +49,6 @@ int                 dictRemoveItem(struct comp_dict_t *dictionary, char *key);
 void                dictPrintElementData(comp_dict_t *dictionary, char *key, int type);
 void                dictPrint(struct comp_dict_t *dictionary);
 void                dictEmpty(struct comp_dict_t *dictionary);
-int                 dictGetHashValue(char *key);
+int   dictGetHashValue(char *s);
 
 #endif

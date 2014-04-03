@@ -81,33 +81,35 @@ true	{ dictAddItem(&dictionary, "true", IKS_SIMBOLO_LITERAL_BOOL, TK_LIT_TRUE, y
 "||" 	{ dictAddItem(&dictionary, "||", IKS_SIMBOLO_INDEFINIDO, TK_OC_OR, yylineno); 
 		  return TK_OC_OR;	}
 
-{ID}		{ char *key = malloc(sizeof(char) * strlen(yytext));
-			  strcpy(key,yytext);
+{ID}		{ char *key = malloc(sizeof(char) *strlen(yytext) + 1);
+			  strcpy(key,yytext);			  
 			  dictAddItem(&dictionary, key, IKS_SIMBOLO_IDENTIFICADOR, TK_IDENTIFICADOR, yylineno);
 			  return TK_IDENTIFICADOR;	}
-{INT}		{ char *key = malloc(sizeof(char) * strlen(yytext));
+{INT}		{ char *key = malloc(sizeof(char) * strlen(yytext) + 1);
 			  strcpy(key,yytext);
 			  dictAddItem(&dictionary, key, IKS_SIMBOLO_LITERAL_INT, TK_LIT_INT, yylineno);
 			  return TK_LIT_INT;		}
-{FLOAT}		{ char *key = malloc(sizeof(char) * strlen(yytext));
+{FLOAT}		{ char *key = malloc(sizeof(char) * strlen(yytext) + 1);
 			  strcpy(key,yytext);
 			  dictAddItem(&dictionary, key, IKS_SIMBOLO_LITERAL_FLOAT, TK_LIT_FLOAT, yylineno);
 			  return TK_LIT_FLOAT;		}
-{CHAR}		{ char *key = malloc(sizeof(char) * strlen(yytext));
-			  strcpy(key,yytext);
-			  char *untreated_token = key;
-			  char *treated_token = untreated_token;
-			  memmove(treated_token, untreated_token+1, strlen(untreated_token)-2);
-			  treated_token[strlen(treated_token)-1] = 0;	
-			  dictAddItem(&dictionary, key, IKS_SIMBOLO_LITERAL_CHAR, TK_LIT_CHAR, yylineno);
-			  return TK_LIT_CHAR;		}
-{STRING}	{ char *key = malloc(sizeof(char) * strlen(yytext));
+{CHAR}		{ char *key = malloc(sizeof(char) * strlen(yytext) + 1);
 			  strcpy(key,yytext);
 			  char *untreated_token = key;
 			  char *treated_token = untreated_token;
 			  memmove(treated_token, untreated_token+1, strlen(untreated_token)-2);
 			  treated_token[strlen(treated_token)-1] = 0;
-			  dictAddItem(&dictionary, key, IKS_SIMBOLO_LITERAL_STRING, TK_LIT_STRING, yylineno);
+			  //printf("\n be added: %s", key);
+			  //dictAddItem(&dictionary, key, IKS_SIMBOLO_LITERAL_CHAR, TK_LIT_CHAR, yylineno);
+			  return TK_LIT_CHAR;		}
+{STRING}	{ char *key = malloc(sizeof(char) * strlen(yytext) + 1);
+			  strcpy(key,yytext);
+			  char *untreated_token = key;
+			  char *treated_token = untreated_token;
+			  memmove(treated_token, untreated_token+1, strlen(untreated_token)-2);
+			  treated_token[strlen(treated_token)-1] = 0;
+			  //printf("\n be added: %s", key);
+			  //dictAddItem(&dictionary, key, IKS_SIMBOLO_LITERAL_STRING, TK_LIT_STRING, yylineno);
 			  return TK_LIT_STRING;		}
 
 " "		{ }

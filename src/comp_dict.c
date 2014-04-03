@@ -62,6 +62,9 @@ void dictAddItem(struct comp_dict_t **dictionary, char *key, int type, int code,
    	 }   	 
 
      /*if key hasn't already been added: */
+     printf("\nTrying to access hash[%d]", dictGetHashValue(key));
+     //if(dictGetHashValue(key)<0)
+	//	return;
      if( (*dictionary)->hash[dictGetHashValue(key)] == NULL )
      {	 
          comp_dict_item_t *item = (comp_dict_item_t *)malloc(sizeof(comp_dict_item_t));
@@ -212,9 +215,16 @@ void dictEmpty(struct comp_dict_t *dictionary)
 
 int dictGetHashValue(char *key)
 {
-	//return 0;
-    int hash_value;
-    for (hash_value = 0; *key != '\0'; key++)
-      hash_value = *key + 31 * hash_value;
-    return hash_value % HASH_FUNCTION; 
+    long int hash_value;	
+    int i = 0;
+    for (hash_value = 0; *key != '\0'; key++){
+		//printf("\n*key = %d", *key);
+      hash_value = *key +  hash_value;
+      //printf("\nhash_value = %d", hash_value);
+      i++;
+	}
+      
+    //printf("\nHash value: %d, i : %d, return %d", hash_value, i, hash_value % HASH_FUNCTION);
+    return hash_value % HASH_FUNCTION;
 }
+

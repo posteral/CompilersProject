@@ -34,7 +34,7 @@ void yyerror (char const *mensagem)
 int main (int argc, char **argv)
 {
 
-	/*
+	
 	int token = 0;
 	while (token = yylex()) {
 		switch (token){
@@ -87,18 +87,7 @@ int main (int argc, char **argv)
 			default: printf ("<Invalid Token with code %d>\n", token); return 1; break;
     }
   }
-  * */
-   
-	int resultado = yyparse();
-  
-	if(resultado)
-		exit(IKS_SYNTAX_ERRO);
-	else
-		exit(IKS_SYNTAX_SUCESSO);	
-	
-	dictEmpty(dictionary);
-  
-	return resultado;
+	dictPrint(dictionary);
 
   	gv_init(NULL);
 	int resultado = yyparse();
@@ -107,5 +96,7 @@ int main (int argc, char **argv)
 		exit(IKS_SYNTAX_ERRO);
 	else
 		exit(IKS_SYNTAX_SUCESSO);
+		
+	
 	return resultado;
 }
