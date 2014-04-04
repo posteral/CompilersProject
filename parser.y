@@ -1,11 +1,24 @@
 %{
 //#define YYDEBUG 1 
 #include <stdio.h>
-#include "iks_ast.h"
+#include "main.h"
+
 //yydebug = 1;
 %}
 %require "2.5"
 %error-verbose
+
+%union 
+{ 
+  struct comp_dict_item_t *symbol; 
+};
+
+%union
+{
+ struct comp_tree_t *tree_node;
+};
+
+
 /* Declaração dos tokens da gramática da Linguagem K */
 %token TK_PR_INT
 %token TK_PR_FLOAT
@@ -26,14 +39,31 @@
 %token TK_OC_NE
 %token TK_OC_AND
 %token TK_OC_OR
-%token TK_LIT_INT
-%token TK_LIT_FLOAT
-%token TK_LIT_FALSE
-%token TK_LIT_TRUE
-%token TK_LIT_CHAR
-%token TK_LIT_STRING
-%token TK_IDENTIFICADOR
+%token<symbol> TK_LIT_INT
+%token<symbol> TK_LIT_FLOAT
+%token<symbol> TK_LIT_FALSE
+%token<symbol> TK_LIT_TRUE
+%token<symbol> TK_LIT_CHAR
+%token<symbol> TK_LIT_STRING
+%token<symbol> TK_IDENTIFICADOR
 %token TOKEN_ERRO
+
+%type<tree_node> s
+%type<tree_node> program
+%type<tree_node> function_declaration
+%type<tree_node> command_block
+%type<tree_node> command_sequence
+%type<tree_node> non_void_command
+%type<tree_node> assignment
+%type<tree_node> input
+%type<tree_node> output
+%type<tree_node> non_void_expression_list
+%type<tree_node> return
+%type<tree_node> control_flow
+%type<tree_node> expression
+%type<tree_node> func_call
+
+%type<symbol> header
 
 %left TK_OC_OR
 %left TK_OC_AND
@@ -49,19 +79,46 @@
 
 %%
 	/* Regras (e ações) da gramática da Linguagem K */
-	s: program {	$$ = treeCreateNode(1, IKS_AST_PROGRAMA, NULL);
-					treeAppendNode($$, $0);
-				};
+	s: program 
+		{	
+			$$ = treeCreateNode(1, IKS_AST_PROGRAMA, NULL);
+			printf("\n%p %p", $$, $1);
+			treeAppendNode($$, $1);
+			gv_declare(IKS_AST_PROGRAMA, (const void*)$$, NULL);			
+			gv_connect($$, $1);			
+		};
 	
-	program : global_var_declaration program | function_declaration program | ;
+	program : global_var_declaration program
+		{
+			$$ = $2;
+			printf("\n %p", $2);
+		} 
+			| function_declaration program
+		{
+			printf("\n what about this? %p", $1);
+			$$ = $1;		
+		};
+			|
+		{
+			printf("\ndoes it ever come here?");
+			$$ = NULL;
+		} ;
 	
 	global_var_declaration : 	var_declaration ';' | vector_declaration ';';
-	var_declaration :	var_type TK_IDENTIFICADOR {$2 = 0;} {}; 
+	var_declaration :	var_type TK_IDENTIFICADOR { }; 
 	vector_declaration :		var_type TK_IDENTIFICADOR '[' expression ']';
 	var_type : TK_PR_INT | TK_PR_FLOAT | TK_PR_BOOL | TK_PR_CHAR | TK_PR_STRING ;
 	
-	function_declaration : header local_var_declaration command_block ;
-	header : var_type TK_IDENTIFICADOR '(' parameter_list ')' ;
+	function_declaration : header local_var_declaration command_block 
+		{		
+			printf("\nfunction_declaration %p", $1);	
+			//$$ = treeCreateNode(2, IKS_AST_FUNCAO, $1);
+			//treeAppendNode($$,$3);
+			//printf("%s", $$->symbol->key);
+			//gv_declare(IKS_AST_FUNCAO, (const void*)$$, NULL);// ((comp_dict_item_t*)$$->symbol)->key);
+			//gv_connect($$, $3);
+		};
+	header : var_type TK_IDENTIFICADOR '(' parameter_list ')' { $$ = $2; };
 	parameter_list : non_void_parameter_list | ;
 	non_void_parameter_list : parameter ',' non_void_parameter_list | parameter ;
 	parameter : var_type TK_IDENTIFICADOR ;	
@@ -89,10 +146,21 @@
 					TK_PR_WHILE '(' expression ')' TK_PR_DO non_void_command |
 					TK_PR_DO non_void_command TK_PR_WHILE '(' expression ')' ;
 						
-	expression : 		TK_IDENTIFICADOR |
-						TK_IDENTIFICADOR '[' expression ']' |
-						TK_LIT_INT    |
-						TK_LIT_FLOAT  |
+	expression : 		TK_IDENTIFICADOR 
+						{
+							printf("\nidentificador %p", $1);
+							$$ = treeCreateNode(1, IKS_AST_IDENTIFICADOR, NULL);							
+							//gv_declare(IKS_AST_IDENTIFICADOR, (const void*)$$, ((comp_dict_item_t*)$1)->data.identifier_type);
+						} 
+						| TK_IDENTIFICADOR '[' expression ']'
+						| TK_LIT_INT
+						{
+							printf("\nTK_LIT_INT %p", $1);
+							//$$ = arvoreCriaNodo(1,IKS_AST_LITERAL);
+							//$$->pt_tabela = $1;
+							//gv_declare(IKS_AST_LITERAL,(const void*)$$,((comp_dict_item_t*)$$->pt_tabela)->chave);
+						}
+						| TK_LIT_FLOAT  |
 						TK_LIT_FALSE  |
 						TK_LIT_TRUE   |
 						TK_LIT_CHAR   |

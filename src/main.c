@@ -1,9 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "comp_dict.h"
-#include "comp_list.h"
-#include "comp_tree.h"
-#include "parser.h"
+#include "main.h"
 extern char *yytext;
 extern int yylineno;
 extern int getLineNumber();
@@ -34,7 +31,7 @@ void yyerror (char const *mensagem)
 int main (int argc, char **argv)
 {
 
-	
+	/*
 	int token = 0;
 	while (token = yylex()) {
 		switch (token){
@@ -87,9 +84,11 @@ int main (int argc, char **argv)
 			default: printf ("<Invalid Token with code %d>\n", token); return 1; break;
     }
   }
+  * 
+  * */
 	//dictPrint(dictionary);
 
-  	gv_init(NULL);
+  	gv_init("teste.dot");
 	int resultado = yyparse();
 	gv_close();
 	if(resultado)
@@ -100,3 +99,4 @@ int main (int argc, char **argv)
 	
 	return resultado;
 }
+

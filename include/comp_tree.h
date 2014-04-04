@@ -10,7 +10,7 @@ typedef struct comp_tree_t {
 	struct comp_tree_t **children;
 } comp_tree_t;
 
-
+comp_tree_t *ast;
 
 //struct comp_tree_t* treeCreateNode(int nbChildren, int *data);
 comp_tree_t* treeCreateNode(int nbChildren, int type, comp_dict_item_t* symbol);

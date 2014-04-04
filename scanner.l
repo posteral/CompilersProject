@@ -17,35 +17,35 @@ WHITESPACE  [ \t\v\f]*
 
 /*RULES*/
 %%
-int		{ dictAddItem(&dictionary, "int", IKS_SIMBOLO_INDEFINIDO, TK_PR_INT, yylineno); 
+int		{ yylval.symbol = dictAddItem(&dictionary, "int", IKS_SIMBOLO_INDEFINIDO, TK_PR_INT, yylineno); 
 			return TK_PR_INT;	}
-float	{ dictAddItem(&dictionary, "float", IKS_SIMBOLO_INDEFINIDO, TK_PR_FLOAT, yylineno);
+float	{ yylval.symbol = dictAddItem(&dictionary, "float", IKS_SIMBOLO_INDEFINIDO, TK_PR_FLOAT, yylineno);
 		  return TK_PR_FLOAT;	}
-bool	{ dictAddItem(&dictionary, "bool", IKS_SIMBOLO_INDEFINIDO, TK_PR_BOOL, yylineno);
+bool	{ yylval.symbol = dictAddItem(&dictionary, "bool", IKS_SIMBOLO_INDEFINIDO, TK_PR_BOOL, yylineno);
 		  return TK_PR_BOOL;	}
-char	{ dictAddItem(&dictionary, "char", IKS_SIMBOLO_INDEFINIDO, TK_PR_CHAR, yylineno);
+char	{ yylval.symbol = dictAddItem(&dictionary, "char", IKS_SIMBOLO_INDEFINIDO, TK_PR_CHAR, yylineno);
 		  return TK_PR_CHAR;	}
-string	{ dictAddItem(&dictionary, "string", IKS_SIMBOLO_INDEFINIDO, TK_PR_STRING, yylineno);
+string	{ yylval.symbol = dictAddItem(&dictionary, "string", IKS_SIMBOLO_INDEFINIDO, TK_PR_STRING, yylineno);
 		  return TK_PR_STRING;	}
-if		{ dictAddItem(&dictionary, "if", IKS_SIMBOLO_INDEFINIDO, TK_PR_IF, yylineno);
+if		{ yylval.symbol = dictAddItem(&dictionary, "if", IKS_SIMBOLO_INDEFINIDO, TK_PR_IF, yylineno);
 		  return TK_PR_IF;		}
-then	{ dictAddItem(&dictionary, "then", IKS_SIMBOLO_INDEFINIDO, TK_PR_THEN, yylineno);
+then	{ yylval.symbol = dictAddItem(&dictionary, "then", IKS_SIMBOLO_INDEFINIDO, TK_PR_THEN, yylineno);
 		  return TK_PR_THEN;	}
-else	{ dictAddItem(&dictionary, "else", IKS_SIMBOLO_INDEFINIDO, TK_PR_ELSE, yylineno); 
+else	{ yylval.symbol = dictAddItem(&dictionary, "else", IKS_SIMBOLO_INDEFINIDO, TK_PR_ELSE, yylineno); 
 		  return TK_PR_ELSE;	}
-while	{ dictAddItem(&dictionary, "while", IKS_SIMBOLO_INDEFINIDO, TK_PR_WHILE, yylineno); 
+while	{ yylval.symbol = dictAddItem(&dictionary, "while", IKS_SIMBOLO_INDEFINIDO, TK_PR_WHILE, yylineno); 
 		  return TK_PR_WHILE;	}
-do		{ dictAddItem(&dictionary, "do", IKS_SIMBOLO_INDEFINIDO, TK_PR_DO, yylineno);
+do		{ yylval.symbol = dictAddItem(&dictionary, "do", IKS_SIMBOLO_INDEFINIDO, TK_PR_DO, yylineno);
 		  return TK_PR_DO;		}
-output	{ dictAddItem(&dictionary, "output", IKS_SIMBOLO_INDEFINIDO, TK_PR_OUTPUT, yylineno);
+output	{ yylval.symbol = dictAddItem(&dictionary, "output", IKS_SIMBOLO_INDEFINIDO, TK_PR_OUTPUT, yylineno);
 		  return TK_PR_OUTPUT;	}
-input	{ dictAddItem(&dictionary, "input", IKS_SIMBOLO_INDEFINIDO, TK_PR_INPUT, yylineno); 
+input	{ yylval.symbol = dictAddItem(&dictionary, "input", IKS_SIMBOLO_INDEFINIDO, TK_PR_INPUT, yylineno); 
 		  return TK_PR_INPUT;	}
-return	{ dictAddItem(&dictionary, "return", IKS_SIMBOLO_INDEFINIDO, TK_PR_RETURN, yylineno); 
+return	{ yylval.symbol = dictAddItem(&dictionary, "return", IKS_SIMBOLO_INDEFINIDO, TK_PR_RETURN, yylineno); 
 		  return TK_PR_RETURN;	}
-false	{ dictAddItem(&dictionary, "false", IKS_SIMBOLO_LITERAL_BOOL, TK_LIT_FALSE, yylineno); 
+false	{ yylval.symbol = dictAddItem(&dictionary, "false", IKS_SIMBOLO_LITERAL_BOOL, TK_LIT_FALSE, yylineno); 
 		  return TK_LIT_FALSE;	}
-true	{ dictAddItem(&dictionary, "true", IKS_SIMBOLO_LITERAL_BOOL, TK_LIT_TRUE, yylineno); 
+true	{ yylval.symbol = dictAddItem(&dictionary, "true", IKS_SIMBOLO_LITERAL_BOOL, TK_LIT_TRUE, yylineno); 
 		  return TK_LIT_TRUE;	}
 
 ","		{ return yytext[0]; }
@@ -68,30 +68,30 @@ true	{ dictAddItem(&dictionary, "true", IKS_SIMBOLO_LITERAL_BOOL, TK_LIT_TRUE, y
 "&"		{ return yytext[0]; }
 "$"		{ return yytext[0]; }
 
-"<="	{ dictAddItem(&dictionary, "<=", IKS_SIMBOLO_INDEFINIDO, TK_OC_LE, yylineno); 
+"<="	{ yylval.symbol = dictAddItem(&dictionary, "<=", IKS_SIMBOLO_INDEFINIDO, TK_OC_LE, yylineno); 
 		  return TK_OC_LE;	}
-">="	{ dictAddItem(&dictionary, ">=", IKS_SIMBOLO_INDEFINIDO, TK_OC_GE, yylineno);
+">="	{ yylval.symbol = dictAddItem(&dictionary, ">=", IKS_SIMBOLO_INDEFINIDO, TK_OC_GE, yylineno);
 		  return TK_OC_GE;	}
-"=="	{ dictAddItem(&dictionary, "==", IKS_SIMBOLO_INDEFINIDO, TK_OC_EQ, yylineno); 
+"=="	{ yylval.symbol = dictAddItem(&dictionary, "==", IKS_SIMBOLO_INDEFINIDO, TK_OC_EQ, yylineno); 
 		  return TK_OC_EQ;	}
-"!=" 	{ dictAddItem(&dictionary, "!=", IKS_SIMBOLO_INDEFINIDO, TK_OC_NE, yylineno); 
+"!=" 	{ yylval.symbol = dictAddItem(&dictionary, "!=", IKS_SIMBOLO_INDEFINIDO, TK_OC_NE, yylineno); 
 		  return TK_OC_NE;	}
-"&&"	{ dictAddItem(&dictionary, "&&", IKS_SIMBOLO_INDEFINIDO, TK_OC_AND, yylineno); 
+"&&"	{ yylval.symbol = dictAddItem(&dictionary, "&&", IKS_SIMBOLO_INDEFINIDO, TK_OC_AND, yylineno); 
 		  return TK_OC_AND; }
-"||" 	{ dictAddItem(&dictionary, "||", IKS_SIMBOLO_INDEFINIDO, TK_OC_OR, yylineno); 
+"||" 	{ yylval.symbol = dictAddItem(&dictionary, "||", IKS_SIMBOLO_INDEFINIDO, TK_OC_OR, yylineno); 
 		  return TK_OC_OR;	}
 
 {ID}		{ char *key = malloc(sizeof(char) *strlen(yytext) + 1);
 			  strcpy(key,yytext);			  
-			  dictAddItem(&dictionary, key, IKS_SIMBOLO_IDENTIFICADOR, TK_IDENTIFICADOR, yylineno);
+			  yylval.symbol = dictAddItem(&dictionary, key, IKS_SIMBOLO_IDENTIFICADOR, TK_IDENTIFICADOR, yylineno);
 			  return TK_IDENTIFICADOR;	}
 {INT}		{ char *key = malloc(sizeof(char) * strlen(yytext) + 1);
 			  strcpy(key,yytext);
-			  dictAddItem(&dictionary, key, IKS_SIMBOLO_LITERAL_INT, TK_LIT_INT, yylineno);
+			  yylval.symbol = dictAddItem(&dictionary, key, IKS_SIMBOLO_LITERAL_INT, TK_LIT_INT, yylineno);
 			  return TK_LIT_INT;		}
 {FLOAT}		{ char *key = malloc(sizeof(char) * strlen(yytext) + 1);
 			  strcpy(key,yytext);
-			  dictAddItem(&dictionary, key, IKS_SIMBOLO_LITERAL_FLOAT, TK_LIT_FLOAT, yylineno);
+			  yylval.symbol = dictAddItem(&dictionary, key, IKS_SIMBOLO_LITERAL_FLOAT, TK_LIT_FLOAT, yylineno);
 			  return TK_LIT_FLOAT;		}
 {CHAR}		{ char *key = malloc(sizeof(char) * strlen(yytext) + 1);
 			  strcpy(key,yytext);
@@ -100,7 +100,7 @@ true	{ dictAddItem(&dictionary, "true", IKS_SIMBOLO_LITERAL_BOOL, TK_LIT_TRUE, y
 			  memmove(treated_token, untreated_token+1, strlen(untreated_token)-2);
 			  treated_token[strlen(treated_token)-1] = 0;
 			  //printf("\n be added: %s", key);
-			  //dictAddItem(&dictionary, key, IKS_SIMBOLO_LITERAL_CHAR, TK_LIT_CHAR, yylineno);
+			  yylval.symbol = dictAddItem(&dictionary, key, IKS_SIMBOLO_LITERAL_CHAR, TK_LIT_CHAR, yylineno);
 			  return TK_LIT_CHAR;		}
 {STRING}	{ char *key = malloc(sizeof(char) * strlen(yytext) + 1);
 			  strcpy(key,yytext);
@@ -109,7 +109,7 @@ true	{ dictAddItem(&dictionary, "true", IKS_SIMBOLO_LITERAL_BOOL, TK_LIT_TRUE, y
 			  memmove(treated_token, untreated_token+1, strlen(untreated_token)-2);
 			  treated_token[strlen(treated_token)-1] = 0;
 			  //printf("\n be added: %s", key);
-			  //dictAddItem(&dictionary, key, IKS_SIMBOLO_LITERAL_STRING, TK_LIT_STRING, yylineno);
+			  yylval.symbol = dictAddItem(&dictionary, key, IKS_SIMBOLO_LITERAL_STRING, TK_LIT_STRING, yylineno);
 			  return TK_LIT_STRING;		}
 
 " "		{ }

@@ -43,7 +43,7 @@ typedef struct comp_dict_t {
 
 struct comp_dict_t* dictCreate();
 void                dictSetData(struct comp_dict_t *dictionary, char *key);
-void                dictAddItem(struct comp_dict_t **dictionary, char *key, int type, int code, int line);
+comp_dict_item_t*   dictAddItem(struct comp_dict_t **dictionary, char *key, int type, int code, int line);
 int                 dictEditItem(struct comp_dict_t *dictionary, char *key, int new_code);
 int                 dictRemoveItem(struct comp_dict_t *dictionary, char *key);
 void                dictPrintElementData(comp_dict_t *dictionary, char *key, int type);
