@@ -95,12 +95,11 @@
 		} 
 			| function_declaration program
 		{
-			printf("\n what about this? %p", $1);
+			//TO BE FINISHED
 			$$ = $1;		
 		};
 			|
 		{
-			printf("\ndoes it ever come here?");
 			$$ = NULL;
 		} ;
 	
@@ -112,10 +111,10 @@
 	function_declaration : header local_var_declaration command_block 
 		{		
 			printf("\nfunction_declaration %p", $1);	
-			//$$ = treeCreateNode(2, IKS_AST_FUNCAO, $1);
-			//treeAppendNode($$,$3);
+			$$ = treeCreateNode(2, IKS_AST_FUNCAO, $1);
+			treeAppendNode($$,$3);
 			//printf("%s", $$->symbol->key);
-			//gv_declare(IKS_AST_FUNCAO, (const void*)$$, NULL);// ((comp_dict_item_t*)$$->symbol)->key);
+			gv_declare(IKS_AST_FUNCAO, (const void*)$$, ((comp_dict_item_t*)$$->symbol)->data.identifier_type);
 			//gv_connect($$, $3);
 		};
 	header : var_type TK_IDENTIFICADOR '(' parameter_list ')' { $$ = $2; };
@@ -149,8 +148,8 @@
 	expression : 		TK_IDENTIFICADOR 
 						{
 							printf("\nidentificador %p", $1);
-							$$ = treeCreateNode(1, IKS_AST_IDENTIFICADOR, NULL);							
-							//gv_declare(IKS_AST_IDENTIFICADOR, (const void*)$$, ((comp_dict_item_t*)$1)->data.identifier_type);
+							$$ = treeCreateNode(1, IKS_AST_IDENTIFICADOR, $1);							
+							gv_declare(IKS_AST_IDENTIFICADOR, (const void*)$$, ((comp_dict_item_t*)$1)->data.identifier_type);
 						} 
 						| TK_IDENTIFICADOR '[' expression ']'
 						| TK_LIT_INT
