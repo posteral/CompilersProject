@@ -152,6 +152,16 @@
 							gv_declare(IKS_AST_IDENTIFICADOR, (const void*)$$, ((comp_dict_item_t*)$1)->data.identifier_type);
 						} 
 						| TK_IDENTIFICADOR '[' expression ']'
+						{
+							$$ = treeCreateNode(2, IKS_AST_VETOR_INDEXADO, NULL);
+							comp_tree_t* son = treeCreateNode(1, IKS_AST_IDENTIFICADOR, $1);
+							treeAppendNode($$,son);	
+							treeAppendNode($$,$3);
+							gv_declare(IKS_AST_VETOR_INDEXADO, (const void*)$$, NULL);
+							gv_declare(IKS_AST_IDENTIFICADOR, (const void*)son, ((comp_dict_item_t*)$1)->data.identifier_type);
+							gv_connect($$, $1);
+							gv_connect($$, $3);
+						}
 						| TK_LIT_INT
 						{
 							printf("\nTK_LIT_INT %p", $1);
