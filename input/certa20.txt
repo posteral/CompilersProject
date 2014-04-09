@@ -1,5 +1,4 @@
 int a;
-float b;
 char v [15] ;
 int f2 (int x)
 {
@@ -7,10 +6,12 @@ int f2 (int x)
 }
 float my_function ()
   { 
+  fasas();
+  //f(1,2);
   /* a=10; */
-  while (v[a-1] != 4-1) do v[a-f(2)] = f(v[2])-1 ;
+  while (v[a+1-1] != 4-1) do v[a-fsds(2)] = ffrfrf(v[2])-1 ;
   a=-3.2;
-  {
+  /*{
   ;
-  }
+  }*/
   }

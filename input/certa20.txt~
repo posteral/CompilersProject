@@ -1,16 +1,13 @@
-int:a;
-float:b;
-char:v [15] ;
-int:f2 (int:x)
+int a;
+char v [15] ;
+int f2 (int x)
 {
   return 2* x;
 }
-float:my_function ()
+float my_function ()
   { 
+  g();
+  //f(1,2);
   /* a=10; */
-  while (v[a-1] != 4-1) do v[a-f(2)] = f(v[2])-1 ;
-  a=-3.2;
-  {
-  ;
-  }
+  while (v[a+1-1] != 4-1) do v[a-hihi(2)] = laia(v[2])-1 
   }
