@@ -3,7 +3,7 @@
 
 #include "comp_list.h"
 
-#define HASH_FUNCTION 10000
+#define HASH_FUNCTION 1537
 #define MAX_HASH_TABLE_SIZE 10000
 #define MAX_KEY_SIZE 10000
 
@@ -43,6 +43,7 @@ typedef struct comp_dict_t {
 
 struct comp_dict_t* dictCreate();
 void                dictSetData(struct comp_dict_t *dictionary, char *key);
+void                dictGetData(struct comp_dict_item_t *symbol);
 comp_dict_item_t*   dictAddItem(struct comp_dict_t **dictionary, char *key, int type, int code, int line);
 int                 dictEditItem(struct comp_dict_t *dictionary, char *key, int new_code);
 int                 dictRemoveItem(struct comp_dict_t *dictionary, char *key);

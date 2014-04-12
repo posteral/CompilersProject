@@ -1,7 +1,7 @@
 digraph G {
-node_0xde4120 [label="block"]
-node_0xde4150 [label="minha_funcao"]
-node_0xde4150 -> node_0xde4120
-node_0xde41a0 [label="programa"]
-node_0xde41a0 -> node_0xde4150
+node_0x24e5120 [label="block"]
+node_0x24e5150 [label="minha_funcao"]
+node_0x24e5150 -> node_0x24e5120
+node_0x24e51a0 [label="programa"]
+node_0x24e51a0 -> node_0x24e5150
 }

@@ -1,31 +1,113 @@
 digraph G {
-node_0x1f34ab0 [label="12337"]
-node_0x1f34ae0 [label="="]
-node_0x1f34b10 [label="10"]
-node_0x1f34ae0 -> node_0x1f34b10
-node_0x1f34ae0 -> node_0x1f34ab0
-node_0x1f39a30 [label="a"]
-node_0x1f3e8f0 [label="1"]
-node_0x1f3e920 [label="+"]
-node_0x1f3e920 -> node_0x1f39a30
-node_0x1f3e920 -> node_0x1f3e8f0
-node_0x1f43800 [label="5"]
-node_0x1f486c0 [label="b"]
-node_0x1f486f0 [label="*"]
-node_0x1f486f0 -> node_0x1f43800
-node_0x1f486f0 -> node_0x1f486c0
-node_0x1f48740 [label="="]
-node_0x1f48770 [label="[]"]
-node_0x1f487a0 [label="v"]
-node_0x1f48740 -> node_0x1f48770
-node_0x1f48740 -> node_0x1f486f0
-node_0x1f48770 -> node_0x1f487a0
-node_0x1f48770 -> node_0x1f3e920
-node_0x1f34ae0 -> node_0x1f48740
-node_0x1f48810 [label="block"]
-node_0x1f48810 -> node_0x1f34ae0
-node_0x1f48860 [label="minha_funcao"]
-node_0x1f48860 -> node_0x1f48810
-node_0x1f488b0 [label="programa"]
-node_0x1f488b0 -> node_0x1f48860
+node_0x88fba0 [label="1"]
+node_0x88fbd0 [label="="]
+node_0x885ea0 [label="a"]
+node_0x88fbd0 -> node_0x885ea0
+node_0x88fbd0 -> node_0x88fba0
+node_0x899970 [label="2"]
+node_0x8999a0 [label="="]
+node_0x88fc70 [label="b"]
+node_0x8999a0 -> node_0x88fc70
+node_0x8999a0 -> node_0x899970
+node_0x8a3740 [label="c"]
+node_0x8a3770 [label="="]
+node_0x899a40 [label="c"]
+node_0x8a3770 -> node_0x899a40
+node_0x8a3770 -> node_0x8a3740
+node_0x8a3870 [label="a"]
+node_0x8a38e0 [label="1"]
+node_0x8a3910 [label="+"]
+node_0x8a3910 -> node_0x8a3870
+node_0x8a3910 -> node_0x8a38e0
+node_0x8a3960 [label="="]
+node_0x885ea0 [label="a"]
+node_0x8a3960 -> node_0x885ea0
+node_0x8a3960 -> node_0x8a3910
+node_0x8a3a60 [label="a"]
+node_0x8a3ad0 [label="c"]
+node_0x8a3b00 [label="+"]
+node_0x8a3b00 -> node_0x8a3a60
+node_0x8a3b00 -> node_0x8a3ad0
+node_0x8a3b50 [label="="]
+node_0x88fc70 [label="b"]
+node_0x8a3b50 -> node_0x88fc70
+node_0x8a3b50 -> node_0x8a3b00
+node_0x8a3c50 [label="c"]
+node_0x8a3cc0 [label="1"]
+node_0x8a3d30 [label="1"]
+node_0x8a3d60 [label="*"]
+node_0x8a3d60 -> node_0x8a3cc0
+node_0x8a3d60 -> node_0x8a3d30
+node_0x8a3db0 [label="-"]
+node_0x8a3db0 -> node_0x8a3c50
+node_0x8a3db0 -> node_0x8a3d60
+node_0x8a3e00 [label="="]
+node_0x899a40 [label="c"]
+node_0x8a3e00 -> node_0x899a40
+node_0x8a3e00 -> node_0x8a3db0
+node_0x8a3f00 [label="1"]
+node_0x8a3f70 [label="2"]
+node_0x8a3fa0 [label="+"]
+node_0x8a3fa0 -> node_0x8a3f00
+node_0x8a3fa0 -> node_0x8a3f70
+node_0x8a8e80 [label="3"]
+node_0x8add40 [label="5"]
+node_0x8add70 [label="*"]
+node_0x8add70 -> node_0x8a8e80
+node_0x8add70 -> node_0x8add40
+node_0x8ade00 [label="2"]
+node_0x8ade30 [label="/"]
+node_0x8ade30 -> node_0x8add70
+node_0x8ade30 -> node_0x8ade00
+node_0x8ade80 [label="+"]
+node_0x8ade80 -> node_0x8a3fa0
+node_0x8ade80 -> node_0x8ade30
+node_0x8adf10 [label="2"]
+node_0x8adf80 [label="5"]
+node_0x8adfb0 [label="*"]
+node_0x8adfb0 -> node_0x8adf10
+node_0x8adfb0 -> node_0x8adf80
+node_0x8ae040 [label="1"]
+node_0x8ae070 [label="*"]
+node_0x8ae070 -> node_0x8adfb0
+node_0x8ae070 -> node_0x8ae040
+node_0x8ae100 [label="2"]
+node_0x8ae130 [label="/"]
+node_0x8ae130 -> node_0x8ae070
+node_0x8ae130 -> node_0x8ae100
+node_0x8ae180 [label="+"]
+node_0x8ae180 -> node_0x8ade80
+node_0x8ae180 -> node_0x8ae130
+node_0x8ae210 [label="3"]
+node_0x8ae240 [label="-"]
+node_0x8ae240 -> node_0x8ae180
+node_0x8ae240 -> node_0x8ae210
+node_0x8ae290 [label="="]
+node_0x87c160 [label="k"]
+node_0x8ae290 -> node_0x87c160
+node_0x8ae290 -> node_0x8ae240
+node_0x8b31c0 [label="a"]
+node_0x8b3230 [label="b"]
+node_0x8b3260 [label="+"]
+node_0x8b3260 -> node_0x8b31c0
+node_0x8b3260 -> node_0x8b3230
+node_0x8b32f0 [label="c"]
+node_0x8b3320 [label="+"]
+node_0x8b3320 -> node_0x8b3260
+node_0x8b3320 -> node_0x8b32f0
+node_0x8b3370 [label="output"]
+node_0x8b3370 -> node_0x8b3320
+node_0x8ae290 -> node_0x8b3370
+node_0x8a3e00 -> node_0x8ae290
+node_0x8a3b50 -> node_0x8a3e00
+node_0x8a3960 -> node_0x8a3b50
+node_0x8a3770 -> node_0x8a3960
+node_0x8999a0 -> node_0x8a3770
+node_0x88fbd0 -> node_0x8999a0
+node_0x8b33c0 [label="block"]
+node_0x8b33c0 -> node_0x88fbd0
+node_0x8b3410 [label="minha_funcao"]
+node_0x8b3410 -> node_0x8b33c0
+node_0x8b3460 [label="programa"]
+node_0x8b3460 -> node_0x8b3410
 }

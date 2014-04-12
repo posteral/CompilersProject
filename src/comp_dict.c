@@ -53,6 +53,33 @@ void dictSetData(struct comp_dict_t *dictionary, char *key)
      } 
 }
 
+void *dictGetData(struct comp_dict_item_t *symbol)
+{
+     switch(symbol->type){
+                              case IKS_SIMBOLO_INDEFINIDO: 
+                                   printf("%s", symbol->data.undefined_type);
+                                   return &symbol->data.undefined_type; 
+                              case IKS_SIMBOLO_LITERAL_INT:
+                                   printf("%d", symbol->data.int_type);
+                                   return &symbol->data.int_type;   
+                              case IKS_SIMBOLO_LITERAL_FLOAT:
+                                   printf("%f", symbol->data.float_type);
+                                   return &symbol->data.float_type;
+                              case IKS_SIMBOLO_LITERAL_CHAR:
+                                   printf("%c", symbol->data.char_type);
+                                   return &symbol->data.char_type;
+                              case IKS_SIMBOLO_LITERAL_STRING:
+                                   printf("%s", symbol->data.string_type);
+                                   return &symbol->data.string_type;
+                              case IKS_SIMBOLO_LITERAL_BOOL: 
+                                   printf("%d", symbol->data.bool_type);
+                                   return &symbol->data.bool_type;
+                              case IKS_SIMBOLO_IDENTIFICADOR:
+                                   printf("%s", symbol->data.identifier_type);
+                                   return &symbol->data.identifier_type;
+     } 
+}
+
 comp_dict_item_t* dictAddItem(struct comp_dict_t **dictionary, char *key, int type, int code, int line){
      if(*dictionary == NULL)
      {
@@ -88,7 +115,7 @@ comp_dict_item_t* dictAddItem(struct comp_dict_t **dictionary, char *key, int ty
 		
      }
      else
-      printf("\n\n\nhash colision? ");
+      printf("\n\nhash colision? ");
      
      listPush(&((*dictionary)->hash[dictGetHashValue(key)]->line_occurrences), line);
      printf("\nvai setaaaaaaar %s tipo %d", key, (*dictionary)->hash[dictGetHashValue(key)]->type);
@@ -205,7 +232,7 @@ void dictEmpty(struct comp_dict_t *dictionary)
      
      to_be_removed_element = dictionary->start;
      if(!to_be_removed_element)
-                      printf("\nThe dictionary is empty!");
+                      //printf("\nThe dictionary is empty!");
      
      while(to_be_removed_element != NULL)
      {
@@ -220,9 +247,7 @@ int dictGetHashValue(char *key)
     long int hash_value;	
     int i = 0;
     for (hash_value = 0; *key != '\0'; key++){
-		//printf("\n*key = %d", *key);
       hash_value = *key +  hash_value;
-      //printf("\nhash_value = %d", hash_value);
       i++;
 	  }
       

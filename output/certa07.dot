@@ -1,8 +1,43 @@
 digraph G {
-node_0x1acfe80 [label="block"]
-node_0x1acfeb0 [label="minha_funcao"]
-node_0x1acfeb0 -> node_0x1acfe80
-node_0x1ad4df0 [label="3158065"]
-node_0x1ad9cd0 [label="programa"]
-node_0x1ad9cd0 -> node_0x1acfeb0
+node_0x118cff0 [label="call"]
+node_0x11832b0 [label="minha_funcao"]
+node_0x118cff0 -> node_0x11832b0
+node_0x118d070 [label="="]
+node_0x1188140 [label="a"]
+node_0x118d070 -> node_0x1188140
+node_0x118d070 -> node_0x118cff0
+node_0x1196e10 [label="2.40"]
+node_0x1196e40 [label="="]
+node_0x118d110 [label="b"]
+node_0x1196e40 -> node_0x118d110
+node_0x1196e40 -> node_0x1196e10
+node_0x11a0be0 [label="teste"]
+node_0x11a0c10 [label="="]
+node_0x1196ee0 [label="c"]
+node_0x11a0c10 -> node_0x1196ee0
+node_0x11a0c10 -> node_0x11a0be0
+node_0x11aa9b0 [label="l"]
+node_0x11aa9e0 [label="="]
+node_0x11a0cb0 [label="k"]
+node_0x11aa9e0 -> node_0x11a0cb0
+node_0x11aa9e0 -> node_0x11aa9b0
+node_0x11af930 [label="12337"]
+node_0x11b47f0 [label="k"]
+node_0x11b4820 [label="="]
+node_0x11b4850 [label="[]"]
+node_0x11aaa80 [label="t"]
+node_0x11b4820 -> node_0x11b4850
+node_0x11b4820 -> node_0x11b47f0
+node_0x11b4850 -> node_0x11aaa80
+node_0x11b4850 -> node_0x11af930
+node_0x11aa9e0 -> node_0x11b4820
+node_0x11a0c10 -> node_0x11aa9e0
+node_0x1196e40 -> node_0x11a0c10
+node_0x118d070 -> node_0x1196e40
+node_0x11b48f0 [label="block"]
+node_0x11b48f0 -> node_0x118d070
+node_0x11b4940 [label="minha_funcao"]
+node_0x11b4940 -> node_0x11b48f0
+node_0x11b4990 [label="programa"]
+node_0x11b4990 -> node_0x11b4940
 }

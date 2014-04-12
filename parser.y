@@ -84,7 +84,6 @@
 %nonassoc TK_PR_ELSE
 
 %%
-	/* Regras (e ações) da gramática da Linguagem K */
 	s: program 
 		{	
 			$$ = treeCreateNode(1, IKS_AST_PROGRAMA, NULL);
@@ -163,8 +162,8 @@
 					treeAppendNode($$,son);	
 					treeAppendNode($$,$3);
 					gv_declare(IKS_AST_ATRIBUICAO, (const void*)$$, NULL);
-					gv_declare(IKS_AST_IDENTIFICADOR, (const void*)son, ((comp_dict_item_t*)$1)->data.identifier_type);
-					gv_connect($$, son);
+					gv_declare(IKS_AST_IDENTIFICADOR, (const void*)$1, ((comp_dict_item_t*)$1)->data.identifier_type);
+					gv_connect($$, $1);
 					gv_connect($$, $3);
 				}
 			| TK_IDENTIFICADOR '[' expression ']' '=' expression 
@@ -179,10 +178,10 @@
 					treeAppendNode($$,$6);
 					gv_declare(IKS_AST_ATRIBUICAO, (const void*)$$, NULL);
 					gv_declare(IKS_AST_VETOR_INDEXADO, (const void*)son, NULL);
-					gv_declare(IKS_AST_IDENTIFICADOR, (const void*)grand_son, ((comp_dict_item_t*)$1)->data.identifier_type);
+					gv_declare(IKS_AST_IDENTIFICADOR, (const void*)$1, ((comp_dict_item_t*)$1)->data.identifier_type);
 					gv_connect($$, son);
 					gv_connect($$, $6);
-					gv_connect(son, grand_son);
+					gv_connect(son, $1);
 					gv_connect(son, $3);
 				};
 	input : TK_PR_INPUT TK_IDENTIFICADOR 
@@ -192,8 +191,8 @@
 			comp_tree_t* son = treeCreateNode(1, IKS_AST_IDENTIFICADOR, $2);
 			treeAppendNode($$,son);
 			gv_declare(IKS_AST_INPUT, (const void*)$$, NULL);
-			gv_declare(IKS_AST_IDENTIFICADOR, (const void*)son, ((comp_dict_item_t*)$2)->data.identifier_type);
-			gv_connect($$, son);						
+			gv_declare(IKS_AST_IDENTIFICADOR, (const void*)$2, ((comp_dict_item_t*)$2)->data.identifier_type);
+			gv_connect($$, $2);						
 		};
 	output : TK_PR_OUTPUT non_void_expression_list 
 		{
@@ -228,8 +227,8 @@
 					if($3 != NULL) 
 					  treeAppendNode($$,$3);
 					gv_declare(IKS_AST_CHAMADA_DE_FUNCAO, (const void*)$$, NULL);
-					gv_declare(IKS_AST_IDENTIFICADOR, (const void*)son, ((comp_dict_item_t*)$1)->data.identifier_type);
-					gv_connect($$, son);
+					gv_declare(IKS_AST_IDENTIFICADOR, (const void*)$1, ((comp_dict_item_t*)$1)->data.identifier_type);
+					gv_connect($$, $1);
 					if($3 != NULL) 
 						gv_connect($$, $3);
 				};	
@@ -296,13 +295,14 @@
 				} 	
 			| TK_IDENTIFICADOR '[' expression ']'
 				{
-					//printf("\nvector_identifier");
+					printf("\nvector_identifier");
 					$$ = treeCreateNode(1, IKS_AST_VETOR_INDEXADO, NULL);
 					comp_tree_t* son = treeCreateNode(1, IKS_AST_IDENTIFICADOR, $1);
 					treeAppendNode($$,son);	
 					treeAppendNode($$,$3);
 					gv_declare(IKS_AST_VETOR_INDEXADO, (const void*)$$, NULL);
-					gv_declare(IKS_AST_IDENTIFICADOR, (const void*)son, ((comp_dict_item_t*)$1)->data.identifier_type);
+					gv_declare(IKS_AST_IDENTIFICADOR, (const void*)$1, ((comp_dict_item_t*)$1)->data.identifier_type);
+					printf("identificador: %s", ((comp_dict_item_t*)$1)->data.identifier_type);
 					gv_connect($$, $1);
 					gv_connect($$, $3);
 				}
