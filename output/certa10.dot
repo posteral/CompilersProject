@@ -1,0 +1,49 @@
+digraph G {
+node_0x879ba0 [label="5"]
+node_0x879bd0 [label="="]
+node_0x879c00 [label="a"]
+node_0x879bd0 -> node_0x879c00
+node_0x879bd0 -> node_0x879ba0
+node_0x87eb20 [label="a"]
+node_0x87eb50 [label="="]
+node_0x87eb80 [label="p"]
+node_0x87eb50 -> node_0x87eb80
+node_0x87eb50 -> node_0x87eb20
+node_0x8888f0 [label="a"]
+node_0x88d7b0 [label="0"]
+node_0x88d7e0 [label="=="]
+node_0x88d7e0 -> node_0x8888f0
+node_0x88d7e0 -> node_0x88d7b0
+node_0x8a1210 [label="x"]
+node_0x8a1240 [label="output"]
+node_0x8a1240 -> node_0x8a1210
+node_0x8a6140 [label="nada"]
+node_0x8a6170 [label="output"]
+node_0x8a6170 -> node_0x8a6140
+node_0x8a61c0 [label="ifelse"]
+node_0x8a61c0 -> node_0x88d7e0
+node_0x8a61c0 -> node_0x8a1240
+node_0x8a61c0 -> node_0x8a6170
+node_0x8a6290 [label="a"]
+node_0x8a6300 [label="0"]
+node_0x8a6330 [label="=="]
+node_0x8a6330 -> node_0x8a6290
+node_0x8a6330 -> node_0x8a6300
+node_0x8a6400 [label="x"]
+node_0x8a6430 [label="output"]
+node_0x8a6430 -> node_0x8a6400
+node_0x8a6480 [label="block"]
+node_0x8a6480 -> node_0x8a6430
+node_0x8a64d0 [label="ifelse"]
+node_0x8a64d0 -> node_0x8a6330
+node_0x8a64d0 -> node_0x8a6480
+node_0x8a61c0 -> node_0x8a64d0
+node_0x87eb50 -> node_0x8a61c0
+node_0x879bd0 -> node_0x87eb50
+node_0x8a6550 [label="block"]
+node_0x8a6550 -> node_0x879bd0
+node_0x8a6580 [label="minha_funcao"]
+node_0x8a6580 -> node_0x8a6550
+node_0x8a65d0 [label="programa"]
+node_0x8a65d0 -> node_0x8a6580
+}

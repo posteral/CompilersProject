@@ -1,9 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "comp_dict.h"
-#include "comp_list.h"
-#include "comp_tree.h"
-#include "parser.h"
+#include "main.h"
 extern char *yytext;
 extern int yylineno;
 extern int getLineNumber();
@@ -87,25 +84,20 @@ int main (int argc, char **argv)
 			default: printf ("<Invalid Token with code %d>\n", token); return 1; break;
     }
   }
+  * 
   * */
-   
-	int resultado = yyparse();
-  
-	if(resultado)
-		exit(IKS_SYNTAX_ERRO);
-	else
-		exit(IKS_SYNTAX_SUCESSO);	
-	
-	dictEmpty(dictionary);
-  
-	return resultado;
+	//dictPrint(dictionary);
 
-  	gv_init(NULL);
+  gv_init("teste.dot");
+	printf("rodando...");
 	int resultado = yyparse();
 	gv_close();
 	if(resultado)
 		exit(IKS_SYNTAX_ERRO);
 	else
 		exit(IKS_SYNTAX_SUCESSO);
+		
+	
 	return resultado;
 }
+

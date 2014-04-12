@@ -1,0 +1,43 @@
+digraph G {
+node_0x1c60cd0 [label="2"]
+node_0x1c60d40 [label="x"]
+node_0x1c60d70 [label="*"]
+node_0x1c60d70 -> node_0x1c60cd0
+node_0x1c60d70 -> node_0x1c60d40
+node_0x1c60dc0 [label="return"]
+node_0x1c60dc0 -> node_0x1c60d70
+node_0x1c60e10 [label="block"]
+node_0x1c60e10 -> node_0x1c60dc0
+node_0x1c60e60 [label="f"]
+node_0x1c60e60 -> node_0x1c60e10
+node_0x1c6ac30 [label="12337"]
+node_0x1c6ac60 [label="="]
+node_0x1c6ac90 [label="10"]
+node_0x1c6ac60 -> node_0x1c6ac90
+node_0x1c6ac60 -> node_0x1c6ac30
+node_0x1c6fbb0 [label="a"]
+node_0x1c74a70 [label="1"]
+node_0x1c74aa0 [label="+"]
+node_0x1c74aa0 -> node_0x1c6fbb0
+node_0x1c74aa0 -> node_0x1c74a70
+node_0x1c74b70 [label="2"]
+node_0x1c74ba0 [label="call"]
+node_0x1c74bd0 [label="f"]
+node_0x1c74ba0 -> node_0x1c74bd0
+node_0x1c74ba0 -> node_0x1c74b70
+node_0x1c74c20 [label="="]
+node_0x1c74c50 [label="[]"]
+node_0x1c74c80 [label="v"]
+node_0x1c74c20 -> node_0x1c74c50
+node_0x1c74c20 -> node_0x1c74ba0
+node_0x1c74c50 -> node_0x1c74c80
+node_0x1c74c50 -> node_0x1c74aa0
+node_0x1c6ac60 -> node_0x1c74c20
+node_0x1c74cf0 [label="block"]
+node_0x1c74cf0 -> node_0x1c6ac60
+node_0x1c74d40 [label="function"]
+node_0x1c74d40 -> node_0x1c74cf0
+node_0x1c60e60 -> node_0x1c74d40
+node_0x1c74d90 [label="programa"]
+node_0x1c74d90 -> node_0x1c60e60
+}

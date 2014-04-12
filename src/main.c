@@ -88,7 +88,7 @@ int main (int argc, char **argv)
   * */
 	//dictPrint(dictionary);
 
-  	gv_init("teste.dot");
+  gv_init("teste.dot");
 	int resultado = yyparse();
 	gv_close();
 	if(resultado)

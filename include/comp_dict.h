@@ -3,7 +3,7 @@
 
 #include "comp_list.h"
 
-#define HASH_FUNCTION 101
+#define HASH_FUNCTION 1537
 #define MAX_HASH_TABLE_SIZE 10000
 #define MAX_KEY_SIZE 10000
 

@@ -1,33 +1,78 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include "comp_dict.h"
 
 struct comp_dict_t* dictCreate(void)
 {
+    int i;
 	comp_dict_t *newDict;
-	newDict = (comp_dict_t*)malloc(sizeof(comp_dict_t));
- 	
+	
+    newDict = (comp_dict_t*)malloc(sizeof(comp_dict_t));
+	newDict->start=NULL;
+	newDict->end=NULL;
+	for(i = 0; i < MAX_HASH_TABLE_SIZE; i++)
+	      newDict->hash[i] = NULL;
+	
 	return newDict;
 }
 
-void dictAddItem(struct comp_dict_t **dictionary, const char *key, int code, int line){
+void dictSetData(struct comp_dict_t *dictionary, char *key)
+{
+     switch(dictionary->hash[dictGetHashValue(key)]->type){
+                              case IKS_SIMBOLO_INDEFINIDO: 
+                                   strcpy(dictionary->hash[dictGetHashValue(key)]->data.undefined_type, key);
+                                   //printf("%s", dictionary->hash[dictGetHashValue(key)]->data.undefined_type);
+                                   break; 
+                              case IKS_SIMBOLO_LITERAL_INT:
+                                   dictionary->hash[dictGetHashValue(key)]->data.int_type = atoi(key);
+                                   //printf("%d", dictionary->hash[dictGetHashValue(key)]->data.int_type);
+                                   break;   
+                              case IKS_SIMBOLO_LITERAL_FLOAT:
+                                   dictionary->hash[dictGetHashValue(key)]->data.float_type = atof(key);
+                                   //printf("%f", dictionary->hash[dictGetHashValue(key)]->data.float_type);
+                                   break;
+                              case IKS_SIMBOLO_LITERAL_CHAR:
+                                   dictionary->hash[dictGetHashValue(key)]->data.char_type = *key;
+                                   //printf("%c", dictionary->hash[dictGetHashValue(key)]->data.char_type);
+                                   break;
+                              case IKS_SIMBOLO_LITERAL_STRING:
+                                   strcpy(dictionary->hash[dictGetHashValue(key)]->data.string_type, key);
+                                   //printf("%s", dictionary->hash[dictGetHashValue(key)]->data.string_type);
+                                   break;
+                              case IKS_SIMBOLO_LITERAL_BOOL: 
+                                   if( strcmp(key, "true") == 0 )
+                                                  dictionary->hash[dictGetHashValue(key)]->data.bool_type = 1;
+                                   else
+                                                  dictionary->hash[dictGetHashValue(key)]->data.bool_type = 0;
+                                   break;
+                              case IKS_SIMBOLO_IDENTIFICADOR:
+                                   strcpy(dictionary->hash[dictGetHashValue(key)]->data.identifier_type, key);
+                                   //printf("%s", dictionary->hash[dictGetHashValue(key)]->data.identifier_type);
+                                   break;
+     } 
+}
+
+comp_dict_item_t* dictAddItem(struct comp_dict_t **dictionary, char *key, int type, int code, int line){
      if(*dictionary == NULL)
      {
                     *dictionary = dictCreate();
    	 }   	 
-   	 
-     /*if key hasn't already been added: */
+
+	  comp_dict_item_t *item = NULL;
+	
      if( (*dictionary)->hash[dictGetHashValue(key)] == NULL )
      {	 
-         comp_dict_item_t *item = (comp_dict_item_t *)malloc(sizeof(comp_dict_item_t));
-         item->key = key;
+		     item = (comp_dict_item_t *)malloc(sizeof(comp_dict_item_t));
+         strcpy(item->key, key);
          item->code = code;
+         item->type = type;
          item->line_occurrences = listCreate();
          item->next = NULL;     
-                 
+                  
          if ((*dictionary)->start == NULL) 
          {
-            printf("\nNOTE: First element added on the dictionary!"); 
+            //printf("\nNOTE: First element added on the dictionary!"); 
             (*dictionary)->start = item;      
             item->previous = NULL;
          }   
@@ -39,13 +84,20 @@ void dictAddItem(struct comp_dict_t **dictionary, const char *key, int code, int
               
          (*dictionary)->hash[dictGetHashValue(key)] = item;
          (*dictionary)->end = item; 
-         printf("\nNOTE: Element (%s,%d) added on the dictionary!", (*dictionary)->hash[dictGetHashValue(key)]->key, (*dictionary)->hash[dictGetHashValue(key)]->code);
+         //printf("\nNOTE: Element (%s,%d) added on the dictionary!", (*dictionary)->hash[dictGetHashValue(key)]->key, (*dictionary)->hash[dictGetHashValue(key)]->code);
+		
      }
+     else
+      printf("\n\n\nhash colision? ");
      
-     //listPush(&((*dictionary)->hash[dictGetHashValue(key)]->line_occurrences), line);
+     listPush(&((*dictionary)->hash[dictGetHashValue(key)]->line_occurrences), line);
+     printf(\nvai setaaaaaaar %s tipo %d", key, (*dictionary)->hash[dictGetHashValue(key)]->type);
+     dictSetData(*dictionary, key);
+     
+     return (*dictionary)->hash[dictGetHashValue(key)];
 }
 
-int dictEditItem(struct comp_dict_t *dictionary, const char *key, int new_code)
+int dictEditItem(struct comp_dict_t *dictionary, char *key, int new_code)
 {
      if(dictionary->start == NULL || dictionary->hash[dictGetHashValue(key)] == NULL)
      { 
@@ -58,7 +110,7 @@ int dictEditItem(struct comp_dict_t *dictionary, const char *key, int new_code)
      return 0;     
 }
 
-int dictRemoveItem(struct comp_dict_t *dictionary, const char *key){ 
+int dictRemoveItem(struct comp_dict_t *dictionary, char *key){ 
      comp_dict_item_t *removed_element;   
 
      if(dictionary->start == NULL || dictionary->hash[dictGetHashValue(key)] == NULL)
@@ -94,9 +146,36 @@ int dictRemoveItem(struct comp_dict_t *dictionary, const char *key){
 	  }
       
      listEmpty(removed_element->line_occurrences);         
-     free(removed_element);  
+     removed_element = NULL;
      //printf("\nNOTE: The element %s was removed!", key);  
      return 0;
+}
+
+void dictPrintElementData(comp_dict_t *dictionary, char *key, int type)
+{
+ switch(type){
+                              case IKS_SIMBOLO_INDEFINIDO: 
+                                   printf("%s", dictionary->hash[dictGetHashValue(key)]->data.undefined_type);
+                                   break; 
+                              case IKS_SIMBOLO_LITERAL_INT:
+                                   printf("%d", dictionary->hash[dictGetHashValue(key)]->data.int_type);
+                                   break;   
+                              case IKS_SIMBOLO_LITERAL_FLOAT:
+                                   printf("%f", dictionary->hash[dictGetHashValue(key)]->data.float_type);
+                                   break;
+                              case IKS_SIMBOLO_LITERAL_CHAR:
+                                   printf("%c", dictionary->hash[dictGetHashValue(key)]->data.char_type);
+                                   break;
+                              case IKS_SIMBOLO_LITERAL_STRING:
+                                   printf("%s", dictionary->hash[dictGetHashValue(key)]->data.string_type);
+                                   break;
+                              case IKS_SIMBOLO_LITERAL_BOOL: 
+                                   printf("%d", dictionary->hash[dictGetHashValue(key)]->data.int_type);
+                                   break;
+                              case IKS_SIMBOLO_IDENTIFICADOR:
+                                   printf("%s", dictionary->hash[dictGetHashValue(key)]->data.identifier_type);
+                                   break;
+     }                       
 }
 
 void dictPrint(struct comp_dict_t *dictionary)
@@ -107,9 +186,10 @@ void dictPrint(struct comp_dict_t *dictionary)
                       printf("\nThe dictionary is empty!");
      while(printed_item != NULL)
      {
-      printf("\nKEY: %s\t VALUE: %d", printed_item->key, printed_item->code);
+      printf("\nKEY: %s\t VALUE: %d\t TYPE: %d\t DATA: ", printed_item->key, printed_item->code, printed_item->type);
+      dictPrintElementData(dictionary, printed_item->key, printed_item->type);
       struct comp_list_t_t *line_list = printed_item->line_occurrences;
-      printf(" LINES:");
+      printf("\t LINES:");
       while(line_list)
       {
                       printf(" %d ", line_list->data);
@@ -135,11 +215,18 @@ void dictEmpty(struct comp_dict_t *dictionary)
      }
 }
 
-int dictGetHashValue(const char *key)
+int dictGetHashValue(char *key)
 {
-    int hash_value;
-    for (hash_value = 0; *key != '\0'; key++)
-      hash_value = *key + 31 * hash_value;
-    return hash_value % HASH_SIZE; 
+    long int hash_value;	
+    int i = 0;
+    for (hash_value = 0; *key != '\0'; key++){
+		//printf("\n*key = %d", *key);
+      hash_value = *key +  hash_value;
+      //printf("\nhash_value = %d", hash_value);
+      i++;
+	  }
+      
+    //printf("\nHash value: %ld, i : %d, return %ld", hash_value, i, hash_value % HASH_FUNCTION);
+    return hash_value % HASH_FUNCTION;
 }
 

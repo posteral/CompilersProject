@@ -54,24 +54,16 @@ void dictSetData(struct comp_dict_t *dictionary, char *key)
 }
 
 comp_dict_item_t* dictAddItem(struct comp_dict_t **dictionary, char *key, int type, int code, int line){
-
-	 //return;
      if(*dictionary == NULL)
      {
                     *dictionary = dictCreate();
    	 }   	 
 
-     /*if key hasn't already been added: */
-     //printf("\nTrying to access hash[%d]", dictGetHashValue(key));
-     //if(dictGetHashValue(key)<0)
-	//	return;
-	
-	comp_dict_item_t *item = NULL;
-	
+	  comp_dict_item_t *item = NULL;
 	
      if( (*dictionary)->hash[dictGetHashValue(key)] == NULL )
      {	 
-		 item = (comp_dict_item_t *)malloc(sizeof(comp_dict_item_t));
+		     item = (comp_dict_item_t *)malloc(sizeof(comp_dict_item_t));
          strcpy(item->key, key);
          item->code = code;
          item->type = type;
@@ -95,8 +87,11 @@ comp_dict_item_t* dictAddItem(struct comp_dict_t **dictionary, char *key, int ty
          //printf("\nNOTE: Element (%s,%d) added on the dictionary!", (*dictionary)->hash[dictGetHashValue(key)]->key, (*dictionary)->hash[dictGetHashValue(key)]->code);
 		
      }
+     else
+      printf("\n\n\nhash colision? ");
      
      listPush(&((*dictionary)->hash[dictGetHashValue(key)]->line_occurrences), line);
+     printf("\nvai setaaaaaaar %s tipo %d", key, (*dictionary)->hash[dictGetHashValue(key)]->type);
      dictSetData(*dictionary, key);
      
      return (*dictionary)->hash[dictGetHashValue(key)];
@@ -229,9 +224,9 @@ int dictGetHashValue(char *key)
       hash_value = *key +  hash_value;
       //printf("\nhash_value = %d", hash_value);
       i++;
-	}
+	  }
       
-    //printf("\nHash value: %d, i : %d, return %d", hash_value, i, hash_value % HASH_FUNCTION);
+    //printf("\nHash value: %ld, i : %d, return %ld", hash_value, i, hash_value % HASH_FUNCTION);
     return hash_value % HASH_FUNCTION;
 }
 

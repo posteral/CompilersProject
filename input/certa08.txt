@@ -10,5 +10,5 @@ int minha_funcao (float k, int l)
                 k=3.0;
         }
 }
-int variavel_k[ 100 ];
+int variavel_k[100];
 char variavel_x;

@@ -1,0 +1,8 @@
+digraph G {
+node_0x1acfe80 [label="block"]
+node_0x1acfeb0 [label="minha_funcao"]
+node_0x1acfeb0 -> node_0x1acfe80
+node_0x1ad4df0 [label="3158065"]
+node_0x1ad9cd0 [label="programa"]
+node_0x1ad9cd0 -> node_0x1acfeb0
+}

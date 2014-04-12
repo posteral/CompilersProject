@@ -1,0 +1,7 @@
+digraph G {
+node_0xddcfd0 [label="block"]
+node_0xddd000 [label="minha_funcao"]
+node_0xddd000 -> node_0xddcfd0
+node_0xddd050 [label="programa"]
+node_0xddd050 -> node_0xddd000
+}

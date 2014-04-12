@@ -89,11 +89,11 @@ true	{ yylval.symbol = dictAddItem(&dictionary, "true", IKS_SIMBOLO_LITERAL_BOOL
 			  strcpy(key,yytext);
 			  yylval.symbol = dictAddItem(&dictionary, key, IKS_SIMBOLO_LITERAL_INT, TK_LIT_INT, yylineno);
 			  return TK_LIT_INT;		}
-{FLOAT}		{ char *key = malloc(sizeof(char) * strlen(yytext) + 1);
+{FLOAT}	{ char *key = malloc(sizeof(char) * strlen(yytext) + 1);
 			  strcpy(key,yytext);
 			  yylval.symbol = dictAddItem(&dictionary, key, IKS_SIMBOLO_LITERAL_FLOAT, TK_LIT_FLOAT, yylineno);
 			  return TK_LIT_FLOAT;		}
-{CHAR}		{ char *key = malloc(sizeof(char) * strlen(yytext) + 1);
+{CHAR}	{ char *key = malloc(sizeof(char) * strlen(yytext) + 1);
 			  strcpy(key,yytext);
 			  char *untreated_token = key;
 			  char *treated_token = untreated_token;
@@ -107,7 +107,7 @@ true	{ yylval.symbol = dictAddItem(&dictionary, "true", IKS_SIMBOLO_LITERAL_BOOL
 			  char *untreated_token = key;
 			  char *treated_token = untreated_token;
 			  memmove(treated_token, untreated_token+1, strlen(untreated_token)-2);
-			  treated_token[strlen(treated_token)-1] = 0;
+			  treated_token[strlen(treated_token)-2] = 0;
 			  //printf("\n be added: %s", key);
 			  yylval.symbol = dictAddItem(&dictionary, key, IKS_SIMBOLO_LITERAL_STRING, TK_LIT_STRING, yylineno);
 			  return TK_LIT_STRING;		}
