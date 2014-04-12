@@ -1,0 +1,97 @@
+digraph G {
+node_0x121aef0 [label="Enter the number of terms: \n"]
+node_0x121af20 [label="output"]
+node_0x121af20 -> node_0x121aef0
+node_0x121fe20 [label="input"]
+node_0x121fe50 [label="n"]
+node_0x121fe20 -> node_0x121fe50
+node_0x121ff00 [label="First "]
+node_0x121ff70 [label="n"]
+node_0x1224e40 [label=" terms of Fibonacci series are : -\n"]
+node_0x121ff70 -> node_0x1224e40
+node_0x121ff00 -> node_0x121ff70
+node_0x1224eb0 [label="output"]
+node_0x1224eb0 -> node_0x121ff00
+node_0x1229dd0 [label="0"]
+node_0x1229e00 [label="="]
+node_0x1229e30 [label="c"]
+node_0x1229e00 -> node_0x1229e30
+node_0x1229e00 -> node_0x1229dd0
+node_0x122ed30 [label="c"]
+node_0x122eda0 [label="n"]
+node_0x122edd0 [label="<"]
+node_0x122edd0 -> node_0x122ed30
+node_0x122edd0 -> node_0x122eda0
+node_0x123d9b0 [label="c"]
+node_0x1242870 [label="1"]
+node_0x12428a0 [label="<="]
+node_0x12428a0 -> node_0x123d9b0
+node_0x12428a0 -> node_0x1242870
+node_0x124c650 [label="c"]
+node_0x124c680 [label="="]
+node_0x124c6b0 [label="next"]
+node_0x124c680 -> node_0x124c6b0
+node_0x124c680 -> node_0x124c650
+node_0x124c780 [label="first"]
+node_0x124c7f0 [label="second"]
+node_0x124c820 [label="+"]
+node_0x124c820 -> node_0x124c780
+node_0x124c820 -> node_0x124c7f0
+node_0x124c870 [label="="]
+node_0x124c8a0 [label="next"]
+node_0x124c870 -> node_0x124c8a0
+node_0x124c870 -> node_0x124c820
+node_0x124c970 [label="second"]
+node_0x124c9a0 [label="="]
+node_0x124c9d0 [label="first"]
+node_0x124c9a0 -> node_0x124c9d0
+node_0x124c9a0 -> node_0x124c970
+node_0x124caa0 [label="next"]
+node_0x124cad0 [label="="]
+node_0x124cb00 [label="second"]
+node_0x124cad0 -> node_0x124cb00
+node_0x124cad0 -> node_0x124caa0
+node_0x124c9a0 -> node_0x124cad0
+node_0x124c870 -> node_0x124c9a0
+node_0x124cb50 [label="block"]
+node_0x124cb50 -> node_0x124c870
+node_0x124cba0 [label="ifelse"]
+node_0x124cba0 -> node_0x12428a0
+node_0x124cba0 -> node_0x124c680
+node_0x124cba0 -> node_0x124cb50
+node_0x124cc50 [label="next"]
+node_0x1251b10 [label="\n"]
+node_0x124cc50 -> node_0x1251b10
+node_0x1251b60 [label="output"]
+node_0x1251b60 -> node_0x124cc50
+node_0x1251c30 [label="c"]
+node_0x1251ca0 [label="1"]
+node_0x1251cd0 [label="+"]
+node_0x1251cd0 -> node_0x1251c30
+node_0x1251cd0 -> node_0x1251ca0
+node_0x1251d20 [label="="]
+node_0x1251d50 [label="c"]
+node_0x1251d20 -> node_0x1251d50
+node_0x1251d20 -> node_0x1251cd0
+node_0x1251b60 -> node_0x1251d20
+node_0x124cba0 -> node_0x1251b60
+node_0x1251dd0 [label="block"]
+node_0x1251dd0 -> node_0x124cba0
+node_0x1251e00 [label="whiledo"]
+node_0x1251e00 -> node_0x122edd0
+node_0x1251e00 -> node_0x1251dd0
+node_0x1256d00 [label="0"]
+node_0x1256d30 [label="return"]
+node_0x1256d30 -> node_0x1256d00
+node_0x1251e00 -> node_0x1256d30
+node_0x1229e00 -> node_0x1251e00
+node_0x1224eb0 -> node_0x1229e00
+node_0x121fe20 -> node_0x1224eb0
+node_0x121af20 -> node_0x121fe20
+node_0x1256d80 [label="block"]
+node_0x1256d80 -> node_0x121af20
+node_0x1256dd0 [label="main"]
+node_0x1256dd0 -> node_0x1256d80
+node_0x1256e20 [label="programa"]
+node_0x1256e20 -> node_0x1256dd0
+}

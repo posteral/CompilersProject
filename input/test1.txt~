@@ -1,0 +1,11 @@
+int a;
+char v [15] ;
+int f2 (int x)
+{
+	a=2;
+	b[65]=8
+}
+float f1()
+{
+}
+

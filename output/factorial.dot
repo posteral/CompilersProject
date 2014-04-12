@@ -1,0 +1,71 @@
+digraph G {
+node_0x1117350 [label="1"]
+node_0x1117380 [label="="]
+node_0x11173b0 [label="fact"]
+node_0x1117380 -> node_0x11173b0
+node_0x1117380 -> node_0x1117350
+node_0x1121120 [label="Enter a number to calculate it's factorial: \n"]
+node_0x1121150 [label="output"]
+node_0x1121150 -> node_0x1121120
+node_0x1126050 [label="input"]
+node_0x1126080 [label="n"]
+node_0x1126050 -> node_0x1126080
+node_0x1126150 [label="1"]
+node_0x1126180 [label="="]
+node_0x11261b0 [label="c"]
+node_0x1126180 -> node_0x11261b0
+node_0x1126180 -> node_0x1126150
+node_0x112ff20 [label="c"]
+node_0x112ff90 [label="n"]
+node_0x112ffc0 [label="<="]
+node_0x112ffc0 -> node_0x112ff20
+node_0x112ffc0 -> node_0x112ff90
+node_0x1134f00 [label="fact"]
+node_0x1134f70 [label="c"]
+node_0x1134fa0 [label="*"]
+node_0x1134fa0 -> node_0x1134f00
+node_0x1134fa0 -> node_0x1134f70
+node_0x1134ff0 [label="="]
+node_0x1135020 [label="fact"]
+node_0x1134ff0 -> node_0x1135020
+node_0x1134ff0 -> node_0x1134fa0
+node_0x11350f0 [label="c"]
+node_0x1135160 [label="1"]
+node_0x1135190 [label="+"]
+node_0x1135190 -> node_0x11350f0
+node_0x1135190 -> node_0x1135160
+node_0x11351e0 [label="="]
+node_0x1135210 [label="c"]
+node_0x11351e0 -> node_0x1135210
+node_0x11351e0 -> node_0x1135190
+node_0x1134ff0 -> node_0x11351e0
+node_0x1135260 [label="block"]
+node_0x1135260 -> node_0x1134ff0
+node_0x11352b0 [label="whiledo"]
+node_0x11352b0 -> node_0x112ffc0
+node_0x11352b0 -> node_0x1135260
+node_0x113a1b0 [label="Factorial of "]
+node_0x113a220 [label="n"]
+node_0x113f0e0 [label=" = "]
+node_0x113f150 [label="fact"]
+node_0x113f0e0 -> node_0x113f150
+node_0x113a220 -> node_0x113f0e0
+node_0x113a1b0 -> node_0x113a220
+node_0x113f1e0 [label="output"]
+node_0x113f1e0 -> node_0x113a1b0
+node_0x1148f30 [label="0"]
+node_0x1148f60 [label="return"]
+node_0x1148f60 -> node_0x1148f30
+node_0x113f1e0 -> node_0x1148f60
+node_0x11352b0 -> node_0x113f1e0
+node_0x1126180 -> node_0x11352b0
+node_0x1126050 -> node_0x1126180
+node_0x1121150 -> node_0x1126050
+node_0x1117380 -> node_0x1121150
+node_0x1148fb0 [label="block"]
+node_0x1148fb0 -> node_0x1117380
+node_0x1149000 [label="main"]
+node_0x1149000 -> node_0x1148fb0
+node_0x1149050 [label="programa"]
+node_0x1149050 -> node_0x1149000
+}

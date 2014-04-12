@@ -1,0 +1,21 @@
+int main()
+int c;
+int n;
+int fact;
+{
+  fact = 1;
+ 
+  output "Enter a number to calculate it's factorial: \n";
+  input n;
+ 
+  c=1;
+  while(c <= n)do
+  {
+    fact = fact * c;
+    c=c+1
+  };
+  
+  output "Factorial of ",n," = ",fact;
+ 
+  return 0
+}
