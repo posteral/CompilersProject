@@ -114,11 +114,8 @@ comp_dict_item_t* dictAddItem(struct comp_dict_t **dictionary, char *key, int ty
          //printf("\nNOTE: Element (%s,%d) added on the dictionary!", (*dictionary)->hash[dictGetHashValue(key)]->key, (*dictionary)->hash[dictGetHashValue(key)]->code);
 		
      }
-     else
-      printf("\n\nhash colision? ");
      
      listPush(&((*dictionary)->hash[dictGetHashValue(key)]->line_occurrences), line);
-     printf("\nvai setaaaaaaar %s tipo %d", key, (*dictionary)->hash[dictGetHashValue(key)]->type);
      dictSetData(*dictionary, key);
      
      return (*dictionary)->hash[dictGetHashValue(key)];

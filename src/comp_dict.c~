@@ -115,7 +115,7 @@ comp_dict_item_t* dictAddItem(struct comp_dict_t **dictionary, char *key, int ty
 		
      }
      else
-      printf("\nhash colision? ");
+      printf("\n\nhash colision? ");
      
      listPush(&((*dictionary)->hash[dictGetHashValue(key)]->line_occurrences), line);
      printf("\nvai setaaaaaaar %s tipo %d", key, (*dictionary)->hash[dictGetHashValue(key)]->type);
