@@ -34,22 +34,22 @@
 %token TK_OC_NE
 %token TK_OC_AND
 %token TK_OC_OR
-%token<symbol> TK_LIT_INT
-%token<symbol> TK_LIT_FLOAT
-%token<symbol> TK_LIT_FALSE
-%token<symbol> TK_LIT_TRUE
-%token<symbol> TK_LIT_CHAR
-%token<symbol> TK_LIT_STRING
-%token<symbol> TK_IDENTIFICADOR
+%token<tree_node> TK_LIT_INT
+%token<tree_node> TK_LIT_FLOAT
+%token<tree_node> TK_LIT_FALSE
+%token<tree_node> TK_LIT_TRUE
+%token<tree_node> TK_LIT_CHAR
+%token<tree_node> TK_LIT_STRING
+%token<tree_node> TK_IDENTIFICADOR
 %token TOKEN_ERRO
 
 %type<tree_node> s
 %type<tree_node> program
 %type<tree_node> function_declaration
+%type<tree_node> commands_function
 %type<tree_node> command_block
 %type<tree_node> command_sequence
 %type<tree_node> non_void_command
-%type<tree_node> void_command
 %type<tree_node> statement
 %type<tree_node> assignment
 %type<tree_node> input
@@ -57,14 +57,11 @@
 %type<tree_node> non_void_expression_list
 %type<tree_node> return
 %type<tree_node> control_flow
-%type<tree_node> arg
 %type<tree_node> arg_list
 %type<tree_node> non_void_arg_list
-%type<tree_node> void_arg_list
 %type<tree_node> expression
 %type<tree_node> func_call
-
-%type<symbol> header
+%type<tree_node> header
 
 %left TK_OC_OR
 %left TK_OC_AND
@@ -109,26 +106,30 @@
 	// ------------------------- VARIABLES DECLARATION:
 	global_var_declaration : 	var_declaration ';' | vector_declaration ';';
 	var_declaration :	        var_type TK_IDENTIFICADOR { }; 
-	vector_declaration :		  var_type TK_IDENTIFICADOR '[' expression ']';
-	var_type :                TK_PR_INT | TK_PR_FLOAT | TK_PR_BOOL | TK_PR_CHAR | TK_PR_STRING ;
+	vector_declaration :		var_type TK_IDENTIFICADOR '[' expression ']';
+	var_type :                	TK_PR_INT | TK_PR_FLOAT | TK_PR_BOOL | TK_PR_CHAR | TK_PR_STRING ;
 	// ------------------------------------------------
 	
 	// -------------------------- FUNCTION DECLARATION:
-	function_declaration :   header local_var_declaration command_block 
+	function_declaration :   header local_var_declaration commands_function 
 					                    {		
-						                    $$ = treeCreateNode(2, IKS_AST_FUNCAO, $1);
-						                    gv_declare(IKS_AST_FUNCAO, (const void*)$$, ((comp_dict_item_t*)$1)->data.identifier_type);
+						                    $$ = $1;
+						                    gv_declare(IKS_AST_FUNCAO, (const void*)$$, ($1->symbol)->data.identifier_type);
 						                    if($3!=NULL)
 						                    {
 						                      treeAppendNode($$,$3);
 							                    gv_connect($$,$3);
 						                    }
 					                    };
-	header :                  var_type TK_IDENTIFICADOR '(' parameter_list ')' { $$=$2; };
+	header :                  var_type TK_IDENTIFICADOR '(' parameter_list ')' 
+					{  
+						 $$ = $2;
+					};
 	parameter_list :          non_void_parameter_list | ;
 	non_void_parameter_list : parameter ',' non_void_parameter_list | parameter ;
 	parameter :               var_type TK_IDENTIFICADOR ;	
 	local_var_declaration :   var_declaration ';' local_var_declaration | ;	
+	commands_function: 	'{' command_sequence '}' {$$=$2;};
 	// ------------------------------------------------
 	
 	// -------------------------------------- COMMANDS:
@@ -152,17 +153,15 @@
 						                }
 						                $$ = $1;
 					                };
-	statement :           non_void_command | void_command ;
-	non_void_command :    command_block | func_call | control_flow | assignment | input | output | return ; 
-	void_command :        { $$ = NULL; };
+	statement :           non_void_command | { $$ = NULL; };
+	non_void_command :    command_block | func_call | control_flow | assignment | input | output | return ;       
 	assignment : 	        TK_IDENTIFICADOR '=' expression 
 				                  {
 					                  $$ = treeCreateNode(2, IKS_AST_ATRIBUICAO, NULL);
-					                  comp_tree_t* son = treeCreateNode(1, IKS_AST_IDENTIFICADOR, $1);
-					                  treeAppendNode($$,son);	
+					                  treeAppendNode($$,$1);	
 					                  treeAppendNode($$,$3);
 					                  gv_declare(IKS_AST_ATRIBUICAO, (const void*)$$, NULL);
-					                  gv_declare(IKS_AST_IDENTIFICADOR, (const void*)$1, ((comp_dict_item_t*)$1)->data.identifier_type);
+					                  gv_declare(IKS_AST_IDENTIFICADOR, (const void*)$1, ($1->symbol)->data.identifier_type);
 					                  gv_connect($$, $1);
 					                  gv_connect($$, $3);
 				                  }
@@ -170,14 +169,13 @@
 				                  {
 					                  $$ = treeCreateNode(2, IKS_AST_ATRIBUICAO, NULL);
 					                  comp_tree_t* son = treeCreateNode(1, IKS_AST_VETOR_INDEXADO, NULL);	
-					                  comp_tree_t* grand_son = treeCreateNode(1, IKS_AST_IDENTIFICADOR, $1);
-					                  treeAppendNode(son,grand_son);	
+					                  treeAppendNode(son,$1);	
 					                  treeAppendNode(son,$3);
 					                  treeAppendNode($$,son);	
 					                  treeAppendNode($$,$6);
 					                  gv_declare(IKS_AST_ATRIBUICAO, (const void*)$$, NULL);
 					                  gv_declare(IKS_AST_VETOR_INDEXADO, (const void*)son, NULL);
-					                  gv_declare(IKS_AST_IDENTIFICADOR, (const void*)$1, ((comp_dict_item_t*)$1)->data.identifier_type);
+					                  gv_declare(IKS_AST_IDENTIFICADOR, (const void*)$1, ($1->symbol)->data.identifier_type);
 					                  gv_connect($$, son);
 					                  gv_connect($$, $6);
 					                  gv_connect(son, $1);
@@ -186,10 +184,9 @@
 	input :             TK_PR_INPUT TK_IDENTIFICADOR 
 		                      {
 			                      $$ = treeCreateNode(1, IKS_AST_INPUT, NULL);
-			                      comp_tree_t* son = treeCreateNode(1, IKS_AST_IDENTIFICADOR, $2);
-			                      treeAppendNode($$,son);
+			                      treeAppendNode($$,$2);
 			                      gv_declare(IKS_AST_INPUT, (const void*)$$, NULL);
-			                      gv_declare(IKS_AST_IDENTIFICADOR, (const void*)$2, ((comp_dict_item_t*)$2)->data.identifier_type);
+			                      gv_declare(IKS_AST_IDENTIFICADOR, (const void*)$2, ($2->symbol)->data.identifier_type);
 			                      gv_connect($$, $2);						
 		                      };
 	output :            TK_PR_OUTPUT non_void_expression_list 
@@ -217,26 +214,23 @@
 	func_call : 	      TK_IDENTIFICADOR '(' arg_list ')'
 				                  {
 					                  $$ = treeCreateNode(2, IKS_AST_CHAMADA_DE_FUNCAO, NULL);
-					                  comp_tree_t* son = treeCreateNode(1, IKS_AST_IDENTIFICADOR, $1);
-					                  treeAppendNode($$,son);
+					                  treeAppendNode($$,$1);
 					                  if($3 != NULL) 
 					                    treeAppendNode($$,$3);
 					                  gv_declare(IKS_AST_CHAMADA_DE_FUNCAO, (const void*)$$, NULL);
-					                  gv_declare(IKS_AST_IDENTIFICADOR, (const void*)$1, ((comp_dict_item_t*)$1)->data.identifier_type);
+					                  gv_declare(IKS_AST_IDENTIFICADOR, (const void*)$1, ($1->symbol)->data.identifier_type);
 					                  gv_connect($$, $1);
 					                  if($3 != NULL) 
 						                  gv_connect($$, $3);
 				                  };	
-	arg_list : 	        non_void_arg_list | void_arg_list ; 
-	non_void_arg_list : arg ',' non_void_arg_list 
+	arg_list : 	        non_void_arg_list | { $$ = NULL; }; 
+	non_void_arg_list : expression ',' non_void_arg_list 
 				                  {
 					                  treeAppendNode($1,$3);
 					                  gv_connect($1, $3);
 					                  $$=$1;		
 				                  }
-			                | arg;
-	void_arg_list: 	    { $$ = NULL; };
-	arg:  		          expression;
+			                | expression;
 	control_flow :	    TK_PR_IF '(' expression ')' TK_PR_THEN non_void_command 
 				                {
 					                $$ = treeCreateNode(1, IKS_AST_IF_ELSE, NULL);							
@@ -280,64 +274,58 @@
 	// ----------------------------------- EXPRESSIONS:					
 	expression : 	    TK_IDENTIFICADOR 
 				                {
-					                $$ = treeCreateNode(1, IKS_AST_IDENTIFICADOR, $1);							
-					                gv_declare(IKS_AST_IDENTIFICADOR, (const void*)$$, ((comp_dict_item_t*)$1)->data.identifier_type);
+					                $$ = $1;							
+					                gv_declare(IKS_AST_IDENTIFICADOR, (const void*)$1, ($1->symbol)->data.identifier_type);
 				                } 	
 			                | TK_IDENTIFICADOR '[' expression ']'
 				                {
 					                $$ = treeCreateNode(1, IKS_AST_VETOR_INDEXADO, NULL);
-					                comp_tree_t* son = treeCreateNode(1, IKS_AST_IDENTIFICADOR, $1);
-					                treeAppendNode($$,son);	
+					                treeAppendNode($$,$1);	
 					                treeAppendNode($$,$3);
 					                gv_declare(IKS_AST_VETOR_INDEXADO, (const void*)$$, NULL);
-					                gv_declare(IKS_AST_IDENTIFICADOR, (const void*)$1, ((comp_dict_item_t*)$1)->data.identifier_type);
+					                gv_declare(IKS_AST_IDENTIFICADOR, (const void*)$1, ($1->symbol)->data.identifier_type);
 					                gv_connect($$, $1);
 					                gv_connect($$, $3);
 				                }
 			                | TK_LIT_INT
 				                {
-					                $$ = treeCreateNode(1, IKS_AST_LITERAL, $1);	
-
+					                $$ = $1;
 					                char int_literal[15];
-					                sprintf(int_literal, "%d", ((comp_dict_item_t*)$1)->data.int_type);						
-					                gv_declare(IKS_AST_LITERAL, (const void*)$$, int_literal);
+					                sprintf(int_literal, "%d", ($1->symbol)->data.int_type);						
+					                gv_declare(IKS_AST_LITERAL, (const void*)$1, int_literal);
 				                }
 			                | TK_LIT_FLOAT
 				                {
-					                $$ = treeCreateNode(1, IKS_AST_LITERAL, $1);
-
+					                $$ = $1;
 					                char float_literal[15];
-					                sprintf(float_literal, "%.2f", ((comp_dict_item_t*)$1)->data.float_type);;							
-					                gv_declare(IKS_AST_LITERAL, (const void*)$$, float_literal);
+					                sprintf(float_literal, "%.2f", ($1->symbol)->data.float_type);						
+					                gv_declare(IKS_AST_LITERAL, (const void*)$1, float_literal);
 				                }
                   			| TK_LIT_FALSE  
 				                {
-					                $$ = treeCreateNode(1, IKS_AST_LITERAL, $1);
-
+					                $$ = $1;
 					                char false_literal[15];
-					                sprintf(false_literal, "%d", ((comp_dict_item_t*)$1)->data.bool_type);							
-					                gv_declare(IKS_AST_LITERAL, (const void*)$$, false_literal);				
+					                sprintf(false_literal, "%d", ($1->symbol)->data.bool_type);							
+					                gv_declare(IKS_AST_LITERAL, (const void*)$1, false_literal);				
 				                }
 			                | TK_LIT_TRUE   
 				                {
-					                $$ = treeCreateNode(1, IKS_AST_LITERAL, $1);						
-
+					                $$ = $1;
 					                char true_literal[15];
-					                sprintf(true_literal, "%d", ((comp_dict_item_t*)$1)->data.bool_type);							
-					                gv_declare(IKS_AST_LITERAL, (const void*)$$, true_literal);
+					                sprintf(true_literal, "%d", ($1->symbol)->data.bool_type);							
+					                gv_declare(IKS_AST_LITERAL, (const void*)$1, true_literal);
 				                }
 			                | TK_LIT_CHAR
 				                {
-					                $$ = treeCreateNode(1, IKS_AST_LITERAL, $1);							
-					
+					                $$ = $1;
 					                char char_literal[15];
-					                sprintf(char_literal, "%c", ((comp_dict_item_t*)$1)->data.char_type);							
-					                gv_declare(IKS_AST_LITERAL, (const void*)$$, char_literal);
+					                sprintf(char_literal, "%c", ($1->symbol)->data.char_type);							
+					                gv_declare(IKS_AST_LITERAL, (const void*)$1, char_literal);
 				                }   
 			                | TK_LIT_STRING 
 				                {
-					                $$ = treeCreateNode(1, IKS_AST_LITERAL, $1);							
-					                gv_declare(IKS_AST_LITERAL, (const void*)$$, ((comp_dict_item_t*)$1)->data.string_type);
+					                $$ = $1;							
+					                gv_declare(IKS_AST_LITERAL, (const void*)$1, ($1->symbol)->data.string_type);
 				                }
 			                | expression '+' expression 
 				                {
