@@ -106,8 +106,8 @@
 	// ------------------------- VARIABLES DECLARATION:
 	global_var_declaration : 	var_declaration ';' | vector_declaration ';';
 	var_declaration :	        var_type TK_IDENTIFICADOR { }; 
-	vector_declaration :		var_type TK_IDENTIFICADOR '[' expression ']';
-	var_type :                	TK_PR_INT | TK_PR_FLOAT | TK_PR_BOOL | TK_PR_CHAR | TK_PR_STRING ;
+	vector_declaration :		  var_type TK_IDENTIFICADOR '[' TK_LIT_INT ']'; //Ta certo? Na global eu nao estou deixando colocar [expression]
+	var_type :                TK_PR_INT | TK_PR_FLOAT | TK_PR_BOOL | TK_PR_CHAR | TK_PR_STRING ;
 	// ------------------------------------------------
 	
 	// -------------------------- FUNCTION DECLARATION:
@@ -121,15 +121,12 @@
 							                    gv_connect($$,$3);
 						                    }
 					                    };
-	header :                  var_type TK_IDENTIFICADOR '(' parameter_list ')' 
-					{  
-						 $$ = $2;
-					};
+	header :                  var_type TK_IDENTIFICADOR '(' parameter_list ')' { $$ = $2;	};
 	parameter_list :          non_void_parameter_list | ;
 	non_void_parameter_list : parameter ',' non_void_parameter_list | parameter ;
 	parameter :               var_type TK_IDENTIFICADOR ;	
 	local_var_declaration :   var_declaration ';' local_var_declaration | ;	
-	commands_function: 	'{' command_sequence '}' {$$=$2;};
+	commands_function: 	      '{' command_sequence '}' {$$=$2;};
 	// ------------------------------------------------
 	
 	// -------------------------------------- COMMANDS:
