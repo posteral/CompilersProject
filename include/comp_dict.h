@@ -15,6 +15,30 @@
 #define IKS_SIMBOLO_LITERAL_BOOL 5
 #define IKS_SIMBOLO_IDENTIFICADOR 6
 
+#define IKS_INT		258
+#define IKS_FLOAT	259
+#define IKS_CHAR	260
+#define IKS_STRING	261	
+#define IKS_BOOL	262
+
+#define IKS_INT_SIZE	4
+#define IKS_FLOAT_SIZE	8
+#define IKS_CHAR_SIZE	1
+#define IKS_STRING_SIZE	1	
+#define IKS_BOOL_SIZE	1
+
+#define IKS_VARIABLE	0
+#define IKS_VECTOR		1
+#define IKS_FUNCTION	2
+
+typedef struct identifier{
+		int		is_declared;
+		char	name[MAX_KEY_SIZE];
+	    int		type;				/* Int, float, bool, char, string*/
+        int		struct_type;		/*Variable, vector or function declaration*/
+        int		size;  
+} identifier;
+
 /*
     brief: This variable stores a literal with the correponding type.
 */
@@ -25,7 +49,7 @@ typedef union data_type {
         char  char_type;
         char  string_type[MAX_KEY_SIZE];
         int   bool_type;
-        char  identifier_type[MAX_KEY_SIZE];
+        struct identifier identifier_type;
 } data_type;
 
 /*
@@ -38,7 +62,7 @@ typedef struct comp_dict_item_t {
         union  data_type         data;
         int                      type;
         int                      code;            
-        char                     key[MAX_KEY_SIZE];  
+        char                     key[MAX_KEY_SIZE];
 } comp_dict_item_t;
 
 /*
@@ -112,5 +136,6 @@ void                dictEmpty(struct comp_dict_t *dictionary);
     return:       The position of the symbol on the symbols table.
 */
 int                 dictGetHashValue(char *s);
+int 				dictSetIdentifierSize(comp_dict_item_t *item, int type);
 
 #endif

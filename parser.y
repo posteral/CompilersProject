@@ -1,6 +1,7 @@
 %{ 
 #include <stdio.h>
 #include "main.h"
+#include "semantic_analysis.h"
 %}
 %require "2.5"
 %error-verbose
@@ -15,11 +16,16 @@
  struct comp_tree_t *tree_node;
 };
 
-%token TK_PR_INT
-%token TK_PR_FLOAT
-%token TK_PR_BOOL
-%token TK_PR_CHAR
-%token TK_PR_STRING
+%union
+{
+ int identifier;
+};
+
+%token<identifier> TK_PR_INT
+%token<identifier> TK_PR_FLOAT
+%token<identifier> TK_PR_BOOL
+%token<identifier> TK_PR_CHAR
+%token<identifier> TK_PR_STRING
 %token TK_PR_IF
 %token TK_PR_THEN
 %token TK_PR_ELSE
@@ -63,6 +69,8 @@
 %type<tree_node> func_call
 %type<tree_node> header
 
+%type<identifier> var_type
+
 %left TK_OC_OR
 %left TK_OC_AND
 %left '<' '>' TK_OC_LE TK_OC_GE TK_OC_EQ TK_OC_NE
@@ -105,23 +113,52 @@
 	
 	// ------------------------- VARIABLES DECLARATION:
 	global_var_declaration : 	var_declaration ';' | vector_declaration ';';
-	var_declaration :	        var_type TK_IDENTIFICADOR { }; 
-	vector_declaration :		  var_type TK_IDENTIFICADOR '[' TK_LIT_INT ']'; //Ta certo? Na global eu nao estou deixando colocar [expression]
-	var_type :                TK_PR_INT | TK_PR_FLOAT | TK_PR_BOOL | TK_PR_CHAR | TK_PR_STRING ;
+	var_declaration :	        var_type TK_IDENTIFICADOR { 
+									$2->dataType = $1;
+									($2->symbol)->data.identifier_type.type = $1;
+									($2->symbol)->data.identifier_type.struct_type = IKS_VARIABLE;
+									($2->symbol)->data.identifier_type.is_declared = 1;
+									dictSetIdentifierSize($2->symbol, $1); 									
+									}; 
+	vector_declaration :		  var_type TK_IDENTIFICADOR '[' TK_LIT_INT ']'{
+									$2->dataType = $1;
+									($2->symbol)->data.identifier_type.type = $1;
+									($2->symbol)->data.identifier_type.struct_type = IKS_VECTOR;
+									($2->symbol)->data.identifier_type.is_declared = 1;
+									dictSetIdentifierSize($2->symbol, $1);
+									}; //Ta certo? Na global eu nao estou deixando colocar [expression]
+	var_type :                TK_PR_INT | TK_PR_FLOAT | TK_PR_BOOL | TK_PR_CHAR | TK_PR_STRING {
+										switch($1){
+											case TK_PR_INT: 	$$ = IKS_INT;
+											case TK_PR_FLOAT: 	$$ = IKS_FLOAT;
+											case TK_PR_BOOL: 	$$ = IKS_BOOL;
+											case TK_PR_CHAR: 	$$ = IKS_CHAR;
+											case TK_PR_STRING: 	$$ = IKS_STRING;
+										}
+									};
 	// ------------------------------------------------
 	
 	// -------------------------- FUNCTION DECLARATION:
 	function_declaration :   header local_var_declaration commands_function 
 					                    {		
 						                    $$ = $1;
-						                    gv_declare(IKS_AST_FUNCAO, (const void*)$$, ($1->symbol)->data.identifier_type);
+						                    gv_declare(IKS_AST_FUNCAO, (const void*)$$, ($1->symbol)->data.identifier_type.name);
 						                    if($3!=NULL)
 						                    {
 						                      treeAppendNode($$,$3);
 							                    gv_connect($$,$3);
 						                    }
 					                    };
-	header :                  var_type TK_IDENTIFICADOR '(' parameter_list ')' { $$ = $2;	};
+	header :                  var_type TK_IDENTIFICADOR '(' parameter_list ')' 
+								{	
+									$$ = $2;
+									$2->dataType = $1;
+									($2->symbol)->data.identifier_type.type = $1;
+									($2->symbol)->data.identifier_type.struct_type = IKS_FUNCTION;
+									($2->symbol)->data.identifier_type.is_declared = 1;
+									dictSetIdentifierSize($2->symbol, $1);
+									function_return_type = $1;
+								};
 	parameter_list :          non_void_parameter_list | ;
 	non_void_parameter_list : parameter ',' non_void_parameter_list | parameter ;
 	parameter :               var_type TK_IDENTIFICADOR ;	
@@ -155,41 +192,58 @@
 	assignment : 	        TK_IDENTIFICADOR '=' expression 
 				                  {
 					                  $$ = treeCreateNode(2, IKS_AST_ATRIBUICAO, NULL);
+									  $$->dataType = $1->dataType;
+									  
 					                  treeAppendNode($$,$1);	
 					                  treeAppendNode($$,$3);
+					                  
+									  semanticAnalysisArithmeticCoercion($$);
+									
 					                  gv_declare(IKS_AST_ATRIBUICAO, (const void*)$$, NULL);
-					                  gv_declare(IKS_AST_IDENTIFICADOR, (const void*)$1, ($1->symbol)->data.identifier_type);
+					                  gv_declare(IKS_AST_IDENTIFICADOR, (const void*)$1, ($1->symbol)->data.identifier_type.name);
 					                  gv_connect($$, $1);
 					                  gv_connect($$, $3);
 				                  }
 			                  | TK_IDENTIFICADOR '[' expression ']' '=' expression 
 				                  {
 					                  $$ = treeCreateNode(2, IKS_AST_ATRIBUICAO, NULL);
-					                  comp_tree_t* son = treeCreateNode(1, IKS_AST_VETOR_INDEXADO, NULL);	
-					                  treeAppendNode(son,$1);	
-					                  treeAppendNode(son,$3);
-					                  treeAppendNode($$,son);	
+					                  comp_tree_t* child = treeCreateNode(1, IKS_AST_VETOR_INDEXADO, NULL);	
+					                  child->dataType = $1->dataType;
+					                  $$->dataType = $1->dataType;
+					                  
+					                  treeAppendNode(child,$1);	
+					                  treeAppendNode(child,$3);
+					                  treeAppendNode($$,child);	
 					                  treeAppendNode($$,$6);
+					         
+									  semanticAnalysisArithmeticCoercion($$);
+					                  
 					                  gv_declare(IKS_AST_ATRIBUICAO, (const void*)$$, NULL);
-					                  gv_declare(IKS_AST_VETOR_INDEXADO, (const void*)son, NULL);
-					                  gv_declare(IKS_AST_IDENTIFICADOR, (const void*)$1, ($1->symbol)->data.identifier_type);
-					                  gv_connect($$, son);
+					                  gv_declare(IKS_AST_VETOR_INDEXADO, (const void*)child, NULL);
+					                  gv_declare(IKS_AST_IDENTIFICADOR, (const void*)$1, ($1->symbol)->data.identifier_type.name);
+					                  gv_connect($$, child);
 					                  gv_connect($$, $6);
-					                  gv_connect(son, $1);
-					                  gv_connect(son, $3);
+					                  gv_connect(child, $1);
+					                  gv_connect(child, $3);
 				                  };
 	input :             TK_PR_INPUT TK_IDENTIFICADOR 
 		                      {
 			                      $$ = treeCreateNode(1, IKS_AST_INPUT, NULL);
 			                      treeAppendNode($$,$2);
+			                      
+			                      semanticAnalysisCommandVerification($$);
+			                      
 			                      gv_declare(IKS_AST_INPUT, (const void*)$$, NULL);
-			                      gv_declare(IKS_AST_IDENTIFICADOR, (const void*)$2, ($2->symbol)->data.identifier_type);
+			                      gv_declare(IKS_AST_IDENTIFICADOR, (const void*)$2, ($2->symbol)->data.identifier_type.name);
 			                      gv_connect($$, $2);						
 		                      };
 	output :            TK_PR_OUTPUT non_void_expression_list 
 		                      {
 			                      $$ = treeCreateNode(1, IKS_AST_OUTPUT, NULL);
 			                      treeAppendNode($$,$2);
+			                      
+			                      semanticAnalysisCommandVerification($$);
+			                      
 			                      gv_declare(IKS_AST_OUTPUT, (const void*)$$, NULL);
 			                      gv_connect($$,$2);						
 		                      };
@@ -203,7 +257,12 @@
 	return :            TK_PR_RETURN expression 
 		                      {
 			                      $$ = treeCreateNode(1, IKS_AST_RETURN, NULL);
+			                      $$->dataType = function_return_type;
 			                      treeAppendNode($$,$2);
+			                      
+			                      semanticAnalysisArithmeticCoercion($$);
+			                      semanticAnalysisCommandVerification($$);
+			                      
 			                      gv_declare(IKS_AST_RETURN, (const void*)$$, NULL);
 			                      gv_connect($$,$2);						
 		                      };
@@ -215,7 +274,7 @@
 					                  if($3 != NULL) 
 					                    treeAppendNode($$,$3);
 					                  gv_declare(IKS_AST_CHAMADA_DE_FUNCAO, (const void*)$$, NULL);
-					                  gv_declare(IKS_AST_IDENTIFICADOR, (const void*)$1, ($1->symbol)->data.identifier_type);
+					                  gv_declare(IKS_AST_IDENTIFICADOR, (const void*)$1, ($1->symbol)->data.identifier_type.name);
 					                  gv_connect($$, $1);
 					                  if($3 != NULL) 
 						                  gv_connect($$, $3);
@@ -272,7 +331,7 @@
 	expression : 	    TK_IDENTIFICADOR 
 				                {
 					                $$ = $1;							
-					                gv_declare(IKS_AST_IDENTIFICADOR, (const void*)$1, ($1->symbol)->data.identifier_type);
+					                gv_declare(IKS_AST_IDENTIFICADOR, (const void*)$1, ($1->symbol)->data.identifier_type.name);
 				                } 	
 			                | TK_IDENTIFICADOR '[' expression ']'
 				                {
@@ -280,13 +339,14 @@
 					                treeAppendNode($$,$1);	
 					                treeAppendNode($$,$3);
 					                gv_declare(IKS_AST_VETOR_INDEXADO, (const void*)$$, NULL);
-					                gv_declare(IKS_AST_IDENTIFICADOR, (const void*)$1, ($1->symbol)->data.identifier_type);
+					                gv_declare(IKS_AST_IDENTIFICADOR, (const void*)$1, ($1->symbol)->data.identifier_type.name);
 					                gv_connect($$, $1);
 					                gv_connect($$, $3);
 				                }
 			                | TK_LIT_INT
 				                {
 					                $$ = $1;
+					                $1->dataType = IKS_SIMBOLO_LITERAL_INT;
 					                char int_literal[15];
 					                sprintf(int_literal, "%d", ($1->symbol)->data.int_type);						
 					                gv_declare(IKS_AST_LITERAL, (const void*)$1, int_literal);
@@ -294,6 +354,7 @@
 			                | TK_LIT_FLOAT
 				                {
 					                $$ = $1;
+					                $1->dataType = IKS_SIMBOLO_LITERAL_FLOAT;
 					                char float_literal[15];
 					                sprintf(float_literal, "%.2f", ($1->symbol)->data.float_type);						
 					                gv_declare(IKS_AST_LITERAL, (const void*)$1, float_literal);
@@ -301,6 +362,7 @@
                   			| TK_LIT_FALSE  
 				                {
 					                $$ = $1;
+					                $1->dataType = IKS_SIMBOLO_LITERAL_BOOL;
 					                char false_literal[15];
 					                sprintf(false_literal, "%d", ($1->symbol)->data.bool_type);							
 					                gv_declare(IKS_AST_LITERAL, (const void*)$1, false_literal);				
@@ -308,6 +370,7 @@
 			                | TK_LIT_TRUE   
 				                {
 					                $$ = $1;
+					                $1->dataType = IKS_SIMBOLO_LITERAL_BOOL;
 					                char true_literal[15];
 					                sprintf(true_literal, "%d", ($1->symbol)->data.bool_type);							
 					                gv_declare(IKS_AST_LITERAL, (const void*)$1, true_literal);
@@ -315,6 +378,7 @@
 			                | TK_LIT_CHAR
 				                {
 					                $$ = $1;
+					                $1->dataType = IKS_SIMBOLO_LITERAL_CHAR;
 					                char char_literal[15];
 					                sprintf(char_literal, "%c", ($1->symbol)->data.char_type);							
 					                gv_declare(IKS_AST_LITERAL, (const void*)$1, char_literal);
@@ -322,13 +386,18 @@
 			                | TK_LIT_STRING 
 				                {
 					                $$ = $1;							
+					                $1->dataType = IKS_SIMBOLO_LITERAL_STRING;
 					                gv_declare(IKS_AST_LITERAL, (const void*)$1, ($1->symbol)->data.string_type);
 				                }
 			                | expression '+' expression 
-				                {
+				                {									
 					                $$ = treeCreateNode(2, IKS_AST_ARIM_SOMA, NULL);
 					                treeAppendNode($$,$1);	
 					                treeAppendNode($$,$3);
+					                
+					                semanticAnalysisTypeInference($$); 
+									semanticAnalysisArithmeticCoercion($$);
+
 					                gv_declare(IKS_AST_ARIM_SOMA, (const void*)$$, NULL);
 					                gv_connect($$, $1);
 					                gv_connect($$, $3);	
@@ -338,6 +407,10 @@
 					                $$ = treeCreateNode(2, IKS_AST_ARIM_SUBTRACAO, NULL);
 					                treeAppendNode($$,$1);	
 					                treeAppendNode($$,$3);
+
+					                semanticAnalysisTypeInference($$); 
+									semanticAnalysisArithmeticCoercion($$);
+									
 					                gv_declare(IKS_AST_ARIM_SUBTRACAO, (const void*)$$, NULL);
 					                gv_connect($$, $1);
 					                gv_connect($$, $3);	
@@ -345,7 +418,7 @@
 			                |'!' expression 			  
 				                {
 					                $$ = treeCreateNode(1, IKS_AST_LOGICO_COMP_NEGACAO, NULL);
-					                treeAppendNode($$,$2);
+					                treeAppendNode($$,$2);					                
 					                gv_declare(IKS_AST_LOGICO_COMP_NEGACAO, (const void*)$$, NULL);
 					                gv_connect($$, $2);	
 				                }
@@ -362,6 +435,10 @@
 					                $$ = treeCreateNode(2, IKS_AST_ARIM_MULTIPLICACAO, NULL);
 					                treeAppendNode($$,$1);	
 					                treeAppendNode($$,$3);
+					                
+									semanticAnalysisTypeInference($$); 
+									semanticAnalysisArithmeticCoercion($$);
+					                
 					                gv_declare(IKS_AST_ARIM_MULTIPLICACAO, (const void*)$$, NULL);
 					                gv_connect($$, $1);
 					                gv_connect($$, $3);	
@@ -371,6 +448,10 @@
 					                $$ = treeCreateNode(2, IKS_AST_ARIM_DIVISAO, NULL);
 					                treeAppendNode($$,$1);	
 					                treeAppendNode($$,$3);
+					                
+									semanticAnalysisTypeInference($$); 
+									semanticAnalysisArithmeticCoercion($$);
+					                
 					                gv_declare(IKS_AST_ARIM_DIVISAO, (const void*)$$, NULL);
 					                gv_connect($$, $1);
 					                gv_connect($$, $3);	

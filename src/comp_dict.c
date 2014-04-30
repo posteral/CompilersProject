@@ -47,7 +47,8 @@ void dictSetData(struct comp_dict_t *dictionary, char *key)
                                                   dictionary->hash[dictGetHashValue(key)]->data.bool_type = 0;
                                    break;
                               case IKS_SIMBOLO_IDENTIFICADOR:
-                                   strcpy(dictionary->hash[dictGetHashValue(key)]->data.identifier_type, key);
+                                   strcpy(dictionary->hash[dictGetHashValue(key)]->data.identifier_type.name, key);
+                                   dictionary->hash[dictGetHashValue(key)]->data.identifier_type.is_declared = 0;
                                    //printf("%s", dictionary->hash[dictGetHashValue(key)]->data.identifier_type);
                                    break;
      } 
@@ -75,8 +76,8 @@ void *dictGetData(struct comp_dict_item_t *symbol)
                                    printf("%d", symbol->data.bool_type);
                                    return &symbol->data.bool_type;
                               case IKS_SIMBOLO_IDENTIFICADOR:
-                                   printf("%s", symbol->data.identifier_type);
-                                   return &symbol->data.identifier_type;
+                                   printf("%s", symbol->data.identifier_type.name);
+                                   return &symbol->data.identifier_type.name;
      } 
 }
 
@@ -85,7 +86,7 @@ comp_dict_item_t* dictAddItem(struct comp_dict_t **dictionary, char *key, int ty
      {
                     *dictionary = dictCreate();
    	 }   	 
-
+   	 
 	  comp_dict_item_t *item = NULL;
 	
      if( (*dictionary)->hash[dictGetHashValue(key)] == NULL )
@@ -197,7 +198,7 @@ void dictPrintElementData(comp_dict_t *dictionary, char *key, int type)
                                    printf("%d", dictionary->hash[dictGetHashValue(key)]->data.int_type);
                                    break;
                               case IKS_SIMBOLO_IDENTIFICADOR:
-                                   printf("%s", dictionary->hash[dictGetHashValue(key)]->data.identifier_type);
+                                   printf("%s", dictionary->hash[dictGetHashValue(key)]->data.identifier_type.name);
                                    break;
      }                       
 }
@@ -250,5 +251,16 @@ int dictGetHashValue(char *key)
       
     //printf("\nHash value: %ld, i : %d, return %ld", hash_value, i, hash_value % HASH_FUNCTION);
     return hash_value % HASH_FUNCTION;
+}
+
+int	dictSetIdentifierSize(comp_dict_item_t *item, int type){
+	switch(type){
+		case IKS_INT 	:	item->data.identifier_type.size = IKS_INT_SIZE; break;
+		case IKS_FLOAT 	:	item->data.identifier_type.size = IKS_FLOAT_SIZE; break;
+		case IKS_CHAR 	:	item->data.identifier_type.size = IKS_CHAR_SIZE; break;
+		case IKS_STRING	:	item->data.identifier_type.size = IKS_STRING_SIZE; break;
+		case IKS_BOOL	:	item->data.identifier_type.size = IKS_BOOL_SIZE; break;
+	}
+	return item->data.identifier_type.size;
 }
 

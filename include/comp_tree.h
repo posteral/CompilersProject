@@ -7,6 +7,8 @@
 */
 typedef struct comp_tree_t {
 	int type;
+	int dataType;  
+	int coercionType;
 	comp_dict_item_t* symbol;
 	int nbChildren;
 	struct comp_tree_t **children;
