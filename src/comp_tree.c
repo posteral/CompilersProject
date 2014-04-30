@@ -2,11 +2,12 @@
 #include <stdlib.h>
 #include "comp_tree.h"
 
-comp_tree_t* treeCreateNode(int nbChildren, int type, comp_dict_item_t* symbol){
-	
-	comp_tree_t *newNode = (comp_tree_t*)malloc(sizeof(comp_tree_t));
-	newNode->type   = type;
-	newNode->symbol = symbol;
+comp_tree_t* treeCreateNode(int type, comp_dict_item_t* symbol){
+	comp_tree_t *newNode  = (comp_tree_t*)malloc(sizeof(comp_tree_t));
+  newNode->nbChildren   = 0;
+	newNode->type         = type;
+	newNode->symbol       = symbol;
+
 	return newNode;
 }
 
@@ -31,7 +32,7 @@ int treeInsertNode(comp_tree_t *root, int idx, int type, comp_dict_item_t* symbo
      root->children = (comp_tree_t**)realloc(root->children,(root->nbChildren)*sizeof(comp_tree_t*));
      for( i=root->nbChildren-1; i>idx ; --i)
           root->children[i] = root->children[i-1];
-     root->children[i] = treeCreateNode(0,type,symbol);
+     root->children[i] = treeCreateNode(type,symbol);
      //printf("\nNOTE: Node inserted on the position %d with symbom ", idx);
      dictGetData(root->children[i]->symbol);
     }
@@ -92,4 +93,18 @@ void treePrint(comp_tree_t *tree)
  {
   treePrint(tree->children[i]);
  }
+}
+
+int	treeSetSize(comp_tree_t *node, int type){
+
+	switch(type)
+  {
+		case IKS_INT 	  :	node->size = IKS_INT_SIZE; break;
+		case IKS_FLOAT 	:	node->size = IKS_FLOAT_SIZE; break;
+		case IKS_CHAR 	:	node->size = IKS_CHAR_SIZE; break;
+		case IKS_STRING	:	node->size = IKS_STRING_SIZE; break;
+		case IKS_BOOL	  :	node->size = IKS_BOOL_SIZE; break;
+	}
+	
+  return node->size;
 }

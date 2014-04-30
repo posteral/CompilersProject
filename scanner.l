@@ -63,15 +63,15 @@ true  	{ return TK_LIT_TRUE;	}
 
 {ID}		  { char *key = malloc(sizeof(char) *strlen(yytext) + 1);
 			      strcpy(key,yytext);			  
-			      yylval.symbol = treeCreateNode(1, IKS_AST_IDENTIFICADOR, dictAddItem(&dictionary, key, IKS_SIMBOLO_IDENTIFICADOR, TK_IDENTIFICADOR, yylineno));
+			      yylval.symbol = treeCreateNode(IKS_AST_IDENTIFICADOR, dictAddItem(&dictionary, key, IKS_SIMBOLO_IDENTIFICADOR, TK_IDENTIFICADOR, yylineno));
 			      return TK_IDENTIFICADOR;	}
 {INT} 		{ char *key = malloc(sizeof(char) * strlen(yytext) + 1);
 			      strcpy(key,yytext);
-			      yylval.symbol = treeCreateNode(1, IKS_AST_LITERAL, dictAddItem(&dictionary, key, IKS_SIMBOLO_LITERAL_INT, TK_LIT_INT, yylineno));
+			      yylval.symbol = treeCreateNode(IKS_AST_LITERAL, dictAddItem(&dictionary, key, IKS_SIMBOLO_LITERAL_INT, TK_LIT_INT, yylineno));
 			      return TK_LIT_INT;		}
 {FLOAT} 	{ char *key = malloc(sizeof(char) * strlen(yytext) + 1);
 			      strcpy(key,yytext);
-			      yylval.symbol = treeCreateNode(1, IKS_AST_LITERAL, dictAddItem(&dictionary, key, IKS_SIMBOLO_LITERAL_FLOAT, TK_LIT_FLOAT, yylineno));
+			      yylval.symbol = treeCreateNode(IKS_AST_LITERAL, dictAddItem(&dictionary, key, IKS_SIMBOLO_LITERAL_FLOAT, TK_LIT_FLOAT, yylineno));
 			      return TK_LIT_FLOAT;		}
 {CHAR}  	{ char *key = malloc(sizeof(char) * strlen(yytext) + 1);
 			      strcpy(key,yytext);
@@ -79,7 +79,7 @@ true  	{ return TK_LIT_TRUE;	}
 			      char *treated_token = untreated_token;
 			      memmove(treated_token, untreated_token+1, strlen(untreated_token)-2);
 			      treated_token[strlen(treated_token)-1] = 0;
-			      yylval.symbol = treeCreateNode(1, IKS_AST_LITERAL, dictAddItem(&dictionary, key, IKS_SIMBOLO_LITERAL_CHAR, TK_LIT_CHAR, yylineno));
+			      yylval.symbol = treeCreateNode(IKS_AST_LITERAL, dictAddItem(&dictionary, key, IKS_SIMBOLO_LITERAL_CHAR, TK_LIT_CHAR, yylineno));
 			      return TK_LIT_CHAR;		}
 {STRING}  { char *key = malloc(sizeof(char) * strlen(yytext) + 1);
 			      strcpy(key,yytext);
@@ -87,7 +87,7 @@ true  	{ return TK_LIT_TRUE;	}
 			      char *treated_token = untreated_token;
 			      memmove(treated_token, untreated_token+1, strlen(untreated_token)-2);
 			      treated_token[strlen(treated_token)-2] = 0;
-			      yylval.symbol = treeCreateNode(1, IKS_AST_LITERAL, dictAddItem(&dictionary, key, IKS_SIMBOLO_LITERAL_STRING, TK_LIT_STRING, yylineno));
+			      yylval.symbol = treeCreateNode(IKS_AST_LITERAL, dictAddItem(&dictionary, key, IKS_SIMBOLO_LITERAL_STRING, TK_LIT_STRING, yylineno));
 			      return TK_LIT_STRING;		}
 
 " "		{ }

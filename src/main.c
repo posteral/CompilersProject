@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "main.h"
+
+extern struct comp_tree_t* local_scope;
 extern char *yytext;
 extern int yylineno;
 extern int getLineNumber();
@@ -30,9 +32,12 @@ void yyerror (char const *mensagem)
 
 int main (int argc, char **argv)
 {
+  local_scope =  treeCreateNode(0, NULL);
+
   gv_init("teste.dot");
 	int resultado = yyparse();
 	gv_close();
+  dictPrint(dictionary);
 	if(resultado)
 		exit(IKS_SYNTAX_ERRO);
 	else

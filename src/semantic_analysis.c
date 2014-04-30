@@ -27,7 +27,7 @@ void semanticAnalysisPrintError(int error_code, int line){
 	}
 }
 
-int semanticAnalysisIdentifierVerification(comp_dict_item_t* symbol, int struct_type){
+/*int semanticAnalysisIdentifierVerification(comp_tree_t* node, int struct_type){
 	if(!symbol->data.identifier_type.is_declared)
 	{
 	   semanticAnalysisPrintError(IKS_ERROR_UNDECLARED, symbol->line_occurrences->data);
@@ -52,7 +52,7 @@ int semanticAnalysisIdentifierVerification(comp_dict_item_t* symbol, int struct_
 	{
         return IKS_SUCCESS;
 	}
-}
+}*/
 
 int  semanticAnalysisTypeInference(comp_tree_t* node)
 {
@@ -170,3 +170,78 @@ int isArithmeticExpression(int type)
 int semanticAnalysisParameterVerification(comp_tree_t* identifier_node, comp_tree_t* call_node)
 {
 }
+
+int semanticAnalysisDeclarationVerification(comp_tree_t* node, int is_declaration){
+  // global identifier not declared
+	if(!is_declaration && node->scope == NULL && !node->symbol->is_declared) 
+	{
+	    semanticAnalysisPrintError(IKS_ERROR_UNDECLARED, 0);
+	}
+  // local identifier not declared
+	if(!is_declaration && node->scope != NULL) 
+	{
+      comp_tree_t* aux;
+      int found = 0;
+      if(node->scope->nbChildren)
+        {
+          aux = node->scope;
+          while(aux->nbChildren && !found)
+          {
+            if(node->symbol == aux->children[0]->symbol)
+              found = 1;
+            
+            aux = aux->children[0];  
+          }
+          if(!found)
+	          semanticAnalysisPrintError(IKS_ERROR_UNDECLARED, 0);
+        }
+      else
+        if(!node->symbol->is_declared)
+          semanticAnalysisPrintError(IKS_ERROR_UNDECLARED, 0);
+	}
+
+  // identifier already declared as
+	if(is_declaration) 
+	{
+    // local
+		if(node->scope!=NULL)
+		{
+       comp_tree_t* aux;
+      int found = 0;
+      if(node->scope->nbChildren)
+        {
+          aux = node->scope;
+          while(aux->nbChildren && !found)
+          {
+            if(node->symbol == aux->children[0]->symbol)
+              found = 1;
+            
+            aux = aux->children[0];  
+          }
+          if(found)
+            {
+            printf("1");
+	            semanticAnalysisPrintError(IKS_ERROR_DECLARED, node->symbol->line_occurrences[0].data);
+              return 0;
+            }
+        }
+      else
+        if(node->symbol->is_declared)
+          {
+          printf("2");
+            semanticAnalysisPrintError(IKS_ERROR_DECLARED, node->symbol->line_occurrences[0].data);
+            return 0;
+          }		
+    }
+    // global
+	  else 
+      if (node->symbol->is_declared)
+		  {
+          printf("\n3 : %d ", node->symbol->is_declared);
+		      semanticAnalysisPrintError(IKS_ERROR_DECLARED, node->symbol->line_occurrences[0].data);
+          return 0;
+		  }
+	}
+  return 1;
+}
+

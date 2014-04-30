@@ -4,24 +4,34 @@
 
 /*
     brief:      The structure containing the symbols and its relationships according to the program.
+    atributes:  type          - IKS_VARIABLE, IKS_VECTOR, IKS_FUNCTION, IKS_PARAMETER, IKS_SCOPE or IKS_UNDEFINED. 
+                size          - size associated to dataType variable.
+                dataType      - IKS_INT, IKS_FLOAT, IKS_CHAR, IKS_STRING or IKS_BOOL.
+                coercionType  - indicates a coercion to IKS_INT or IKS_FLOAT.
+                nbCildren     - number of childrens of the node.
+                scope         - tree containing children with variables and parameters of the scope.
+                symbol        - input to the symbol table containing the symbol node.
+                children      - the children of the node.     
 */
 typedef struct comp_tree_t {
 	int type;
+  int size;
 	int dataType;  
 	int coercionType;
-	comp_dict_item_t* symbol;
-	int nbChildren;
-	struct comp_tree_t **children;
+  int nbChildren;
+
+	struct comp_dict_item_t*  symbol;
+  struct comp_tree_t*       scope; 
+	struct comp_tree_t**      children;
 } comp_tree_t;
 
 /*
     brief:      Create a node.
-    parameters: nbChildren  - number of childrens of this node.    
-                type        - type of the symbol contained in this new node.
+    parameters: type        - type of the symbol contained in this new node.
                 symbol      - the symbol added as node.
     return:     Pointer to the created node.
 */
-comp_tree_t*  treeCreateNode(int nbChildren, int type, comp_dict_item_t* symbol);
+comp_tree_t*  treeCreateNode(int type, comp_dict_item_t* symbol);
 
 /*
     brief:      Append a node. Append a children node.
@@ -55,7 +65,11 @@ void          treeEditNode(comp_tree_t *root, int idx, comp_dict_item_t* new_sym
                 idx         - the id of the node to be deleted.
 */
 void          treeDeleteNode(comp_tree_t *root, int idx);
+
 void          treeFree(comp_tree_t *tree);
+
 void          treePrint(comp_tree_t *tree);
+
+int	          treeSetSize(comp_tree_t *node, int type);
 
 #endif

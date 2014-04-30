@@ -30,14 +30,9 @@
 #define IKS_VARIABLE	0
 #define IKS_VECTOR		1
 #define IKS_FUNCTION	2
-
-typedef struct identifier{
-		int		is_declared;
-		char	name[MAX_KEY_SIZE];
-	    int		type;				/* Int, float, bool, char, string*/
-        int		struct_type;		/*Variable, vector or function declaration*/
-        int		size;  
-} identifier;
+#define IKS_PARAMETER 4
+#define IKS_SCOPE     5
+#define IKS_UNDEFINED 6
 
 /*
     brief: This variable stores a literal with the correponding type.
@@ -49,7 +44,7 @@ typedef union data_type {
         char  char_type;
         char  string_type[MAX_KEY_SIZE];
         int   bool_type;
-        struct identifier identifier_type;
+        char  identifier_type[MAX_KEY_SIZE];
 } data_type;
 
 /*
@@ -61,7 +56,8 @@ typedef struct comp_dict_item_t {
         struct comp_list_t_t*    line_occurrences;
         union  data_type         data;
         int                      type;
-        int                      code;            
+        int                      code;  
+        int                      is_declared;          
         char                     key[MAX_KEY_SIZE];
 } comp_dict_item_t;
 
@@ -136,6 +132,5 @@ void                dictEmpty(struct comp_dict_t *dictionary);
     return:       The position of the symbol on the symbols table.
 */
 int                 dictGetHashValue(char *s);
-int 				dictSetIdentifierSize(comp_dict_item_t *item, int type);
 
 #endif

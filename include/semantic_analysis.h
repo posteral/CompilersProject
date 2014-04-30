@@ -8,7 +8,7 @@
 #define IKS_SUCCESS 0 //caso não houver nenhum tipo de erro
 
 /* Verificação de declarações */
-#define IKS_ERROR_UNDECLARED	1	//identificador não declarado
+#define IKS_ERROR_UNDECLARED	1	  //identificador não declarado
 #define IKS_ERROR_DECLARED		2 	//identificador já declarado
 
 /* Uso correto de identificadores */
@@ -35,7 +35,8 @@
 #define COERCION_TO_FLOAT	0
 #define COERCION_TO_INT		1
 
-int function_return_type;
+int           function_return_type;
+comp_tree_t*  local_scope;
 
 void semanticAnalysisPrintError(int error_code, int line);
 int  semanticAnalysisEvaluation(comp_tree_t* ast);
@@ -46,5 +47,6 @@ int  semanticAnalysisArgumentVerification(comp_tree_t*, comp_tree_t*);
 int  semanticAnalysisParameterVerification(comp_tree_t*, comp_tree_t*);
 int  semanticAnalysisCommandVerification(comp_tree_t* node);
 int  isArithmeticExpression(int type);
+int  semanticAnalysisDeclarationVerification(comp_tree_t* node, int is_declaration);
 
 #endif

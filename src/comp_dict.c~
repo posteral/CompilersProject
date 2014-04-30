@@ -48,6 +48,7 @@ void dictSetData(struct comp_dict_t *dictionary, char *key)
                                    break;
                               case IKS_SIMBOLO_IDENTIFICADOR:
                                    strcpy(dictionary->hash[dictGetHashValue(key)]->data.identifier_type, key);
+                                   //dictionary->hash[dictGetHashValue(key)]->data.identifier_type.is_declared = 0;
                                    //printf("%s", dictionary->hash[dictGetHashValue(key)]->data.identifier_type);
                                    break;
      } 
@@ -85,7 +86,7 @@ comp_dict_item_t* dictAddItem(struct comp_dict_t **dictionary, char *key, int ty
      {
                     *dictionary = dictCreate();
    	 }   	 
-
+   	 
 	  comp_dict_item_t *item = NULL;
 	
      if( (*dictionary)->hash[dictGetHashValue(key)] == NULL )
@@ -114,11 +115,8 @@ comp_dict_item_t* dictAddItem(struct comp_dict_t **dictionary, char *key, int ty
          //printf("\nNOTE: Element (%s,%d) added on the dictionary!", (*dictionary)->hash[dictGetHashValue(key)]->key, (*dictionary)->hash[dictGetHashValue(key)]->code);
 		
      }
-     else
-      printf("\n\nhash colision? ");
      
      listPush(&((*dictionary)->hash[dictGetHashValue(key)]->line_occurrences), line);
-     printf("\nvai setaaaaaaar %s tipo %d", key, (*dictionary)->hash[dictGetHashValue(key)]->type);
      dictSetData(*dictionary, key);
      
      return (*dictionary)->hash[dictGetHashValue(key)];
