@@ -27,59 +27,56 @@ void semanticAnalysisPrintError(int error_code, int line){
 	}
 }
 
-/*int semanticAnalysisIdentifierVerification(comp_tree_t* node, int struct_type){
-	if(!symbol->data.identifier_type.is_declared)
+int semanticAnalysisIdentifierVerification(comp_tree_t* node, int type){
+
+	if(node->type != type)
 	{
-	   semanticAnalysisPrintError(IKS_ERROR_UNDECLARED, symbol->line_occurrences->data);
-	}
-	
-	else if(symbol->data.identifier_type.struct_type != struct_type)
-	{
-		if(symbol->data.identifier_type.struct_type == IKS_VARIABLE)
+		if(node->type == IKS_VARIABLE)
 		{
-		    semanticAnalysisPrintError(IKS_ERROR_VARIABLE, symbol->line_occurrences->data);
+		    semanticAnalysisPrintError(IKS_ERROR_VARIABLE, node->symbol->line_occurrences->data);
 		}
-		else if(symbol->data.identifier_type.struct_type == IKS_VECTOR)
+		else if(node->type == IKS_VECTOR)
 		{
-		    semanticAnalysisPrintError(IKS_ERROR_VECTOR, symbol->line_occurrences->data);
+		    semanticAnalysisPrintError(IKS_ERROR_VECTOR, node->symbol->line_occurrences->data);
 		}
-		else if(symbol->data.identifier_type.struct_type == IKS_FUNCTION)
+		else if(node->type == IKS_FUNCTION)
 		{
-		    semanticAnalysisPrintError(IKS_ERROR_FUNCTION, symbol->line_occurrences->data);
+		    semanticAnalysisPrintError(IKS_ERROR_FUNCTION, node->symbol->line_occurrences->data);
 		}
 	}
 	else
 	{
         return IKS_SUCCESS;
 	}
-}*/
+}
 
 int  semanticAnalysisTypeInference(comp_tree_t* node)
 {
     if(node->children[0]->dataType == IKS_INT && node->children[1]->dataType == IKS_INT)
     {
-        return IKS_INT;
+        node->dataType = IKS_INT;
     }
     else if(node->children[0]->dataType == IKS_FLOAT && node->children[1]->dataType == IKS_FLOAT)
     {
-        return IKS_FLOAT;
+        node->dataType = IKS_FLOAT;
     }
     else if(node->children[0]->dataType == IKS_BOOL && node->children[1]->dataType == IKS_BOOL)
     {
-        return IKS_BOOL;
+        node->dataType = IKS_BOOL;
     }
     else if((node->children[0]->dataType == IKS_FLOAT && node->children[1]->dataType == IKS_INT) || (node->children[0]->dataType == IKS_INT && node->children[1]->dataType == IKS_FLOAT))
     {
-        return IKS_FLOAT;
+        node->dataType = IKS_FLOAT;
     }
     else if((node->children[0]->dataType == IKS_BOOL && node->children[1]->dataType == IKS_INT) || (node->children[0]->dataType == IKS_INT && node->children[1]->dataType == IKS_BOOL))
     {
-        return IKS_INT;
+        node->dataType = IKS_INT;
     }
     else if((node->children[0]->dataType == IKS_BOOL && node->children[1]->dataType == IKS_FLOAT) || (node->children[0]->dataType == IKS_FLOAT && node->children[1]->dataType == IKS_BOOL))
     {
-        return IKS_FLOAT;
+        node->dataType = IKS_FLOAT;
     }
+    return node->dataType;
 }
 
 void semanticAnalysisArithmeticCoercion(comp_tree_t* node)
@@ -167,60 +164,85 @@ int isArithmeticExpression(int type)
 	}
 }
 
-int semanticAnalysisParameterVerification(comp_tree_t* identifier_node, comp_tree_t* call_node)
+int semanticAnalysisParameterVerification(comp_tree_t* node)
 {
+    fprintf(stderr,"\nenter in parameter verification!");
+    comp_tree_t *aux1, *aux2;
+    if(node->children)
+      {
+        aux1 = node;
+        while(aux1->children)
+        {
+            printf("\ncomparing %s: ", aux1->children[0]->symbol->data.identifier_type); 
+            aux2 = aux1->children[0];
+            while(aux2->children) 
+            {
+              printf(" with %s: , ", aux2->children[0]->symbol->data.identifier_type); 
+              if(aux1->children[0]->symbol == aux2->children[0]->symbol)
+                semanticAnalysisPrintError(IKS_ERROR_DECLARED,aux2->children[0]->symbol->line_occurrences[0].data);
+              aux2 = aux2->children[0];
+            }
+            aux1 = aux1->children[0];
+        }
+      }
+    fprintf(stderr,"\nleaves in parameter verification!");
+    return 1;
 }
 
 int semanticAnalysisDeclarationVerification(comp_tree_t* node, int is_declaration){
-  // global identifier not declared
-	if(!is_declaration && node->scope == NULL && !node->symbol->is_declared) 
-	{
-	    semanticAnalysisPrintError(IKS_ERROR_UNDECLARED, 0);
-	}
   // local identifier not declared
-	if(!is_declaration && node->scope != NULL) 
-	{
+	if(!is_declaration) 
+	{     
       comp_tree_t* aux;
       int found = 0;
-      if(node->scope->nbChildren)
-        {
-          aux = node->scope;
-          while(aux->nbChildren && !found)
-          {
-            if(node->symbol == aux->children[0]->symbol)
-              found = 1;
-            
-            aux = aux->children[0];  
-          }
-          if(!found)
-	          semanticAnalysisPrintError(IKS_ERROR_UNDECLARED, 0);
-        }
-      else
-        if(!node->symbol->is_declared)
+      aux = node->scope;
+      while(aux->children && !found)
+      {
+        if(node->symbol == aux->children[0]->symbol)
+          found = 1;      
+        aux = aux->children[0];  
+      }
+      if(!node->symbol->is_declared && !found)
           semanticAnalysisPrintError(IKS_ERROR_UNDECLARED, 0);
+      else
+        //local        
+        if(found)
+          {
+            node->type = aux->type;
+            node->dataType = aux->dataType;
+            node->size = aux->size;
+          }
+        //global
+        else
+          {
+            node->type = node->symbol->global->type;
+            node->dataType = node->symbol->global->dataType;
+            node->size = node->symbol->global->size;
+          }
 	}
 
   // identifier already declared as
-	if(is_declaration) 
+	else 
 	{
     // local
 		if(node->scope!=NULL)
 		{
-       comp_tree_t* aux;
+      comp_tree_t* aux;
       int found = 0;
-      if(node->scope->nbChildren)
+      if(node->scope->children)
         {
           aux = node->scope;
-          while(aux->nbChildren && !found)
+          while(aux->children && !found)
           {
+            
             if(node->symbol == aux->children[0]->symbol)
               found = 1;
-            
-            aux = aux->children[0];  
+            printf("declaracao e eh local %s %d\n", aux->children[0]->symbol->data.identifier_type,found );
+            aux = aux->children[0]; 
           }
           if(found)
             {
-            printf("1");
+              printf("1");
 	            semanticAnalysisPrintError(IKS_ERROR_DECLARED, node->symbol->line_occurrences[0].data);
               return 0;
             }
@@ -228,7 +250,7 @@ int semanticAnalysisDeclarationVerification(comp_tree_t* node, int is_declaratio
       else
         if(node->symbol->is_declared)
           {
-          printf("2");
+            printf("2");
             semanticAnalysisPrintError(IKS_ERROR_DECLARED, node->symbol->line_occurrences[0].data);
             return 0;
           }		
@@ -244,4 +266,59 @@ int semanticAnalysisDeclarationVerification(comp_tree_t* node, int is_declaratio
 	}
   return 1;
 }
+
+int  semanticAnalysisSetGroupScope(comp_tree_t* node)
+{
+    comp_tree_t* aux;
+    if(node->children)
+      {
+        aux = node;
+        while(aux->children)
+        {
+          aux->children[0]->scope = node;       
+          aux = aux->children[0];  
+        }
+      }
+}
+
+int  semanticAnalysisInsertLocalVariables(comp_tree_t* scope, comp_tree_t* local_variables)
+{
+     comp_tree_t* aux = scope;
+     while(aux->children) 
+      {   
+        fprintf(stderr, "\nn filhos: %d, %s ", aux->nbChildren, aux->children[0]->symbol->data.identifier_type);
+        aux = aux->children[0];  
+      }
+     treeAppendNode(aux, local_variables);    
+}
+
+int semanticAnalysisSetArgumentList(comp_dict_item_t* symbol, comp_tree_t* node)
+{
+    comp_tree_t* aux = node;
+    while(aux->children) 
+      {
+        symbol->nb_arguments++;   
+        aux = aux->children[0];
+      }
+    symbol->arguments = node;
+    fprintf(stderr, "\n nb arguments = %d",symbol->nb_arguments); 
+} 
+
+int semanticAnalysisPrintScope(comp_tree_t* scope)
+{
+    comp_tree_t* aux = scope;
+    while(aux->children) 
+      {   
+        fprintf(stderr, "\nnode: %s ", aux->children[0]->symbol->data.identifier_type);
+        aux = aux->children[0];  
+      }
+    fprintf(stderr,"vai merda!");
+} 
+
+
+
+
+
+
+
 

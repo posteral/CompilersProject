@@ -40,13 +40,16 @@ comp_tree_t*  local_scope;
 
 void semanticAnalysisPrintError(int error_code, int line);
 int  semanticAnalysisEvaluation(comp_tree_t* ast);
-int  semanticAnalysisIdentifierVerification(comp_dict_item_t* symbol, int struct_type);
+int  semanticAnalysisIdentifierVerification(comp_tree_t* node, int type);
 int  semanticAnalysisTypeInference(comp_tree_t* node);
 void semanticAnalysisArithmeticCoercion(comp_tree_t* node);
 int  semanticAnalysisArgumentVerification(comp_tree_t*, comp_tree_t*);
-int  semanticAnalysisParameterVerification(comp_tree_t*, comp_tree_t*);
+int  semanticAnalysisParameterVerification(comp_tree_t* node);
 int  semanticAnalysisCommandVerification(comp_tree_t* node);
 int  isArithmeticExpression(int type);
 int  semanticAnalysisDeclarationVerification(comp_tree_t* node, int is_declaration);
+int  semanticAnalysisSetGroupScope(comp_tree_t* node);  
+int  semanticAnalysisInsertLocalVariables(comp_tree_t* scope, comp_tree_t* local_variables);
+int  semanticAnalysisPrintScope(comp_tree_t* scope);
 
 #endif

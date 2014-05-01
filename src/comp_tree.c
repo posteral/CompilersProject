@@ -7,16 +7,21 @@ comp_tree_t* treeCreateNode(int type, comp_dict_item_t* symbol){
   newNode->nbChildren   = 0;
 	newNode->type         = type;
 	newNode->symbol       = symbol;
+  newNode->children     = NULL;
 
 	return newNode;
 }
 
 int treeAppendNode(comp_tree_t *root, comp_tree_t *child)
 {
-    root->nbChildren++;
-    root->children = (comp_tree_t**)realloc(root->children,(root->nbChildren)*sizeof(comp_tree_t*));
-    root->children[root->nbChildren-1] = child;
-    return root->nbChildren - 1;
+    if(root && child)
+    {
+      root->nbChildren++;
+      root->children = (comp_tree_t**)realloc(root->children,(root->nbChildren)*sizeof(comp_tree_t*));
+      root->children[root->nbChildren-1] = child;
+      return root->nbChildren - 1;
+    }
+    return 0;
 }
 
 int treeInsertNode(comp_tree_t *root, int idx, int type, comp_dict_item_t* symbol)
@@ -107,4 +112,18 @@ int	treeSetSize(comp_tree_t *node, int type){
 	}
 	
   return node->size;
+}
+
+treeSetSizeVector(comp_tree_t *node, int type, int length){
+  switch(type)
+  {
+		case IKS_INT 	  :	node->size = IKS_INT_SIZE*length; break;
+		case IKS_FLOAT 	:	node->size = IKS_FLOAT_SIZE*length; break;
+		case IKS_CHAR 	:	node->size = IKS_CHAR_SIZE*length; break;
+		case IKS_STRING	:	node->size = IKS_STRING_SIZE*length; break;
+		case IKS_BOOL	  :	node->size = IKS_BOOL_SIZE*length; break;
+	}
+	
+  return node->size;
+
 }

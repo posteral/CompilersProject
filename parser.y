@@ -64,6 +64,9 @@
 %type<tree_node> parameter_list
 %type<tree_node> non_void_parameter_list
 %type<tree_node> parameter
+%type<tree_node> local_var_declaration
+%type<tree_node> var_declaration
+%type<tree_node> vector_declaration
 
 %type<identifier_type> var_type
 
@@ -87,7 +90,7 @@
   // ---------------------------------------- PROGRAM:
 	s: program 
 		  {	
-        printf("\nprograma!");
+        fprintf(stderr,"\nprograma!");
 
 			  $$ = treeCreateNode(IKS_AST_PROGRAMA, NULL);
 			  treeAppendNode($$, $1);
@@ -113,49 +116,59 @@
 	global_var_declaration : 	var_declaration ';' | vector_declaration ';';
 	var_declaration :	        var_type TK_IDENTIFICADOR 
                               { 
-                                printf("\nsymbol identifier: %d\n", $2->symbol->is_declared);
+                                fprintf(stderr,"\nsymbol identifier: %d\n", $2->symbol->is_declared);
                                 // not global    
-                                if(local_scope->nbChildren != 0)
-                                  $2->scope = local_scope->children[local_scope->nbChildren-1];
+                                if(local_scope->scope)  
+                                  $2->scope = local_scope->children[local_scope->nbChildren-1];                             
                                 // global
                                 else                                   
-                                    $2->scope = NULL;
+                                  $2->scope = NULL;
                                 
 													      if(semanticAnalysisDeclarationVerification($2,1))
                                   $2->symbol->is_declared = 1; 
                                     
-                                $2->type = IKS_VARIABLE;		
-							              
-                                if(local_scope->nbChildren != 0)
-														        treeAppendNode(local_scope->children[local_scope->nbChildren-1], $2);
-                                
+                                $2->type = IKS_VARIABLE;                               
+                                if(!$2->scope)		
+                                  $2->symbol->global = $2;                                  
+
                                 $2->dataType = $1;
                                 treeSetSize($2, $1);
+
+                                $$ = $2;
                              };
 	vector_declaration :		  var_type TK_IDENTIFICADOR '[' TK_LIT_INT ']'
                               { 
                                 // not global    
-                                if(local_scope->nbChildren != 0)
-                                  $2->scope = local_scope->children[local_scope->nbChildren-1];
+                                if(local_scope->scope)  
+                                  $2->scope = local_scope->children[local_scope->nbChildren-1];                             
                                 // global
-                                else
+                                else                                   
                                   $2->scope = NULL;
-
-													      semanticAnalysisDeclarationVerification($2,1);
-                                $2->type = IKS_VECTOR;		
-							              
-                                if(local_scope->nbChildren != 0)
-														        treeAppendNode(local_scope->children[local_scope->nbChildren-1], $2);
                                 
+													      if(semanticAnalysisDeclarationVerification($2,1))
+                                  $2->symbol->is_declared = 1; 
+                                    
+                                $2->type = IKS_VECTOR;		
+                                if(!$2->scope)		
+                                  $2->symbol->global = $2; 
+
                                 $2->dataType = $1;
-                                treeSetSize($2, $1);
+                                treeSetSizeVector($2, $1, $4);
+
+                                $$ = $2;
                              };
-	var_type :  TK_PR_INT {printf("\nvar_type! int"); $$ = IKS_INT;} | TK_PR_FLOAT {$$ = IKS_FLOAT;} | TK_PR_BOOL {$$ = IKS_BOOL;} | TK_PR_CHAR {$$ = IKS_CHAR;} | TK_PR_STRING { $$ = IKS_STRING;};
+	var_type :  TK_PR_INT {fprintf(stderr,"\nvar_type! int"); $$ = IKS_INT;} | TK_PR_FLOAT {$$ = IKS_FLOAT;} | TK_PR_BOOL {$$ = IKS_BOOL;} | TK_PR_CHAR {$$ = IKS_CHAR;} | TK_PR_STRING { $$ = IKS_STRING;};
 	// ------------------------------------------------
 	
 	// -------------------------- FUNCTION DECLARATION:
 	function_declaration :   header local_var_declaration commands_function 
-					                    {		
+					                    { 
+                                semanticAnalysisSetArgumentList($1->symbol, local_scope->children[local_scope->nbChildren-1]); 
+                                semanticAnalysisSetGroupScope($2);                                                               		
+                                semanticAnalysisInsertLocalVariables(local_scope->children[local_scope->nbChildren-1], $2);
+                                semanticAnalysisPrintScope(local_scope->children[local_scope->nbChildren-1]);
+                                semanticAnalysisParameterVerification(local_scope->children[local_scope->nbChildren-1]);
+                                
 						                    $$ = $1;
 						                    gv_declare(IKS_AST_FUNCAO, (const void*)$$, ($1->symbol)->data.identifier_type);
 						                    if($3!=NULL)
@@ -166,19 +179,19 @@
 					                    };
   header :                  var_type TK_IDENTIFICADOR '(' parameter_list ')' 
 								              {	
-                                printf("\ncabecalho!");
-                                printf("\nsymbol identifier: %d\n", $2->symbol->is_declared);
-                                // not global    
-                                if(local_scope->nbChildren != 0)
-                                  $2->scope = local_scope->children[local_scope->nbChildren-1];
-                                // global
-                                else
-                                  $2->scope = NULL;
+                                fprintf(stderr,"\ncabecalho!");
+                                fprintf(stderr,"\nsymbol identifier: %d\n", $2->symbol->is_declared);
 
+                                // set local scope
+                                local_scope->scope = local_scope;
+
+                                // function is always global
+                                $2->scope = NULL;
                                 semanticAnalysisDeclarationVerification($2,1);
+                                $2->symbol->is_declared;
+
                                 // new scope
-                                treeAppendNode(local_scope, $4);
-                                // PERCORRER $4 SETANDO O NOVO ESCOPO?
+                                treeAppendNode(local_scope, $4); 
 
                                 $2->type = IKS_FUNCTION;									                                             
                                 $2->dataType = $1;
@@ -190,30 +203,36 @@
 	parameter_list :          non_void_parameter_list 
                                {
                                   $$ = treeCreateNode(IKS_SCOPE, NULL); 
-                                  treeAppendNode($$, $1);      
-                                  printf("\nlista de parametros criada!");                                                           
+                                  treeAppendNode($$, $1);
+                                  semanticAnalysisSetGroupScope($$);     
+                                  fprintf(stderr,"\nlista de parametros criada!");                                                           
                                } 
-                            | {printf("\nno parameters!"); $$ = treeCreateNode(IKS_SCOPE, NULL); };
+                            | {fprintf(stderr,"\nno parameters!"); $$ = treeCreateNode(IKS_SCOPE, NULL); };
 	non_void_parameter_list : parameter ',' non_void_parameter_list 
                                { 
                                   treeAppendNode($1, $3);
-                                  treeAppendNode($$, $1);
+                                  $$ = $1;
                                } 
-                            | parameter {$$ = $1; printf("\nultimo parametro!");};  
+                            | parameter {$$ = $1; fprintf(stderr,"\nultimo parametro!");};  
 	parameter :               var_type TK_IDENTIFICADOR 
                                {  
-                                printf("\nparametro!");
-                                //COMO SETAR ESCOPO SE AINDA NAO CRIEI? - setar depois?
-
+                                fprintf(stderr,"\nparametro!");
                                 $2->type = IKS_PARAMETER;									                                             
                                 $2->dataType = $1;
                                 treeSetSize($2, $1);
-
+      
                                 $$ = $2;
                                };	
 
-	local_var_declaration :   var_declaration ';' local_var_declaration | ;	
-	commands_function: 	      '{' command_sequence '}' {$$=$2;};
+	local_var_declaration :   var_declaration ';' local_var_declaration 
+                              {
+                                  fprintf(stderr,"\nNUMERO DE FILHOS: %d", local_scope->children[local_scope->nbChildren-1]->nbChildren);
+                                  treeAppendNode($1, $3);
+                                  $$ = $1;     
+                                  fprintf(stderr,"\nlista de parametros criada!");                                                           
+                               }
+                            | {fprintf(stderr,"\nno local var declaration!"); $$ = NULL;};	
+	commands_function: 	      '{' command_sequence '}' {fprintf(stderr,"\nend of command sequence");$$=$2; local_scope->scope=NULL;};
 	// ------------------------------------------------
 	
 	// -------------------------------------- COMMANDS:
@@ -241,13 +260,15 @@
 	non_void_command :    command_block | func_call | control_flow | assignment | input | output | return ;       
 	assignment : 	        TK_IDENTIFICADOR '=' expression 
 				                  {
-					                  $$ = treeCreateNode(IKS_AST_ATRIBUICAO, NULL);
-									  $$->dataType = $1->dataType;
-									  
+					                  $$ = treeCreateNode(IKS_AST_ATRIBUICAO, NULL);								  
 					                  treeAppendNode($$,$1);	
 					                  treeAppendNode($$,$3);
-					                  
-									  semanticAnalysisArithmeticCoercion($$);
+
+                            $1->scope = local_scope->children[local_scope->nbChildren-1];
+                            semanticAnalysisDeclarationVerification($1,0);
+                            semanticAnalysisIdentifierVerification($1, IKS_VARIABLE);
+												    semanticAnalysisTypeInference($$);
+									          semanticAnalysisArithmeticCoercion($$);
 									
 					                  gv_declare(IKS_AST_ATRIBUICAO, (const void*)$$, NULL);
 					                  gv_declare(IKS_AST_IDENTIFICADOR, (const void*)$1, ($1->symbol)->data.identifier_type);
@@ -398,7 +419,7 @@
 					                $$ = $1;
 					                $1->dataType = IKS_SIMBOLO_LITERAL_INT;
 					                char int_literal[15];
-					                sprintf(int_literal, "%d", ($1->symbol)->data.int_type);						
+					                fprintf(stderr,int_literal, "%d", ($1->symbol)->data.int_type);						
 					                gv_declare(IKS_AST_LITERAL, (const void*)$1, int_literal);
 				                }
 			                | TK_LIT_FLOAT
@@ -406,7 +427,7 @@
 					                $$ = $1;
 					                $1->dataType = IKS_SIMBOLO_LITERAL_FLOAT;
 					                char float_literal[15];
-					                sprintf(float_literal, "%.2f", ($1->symbol)->data.float_type);						
+					                fprintf(stderr,float_literal, "%.2f", ($1->symbol)->data.float_type);						
 					                gv_declare(IKS_AST_LITERAL, (const void*)$1, float_literal);
 				                }
                   			| TK_LIT_FALSE  
@@ -414,7 +435,7 @@
 					                $$ = $1;
 					                $1->dataType = IKS_SIMBOLO_LITERAL_BOOL;
 					                char false_literal[15];
-					                sprintf(false_literal, "%d", ($1->symbol)->data.bool_type);							
+					                fprintf(stderr,false_literal, "%d", ($1->symbol)->data.bool_type);							
 					                gv_declare(IKS_AST_LITERAL, (const void*)$1, false_literal);				
 				                }
 			                | TK_LIT_TRUE   
@@ -422,7 +443,7 @@
 					                $$ = $1;
 					                $1->dataType = IKS_SIMBOLO_LITERAL_BOOL;
 					                char true_literal[15];
-					                sprintf(true_literal, "%d", ($1->symbol)->data.bool_type);							
+					                fprintf(stderr,true_literal, "%d", ($1->symbol)->data.bool_type);							
 					                gv_declare(IKS_AST_LITERAL, (const void*)$1, true_literal);
 				                }
 			                | TK_LIT_CHAR
@@ -430,7 +451,7 @@
 					                $$ = $1;
 					                $1->dataType = IKS_SIMBOLO_LITERAL_CHAR;
 					                char char_literal[15];
-					                sprintf(char_literal, "%c", ($1->symbol)->data.char_type);							
+					                fprintf(stderr,char_literal, "%c", ($1->symbol)->data.char_type);							
 					                gv_declare(IKS_AST_LITERAL, (const void*)$1, char_literal);
 				                }   
 			                | TK_LIT_STRING 

@@ -96,8 +96,10 @@ comp_dict_item_t* dictAddItem(struct comp_dict_t **dictionary, char *key, int ty
          item->code = code;
          item->type = type;
          item->is_declared = 0;
+         item->nb_arguments = 0;
          item->line_occurrences = listCreate();
-         item->next = NULL;     
+         item->next = NULL;  
+         item->arguments = NULL;   
                   
          if ((*dictionary)->start == NULL) 
          {
