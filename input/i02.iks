@@ -1,4 +1,10 @@
 /* uma função */
-int k;
-string oi[25];
-int funca(int b, int a, int p) int c; int l; int d;{oi[3]=1}
+int in;
+char oi;
+int funca(int b, bool a, int p) int c; char l; int d;
+{ b=c-d;
+  input a;
+  output "oie";
+  return d}
+int lala(int e, bool f)int g;
+{ e=funca(e,f,in+in)}

@@ -15,11 +15,11 @@
 #define IKS_SIMBOLO_LITERAL_BOOL 5
 #define IKS_SIMBOLO_IDENTIFICADOR 6
 
-#define IKS_INT		258
-#define IKS_FLOAT	259
-#define IKS_CHAR	260
+#define IKS_INT		  258
+#define IKS_FLOAT	  259
+#define IKS_CHAR	  260
 #define IKS_STRING	261	
-#define IKS_BOOL	262
+#define IKS_BOOL	  262
 
 #define IKS_INT_SIZE	4
 #define IKS_FLOAT_SIZE	8

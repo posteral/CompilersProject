@@ -54,6 +54,7 @@ typedef struct comp_dict_item_t {
         struct comp_dict_item_t* next;
         struct comp_dict_item_t* previous;
         struct comp_list_t_t*    line_occurrences;
+        struct comp_tree_t*      global;
         struct comp_tree_t*      arguments; // only for function identifiers
         int                      nb_arguments;        
         union  data_type         data;
