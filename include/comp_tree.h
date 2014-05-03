@@ -15,15 +15,16 @@
 */
 typedef struct comp_tree_t {
 	int type;
-  int size;
+	int size;
 	int dataType;  
 	int coercionType;
-  int nbChildren;
+	int nbChildren;
 
 	struct comp_dict_item_t*  symbol;
-  struct comp_tree_t*       scope; 
+	struct comp_tree_t*       scope; 
 	struct comp_tree_t**      children;
-} comp_tree_t;
+	struct comp_tree_t*		  parent;
+} 	comp_tree_t;
 
 /*
     brief:      Create a node.

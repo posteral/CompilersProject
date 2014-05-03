@@ -4,10 +4,11 @@
 
 comp_tree_t* treeCreateNode(int type, comp_dict_item_t* symbol){
 	comp_tree_t *newNode  = (comp_tree_t*)malloc(sizeof(comp_tree_t));
-  newNode->nbChildren   = 0;
+	newNode->nbChildren   = 0;
 	newNode->type         = type;
 	newNode->symbol       = symbol;
-  newNode->children     = NULL;
+	newNode->children     = NULL;
+	newNode->parent		  = NULL;
 
 	return newNode;
 }
@@ -19,6 +20,7 @@ int treeAppendNode(comp_tree_t *root, comp_tree_t *child)
       root->nbChildren++;
       root->children = (comp_tree_t**)realloc(root->children,(root->nbChildren)*sizeof(comp_tree_t*));
       root->children[root->nbChildren-1] = child;
+      child->parent = root;
       return root->nbChildren - 1;
     }
     return 0;

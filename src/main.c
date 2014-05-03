@@ -36,8 +36,9 @@ int main (int argc, char **argv)
 
   gv_init("teste.dot");
 	int resultado = yyparse();
+	printf("\nResult: %d\n", resultado);
 	gv_close();
-  dictPrint(dictionary);
+	
 	if(resultado)
 		exit(IKS_SYNTAX_ERRO);
 	else

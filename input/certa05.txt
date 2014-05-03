@@ -1,7 +1,7 @@
 float variavel_flutuante;
 int variavel_inteira;
 char variavel_caractere;
-int minha_funcao () 
+int minha_funcao ()
 {
  a=5;
  b=0;

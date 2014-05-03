@@ -3,6 +3,7 @@ int i;
 int j;
 int aux;
 int k;
+int v[20];
 {
   k = qtd - 1;
 

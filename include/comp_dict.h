@@ -18,7 +18,7 @@
 #define IKS_INT		  258
 #define IKS_FLOAT	  259
 #define IKS_CHAR	  260
-#define IKS_STRING	261	
+#define IKS_STRING    261	
 #define IKS_BOOL	  262
 
 #define IKS_INT_SIZE	4

@@ -1,7 +1,7 @@
-float:variavel_flutuante;
-int:variavel_inteira;
-char:variavel_caractere;
-int:minha_funcao () 
+float variavel_flutuante;
+int variavel_inteira;
+char variavel_caractere;
+int minhas_funcao () 
 {
  a=minha_funcao();
  b=2.4;

@@ -90,16 +90,16 @@
   // ---------------------------------------- PROGRAM:
 	s: program 
 		  {	
-        fprintf(stderr,"\nprograma!");
+			  fprintf(stderr,"\nprograma!");
 
 			  $$ = treeCreateNode(IKS_AST_PROGRAMA, NULL);
 			  treeAppendNode($$, $1);
 			  gv_declare(IKS_AST_PROGRAMA, (const void*)$$, NULL);
 			  if($1!=NULL)
-				  gv_connect($$, $1);			
+				  gv_connect($$, $1);		
 		  };
 
-	program : global_var_declaration program {$$ = $2;} 
+	program : global_var_declaration program { $$ = $2;} 
 		        | function_declaration program
 			        {
 				        if($2!=NULL)
@@ -109,7 +109,7 @@
 					        }
 				        $$ = $1;		
 			        }
-		        |	{$$ = NULL;};
+		        |	{ fprintf(stderr,"\nvoid program"); $$ = NULL;};
 	// ------------------------------------------------
 	
 	// ------------------------- VARIABLES DECLARATION:
@@ -165,13 +165,16 @@
 	function_declaration :   header local_var_declaration 
 	                                                      {
 	                                                        semanticAnalysisSetArgumentList($1->symbol, local_scope->children[local_scope->nbChildren-1]); 
+                                                          
                                                           semanticAnalysisSetGroupScope($2);                                                               		
                                                           semanticAnalysisInsertLocalVariables(local_scope->children[local_scope->nbChildren-1], $2);
                                                           semanticAnalysisPrintScope(local_scope->children[local_scope->nbChildren-1]);
                                                           semanticAnalysisParameterVerification(local_scope->children[local_scope->nbChildren-1]);
+                                                          fprintf(stderr,"IS IT HERE?");
                                                         }
                            commands_function
-                                                        {
+                                                        {	
+															fprintf(stderr,"DOES IT EVER GET HERE?");														
 	                                                        $$ = $1;
 	                                                        gv_declare(IKS_AST_FUNCAO, (const void*)$$, ($1->symbol)->data.identifier_type);
 	                                                        if($4!=NULL)
@@ -183,7 +186,6 @@
   header :                  var_type TK_IDENTIFICADOR '(' parameter_list ')' 
 								              {	
                                 fprintf(stderr,"\nfunction declaration of: %s\n", $2->symbol->data.identifier_type);
-
                                 // set local scope
                                 local_scope->scope = local_scope;
 
@@ -260,6 +262,7 @@
 	non_void_command :    command_block | func_call | control_flow | assignment | input | output | return ;       
 	assignment : 	        TK_IDENTIFICADOR '=' expression 
 				                  {
+									  
 					                  $$ = treeCreateNode(IKS_AST_ATRIBUICAO, NULL);								  
 					                  treeAppendNode($$,$1);	
 					                  treeAppendNode($$,$3);
@@ -267,7 +270,7 @@
                             $1->scope = local_scope->children[local_scope->nbChildren-1];                         
                             semanticAnalysisDeclarationVerification($1,0);
                             semanticAnalysisIdentifierVerification($1,IKS_VARIABLE);
-                            semanticAnalysisAtributionCoercion($$);
+                            semanticAnalysisAssignmentCoercion($$);
 									
 					                  gv_declare(IKS_AST_ATRIBUICAO, (const void*)$$, NULL);
 					                  gv_declare(IKS_AST_IDENTIFICADOR, (const void*)$1, ($1->symbol)->data.identifier_type);
@@ -287,9 +290,9 @@
 					                  treeAppendNode($$,$6);
 					         
 					                  $1->scope = local_scope->children[local_scope->nbChildren-1];
-									          semanticAnalysisDeclarationVerification($1,0);
-                            semanticAnalysisIdentifierVerification($1,IKS_VECTOR);
-                            semanticAnalysisAtributionCoercion($$);
+									  semanticAnalysisDeclarationVerification($1,0);
+									  semanticAnalysisIdentifierVerification($1,IKS_VECTOR);
+                                      semanticAnalysisAssignmentCoercion($$);
 					                  
 					                  gv_declare(IKS_AST_ATRIBUICAO, (const void*)$$, NULL);
 					                  gv_declare(IKS_AST_VETOR_INDEXADO, (const void*)child, NULL);
@@ -341,6 +344,7 @@
 	
 	func_call : 	      TK_IDENTIFICADOR '(' arg_list ')'
 				                  {
+									  
 					                    $$ = treeCreateNode(IKS_AST_CHAMADA_DE_FUNCAO, NULL);
 					                    treeAppendNode($$,$1);
 					                    if($3 != NULL) 
@@ -350,6 +354,7 @@
                               semanticAnalysisDeclarationVerification($1,0);
                               semanticAnalysisIdentifierVerification($1,IKS_FUNCTION);
                               semanticAnalysisGivenArguments($1, $3);
+                              fprintf(stderr, "\nFUNC_CALL");
                               $$->type = $1->type;
                               $$->dataType = $1->dataType;
                           
@@ -366,7 +371,7 @@
 					                  gv_connect($1, $3);
 					                  $$ = $1;		
 				                  }
-			                | expression {$$ = $1;};
+			                | expression {$$ = $1; printf("\nEXPRESSION %d\n", $$->type);};
 	control_flow :	    TK_PR_IF '(' expression ')' TK_PR_THEN non_void_command 
 				                {
 					                $$ = treeCreateNode(IKS_AST_IF_ELSE, NULL);							
@@ -627,7 +632,7 @@
 					                gv_connect($$, $1);
 					                gv_connect($$, $3);	
 				                }
-			                | func_call  ;
+			                | func_call {fprintf(stderr, "\nPROBLEM\n");} ;
 	// ------------------------------------------------
 	
 %%

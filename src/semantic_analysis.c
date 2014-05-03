@@ -23,6 +23,7 @@ void semanticAnalysisPrintError(int error_code, int line){
 
     if(error_code != IKS_SUCCESS)
 	{
+		printf("Exiting with error code %d...\n", error_code);
 	    exit(error_code);
 	}
 }
@@ -46,6 +47,7 @@ int semanticAnalysisIdentifierVerification(comp_tree_t* node, int type){
 	}
 	else
 	{
+		fprintf(stderr, "\nIdentifier verification [%s]: OK", node->symbol->data.identifier_type);
         return IKS_SUCCESS;
 	}
 }
@@ -84,7 +86,7 @@ int  semanticAnalysisTypeInference(comp_tree_t* node)
     return node->dataType;
 }
 
-int  semanticAnalysisAtributionCoercion(comp_tree_t* node)
+int  semanticAnalysisAssignmentCoercion(comp_tree_t* node)
 {
     if (node->children[0]->dataType == IKS_INT)
     {
@@ -107,7 +109,21 @@ int  semanticAnalysisAtributionCoercion(comp_tree_t* node)
         if (node->children[1]->dataType == IKS_CHAR)
            semanticAnalysisPrintError(IKS_ERROR_CHAR_TO_X, 0);
     }
+    
+    if (node->children[0]->dataType == IKS_STRING)
+    {
+        if (node->children[1]->dataType != IKS_STRING)     
+           semanticAnalysisPrintError(IKS_ERROR_WRONG_TYPE,0);
+    }
+    
+    if (node->children[0]->dataType == IKS_CHAR)
+    {
+        if (node->children[1]->dataType != IKS_CHAR)     
+           semanticAnalysisPrintError(IKS_ERROR_WRONG_TYPE,0);
+    }
 }
+
+
 void semanticAnalysisArithmeticCoercion(comp_tree_t* node)
 {       
     if (node->dataType == IKS_INT)
@@ -168,7 +184,7 @@ int semanticAnalysisCommandVerification(comp_tree_t* node){
 
 				while(aux != NULL)
 				{
-					if((aux[0]->dataType == IKS_STRING) || isArithmeticExpression(aux[0]->type))
+					if((aux[0]->dataType == IKS_STRING) || semanticAnalysisIsArithmeticExpression(aux[0]->type))
 					{
 						aux = aux[0]->children;
 					}
@@ -181,7 +197,7 @@ int semanticAnalysisCommandVerification(comp_tree_t* node){
 		}
 }
 
-int isArithmeticExpression(int type)
+int semanticAnalysisIsArithmeticExpression(int type)
 {
 	switch(type){
 		case IKS_AST_ARIM_SOMA: 			return 1; break;
@@ -195,6 +211,8 @@ int isArithmeticExpression(int type)
 
 int semanticAnalysisParameterVerification(comp_tree_t* node)
 {
+	if(!node)
+		return 0; 
     fprintf(stderr,"\nenter in parameter verification!");
     comp_tree_t *aux1, *aux2;
     if(node->children)
@@ -292,11 +310,14 @@ int semanticAnalysisDeclarationVerification(comp_tree_t* node, int is_declaratio
           return 0;
 		  }
 	}
+  fprintf(stderr, "\nDeclaration verification [%s]: OK", node->symbol->data.identifier_type);
   return 1;
 }
 
 int  semanticAnalysisSetGroupScope(comp_tree_t* node)
 {
+	if(!node)
+		return 0;
     comp_tree_t* aux;
     if(node->children)
       {
@@ -307,6 +328,7 @@ int  semanticAnalysisSetGroupScope(comp_tree_t* node)
           aux = aux->children[0];  
         }
       }
+     return 1;
 }
 
 int  semanticAnalysisInsertLocalVariables(comp_tree_t* scope, comp_tree_t* local_variables)
@@ -322,14 +344,19 @@ int  semanticAnalysisInsertLocalVariables(comp_tree_t* scope, comp_tree_t* local
 
 int semanticAnalysisSetArgumentList(comp_dict_item_t* symbol, comp_tree_t* node)
 {
+	if(!symbol || !node)
+		return 0;
+	
+	
     comp_tree_t* aux = node;
     while(aux->children) 
       {
         symbol->nb_arguments++;   
         aux = aux->children[0];
       }
+    fprintf(stderr, "\ntudo certo ate aqui!");
     symbol->arguments = node;
-    fprintf(stderr, "\nnb arguments = %d",symbol->nb_arguments); 
+    fprintf(stderr, "\nnb arguments = %d\n",symbol->nb_arguments); 
 } 
 
 int semanticAnalysisPrintScope(comp_tree_t* scope)
@@ -347,31 +374,51 @@ int  semanticAnalysisGivenArguments(comp_tree_t* function, comp_tree_t* call_arg
   int argument_index = 0;
   comp_tree_t* right_argument;
   comp_tree_t* call_argument = call_arg_list;
-  
+    
   if(function->symbol->arguments)
   {    
     right_argument = function->symbol->arguments->children[0];
+    printf("\n NUMBER OF EXPECTED ARGUMENTS: %d\n", function->symbol->nb_arguments);
+
     while(argument_index < function->symbol->nb_arguments)
     {
       if(!call_argument)
         semanticAnalysisPrintError(IKS_ERROR_MISSING_ARGS,0);
-      fprintf(stderr,"\nargument verification %d e %d",right_argument->dataType, call_argument->dataType);
+		fprintf(stderr,"\nargument verification func %d e call %d",right_argument->dataType, call_argument->dataType);
       if(right_argument->dataType == call_argument->dataType || right_argument->dataType == call_argument->coercionType)
       {
+		printf("\nARGUMENT OK\n");
+		 
         argument_index++;
         if(right_argument->children)
           right_argument = right_argument->children[0];
-        if(call_argument->children)
-          call_argument = call_argument->children[0];
-        else
-          call_argument = NULL;  
+       
+		if(call_argument->children){
+			if(semanticAnalysisIsArithmeticExpression(call_argument->type)){
+				if(call_argument->nbChildren > 2)
+					call_argument = call_argument->children[2];
+				else
+					call_argument = NULL;
+			}
+			else
+				call_argument = call_argument->children[0];				
+		}
+		else
+				call_argument = NULL;         
       }
       else 
         semanticAnalysisPrintError(IKS_ERROR_WRONG_TYPE_ARGS,0);     
     }
-    if(call_argument)
+    if(call_argument){
+	  if (semanticAnalysisIsArithmeticExpression(call_argument->parent->type)){
+		  printf("\nparametro é expressao aritmetica\n");
+	  }
+			
+	  fprintf(stderr,"\nMais argumentos... arg->type: %d arg->dataType: %d\n", call_argument->parent->type, call_argument->parent->dataType);
       semanticAnalysisPrintError(IKS_ERROR_EXCESS_ARGS,0);
+	}
   }
+  fprintf(stderr, "\nArgument list verification: OK");
 }
 
 
