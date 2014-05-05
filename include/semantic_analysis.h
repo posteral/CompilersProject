@@ -32,8 +32,9 @@
 #define IKS_ERROR_WRONG_PAR_RETURN	14 //parâmetro não é expressão compatível com tipo do retorno
 
 /* Coercion */
-#define COERCION_TO_FLOAT	0
-#define COERCION_TO_INT		1
+#define COERCION_TO_FLOAT	259
+#define COERCION_TO_INT		258
+#define COERCION_TO_BOOL	262
 
 int           function_return_type;
 comp_tree_t*  local_scope;
@@ -53,5 +54,7 @@ int  semanticAnalysisSetGroupScope(comp_tree_t* node);
 int  semanticAnalysisInsertLocalVariables(comp_tree_t* scope, comp_tree_t* local_variables);
 int  semanticAnalysisPrintScope(comp_tree_t* scope);
 int  semanticAnalysisGivenArguments(comp_tree_t* function, comp_tree_t* call_arg_list);
+int  semanticAnalysisVerifyVectorIndex(comp_tree_t* node);
+int  semanticAnalysisReturnCoercion(comp_tree_t* node);
 
 #endif

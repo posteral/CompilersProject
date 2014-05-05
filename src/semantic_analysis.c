@@ -80,8 +80,11 @@ int  semanticAnalysisTypeInference(comp_tree_t* node)
     }
     else
     {
+	if(node->children[0]->dataType == IKS_CHAR || node->children[1]->dataType == IKS_CHAR)
+		semanticAnalysisPrintError(IKS_ERROR_CHAR_TO_X,0);
+	if(node->children[0]->dataType == IKS_STRING || node->children[1]->dataType == IKS_STRING)
+		semanticAnalysisPrintError(IKS_ERROR_STRING_TO_X,0);
         //fprintf(stderr,"\n>>>>>tipo 1: %d, tipo 2: %d", node->children[0]->dataType, node->children[1]->dataType);	
-        semanticAnalysisPrintError(IKS_ERROR_WRONG_TYPE,0);
     }
     return node->dataType;
 }
@@ -91,36 +94,85 @@ int  semanticAnalysisAssignmentCoercion(comp_tree_t* node)
     if (node->children[0]->dataType == IKS_INT)
     {
         if (node->children[1]->dataType == IKS_BOOL)
-            node->children[1]->coercionType = IKS_INT;
-        if (node->children[1]->dataType == IKS_STRING)
-           semanticAnalysisPrintError(IKS_ERROR_STRING_TO_X, 0);
-        if (node->children[1]->dataType == IKS_CHAR)
-           semanticAnalysisPrintError(IKS_ERROR_CHAR_TO_X, 0);
+            node->children[1]->coercionType = COERCION_TO_INT;
+	if (node->children[1]->dataType == IKS_FLOAT)
+            node->children[1]->coercionType = COERCION_TO_INT;
     }
+
+    if (node->children[0]->dataType == IKS_BOOL)
+    {
+	if (node->children[1]->dataType == IKS_INT)
+            node->children[1]->coercionType = COERCION_TO_BOOL;
+	if (node->children[1]->dataType == IKS_FLOAT)
+            node->children[1]->coercionType = COERCION_TO_BOOL;
+    }
+
 
     if (node->children[0]->dataType == IKS_FLOAT)
     {
         if (node->children[1]->dataType == IKS_INT)
-            node->children[1]->coercionType = IKS_FLOAT;
+            node->children[1]->coercionType = COERCION_TO_FLOAT;
         if (node->children[1]->dataType == IKS_BOOL)
-            node->children[1]->coercionType = IKS_FLOAT;
-        if (node->children[1]->dataType == IKS_STRING)
-           semanticAnalysisPrintError(IKS_ERROR_STRING_TO_X, 0);
-        if (node->children[1]->dataType == IKS_CHAR)
-           semanticAnalysisPrintError(IKS_ERROR_CHAR_TO_X, 0);
+            node->children[1]->coercionType = COERCION_TO_FLOAT;
     }
-    
-    if (node->children[0]->dataType == IKS_STRING)
-    {
-        if (node->children[1]->dataType != IKS_STRING)     
+
+    if (node->children[0]->dataType == IKS_STRING || node->children[0]->dataType == IKS_CHAR)
+   {
+        if (node->children[1]->dataType != IKS_CHAR && node->children[1]->dataType != IKS_STRING )     
            semanticAnalysisPrintError(IKS_ERROR_WRONG_TYPE,0);
     }
     
-    if (node->children[0]->dataType == IKS_CHAR)
+    if (node->children[1]->dataType == IKS_STRING)
     {
-        if (node->children[1]->dataType != IKS_CHAR)     
-           semanticAnalysisPrintError(IKS_ERROR_WRONG_TYPE,0);
+        if (node->children[0]->dataType != IKS_STRING)     
+           semanticAnalysisPrintError(IKS_ERROR_STRING_TO_X,0);
     }
+    
+    if (node->children[1]->dataType == IKS_CHAR)
+    {
+        if (node->children[0]->dataType != IKS_CHAR)     
+           semanticAnalysisPrintError(IKS_ERROR_CHAR_TO_X,0);
+    }
+}
+
+int  semanticAnalysisReturnCoercion(comp_tree_t* node)
+{
+    if (node->dataType == IKS_INT)
+    {
+        if (node->children[0]->dataType == IKS_BOOL)
+            node->children[0]->coercionType = COERCION_TO_INT;
+	if (node->children[0]->dataType == IKS_FLOAT)
+            node->children[0]->coercionType = COERCION_TO_INT;
+    }
+
+    if (node->dataType == IKS_BOOL)
+    {
+	if (node->children[0]->dataType == IKS_INT)
+            node->children[0]->coercionType = COERCION_TO_BOOL;
+	if (node->children[0]->dataType == IKS_FLOAT)
+            node->children[0]->coercionType = COERCION_TO_BOOL;
+    }
+
+
+    if (node->dataType == IKS_FLOAT)
+    {
+        if (node->children[0]->dataType == IKS_INT)
+            node->children[0]->coercionType = COERCION_TO_FLOAT;
+        if (node->children[0]->dataType == IKS_BOOL)
+            node->children[0]->coercionType = COERCION_TO_FLOAT;
+    }
+
+   
+}
+
+int  semanticAnalysisVerifyVectorIndex(comp_tree_t* node)
+{
+    if (node->dataType == IKS_STRING)
+        semanticAnalysisPrintError(IKS_ERROR_STRING_TO_X,0);
+    if (node->dataType == IKS_CHAR)  
+        semanticAnalysisPrintError(IKS_ERROR_CHAR_TO_X,0);
+    if (node->dataType != IKS_INT)
+	semanticAnalysisPrintError(IKS_ERROR_WRONG_TYPE,0);
 }
 
 
@@ -128,28 +180,28 @@ void semanticAnalysisArithmeticCoercion(comp_tree_t* node)
 {       
     if (node->dataType == IKS_INT)
     {
-        if (node->children[0]->dataType == IKS_BOOL)
-            node->children[0]->coercionType = IKS_INT;
-        if (node->children[1]->dataType == IKS_BOOL)
-            node->children[1]->coercionType = IKS_INT;
-        if (node->children[0]->dataType == IKS_STRING ||
+	if (node->children[0]->dataType == IKS_STRING ||
            node->children[1]->dataType == IKS_STRING)
            semanticAnalysisPrintError(IKS_ERROR_STRING_TO_X, 0);
         if (node->children[0]->dataType == IKS_CHAR   ||
            node->children[1]->dataType == IKS_CHAR)
            semanticAnalysisPrintError(IKS_ERROR_CHAR_TO_X, 0);
+        if (node->children[0]->dataType == IKS_BOOL)
+            node->children[0]->coercionType = COERCION_TO_INT;
+        if (node->children[1]->dataType == IKS_BOOL)
+            node->children[1]->coercionType = COERCION_TO_INT;     
     }
 
     if (node->dataType == IKS_FLOAT)
     {
         if (node->children[0]->dataType == IKS_INT)
-            node->children[0]->coercionType = IKS_FLOAT;
+            node->children[0]->coercionType = COERCION_TO_FLOAT;
         if (node->children[1]->dataType == IKS_INT)
-            node->children[1]->coercionType = IKS_FLOAT;
+            node->children[1]->coercionType = COERCION_TO_FLOAT;
         if (node->children[1]->dataType == IKS_BOOL)
-            node->children[1]->coercionType = IKS_FLOAT;
+            node->children[1]->coercionType = COERCION_TO_FLOAT;
         if (node->children[0]->dataType == IKS_BOOL)
-            node->children[0]->coercionType = IKS_FLOAT;
+            node->children[0]->coercionType = COERCION_TO_FLOAT;
         if (node->children[0]->dataType == IKS_STRING ||
            node->children[1]->dataType == IKS_STRING)
            semanticAnalysisPrintError(IKS_ERROR_STRING_TO_X, 0);
@@ -164,10 +216,10 @@ int semanticAnalysisCommandVerification(comp_tree_t* node){
         
 		if(node->type == IKS_AST_RETURN)
 		{
+		    semanticAnalysisReturnCoercion(node);
 		    if(node->children[0]->dataType != node->dataType && node->children[0]->coercionType != node->dataType)
 		    {
 		        semanticAnalysisPrintError(IKS_ERROR_WRONG_PAR_RETURN, 0);
-		        return IKS_ERROR_WRONG_PAR_RETURN;
 		    }
 		}
 		else if(node->type == IKS_AST_INPUT)
@@ -175,7 +227,6 @@ int semanticAnalysisCommandVerification(comp_tree_t* node){
         if(node->children[0]->type != IKS_AST_IDENTIFICADOR)
 		    {
 		        semanticAnalysisPrintError(IKS_ERROR_WRONG_PAR_INPUT, 0);
-		        return IKS_ERROR_WRONG_PAR_INPUT;
 		    }
 		}
 		else if(node->type == IKS_AST_OUTPUT)
@@ -238,6 +289,7 @@ int semanticAnalysisParameterVerification(comp_tree_t* node)
 
 int semanticAnalysisDeclarationVerification(comp_tree_t* node, int is_declaration)
 {
+
   // local identifier not declared
 	if(!is_declaration) 
 	{     
@@ -375,8 +427,8 @@ int  semanticAnalysisGivenArguments(comp_tree_t* function, comp_tree_t* call_arg
   comp_tree_t* right_argument;
   comp_tree_t* call_argument = call_arg_list;
     
-  if(function->symbol->arguments)
-  {    
+  if(function->symbol->arguments->children)
+  {  
     right_argument = function->symbol->arguments->children[0];
     //printf("\n NUMBER OF EXPECTED ARGUMENTS: %d\n", function->symbol->nb_arguments);
 

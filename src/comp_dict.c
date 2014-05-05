@@ -173,7 +173,7 @@ int dictRemoveItem(struct comp_dict_t *dictionary, char *key){
           }
 	  }
       
-     listEmpty(removed_element->line_occurrences);         
+     listDelete(removed_element->line_occurrences);         
      removed_element = NULL;
      //printf("\nNOTE: The element %s was removed!", key);  
      return 0;

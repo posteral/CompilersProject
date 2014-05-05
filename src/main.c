@@ -44,6 +44,7 @@ int main (int argc, char **argv)
 	else
 		exit(IKS_SYNTAX_SUCESSO);		
 	
+	dictEmpty(dictionary);
 	return resultado;
 }
 

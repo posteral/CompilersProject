@@ -31,8 +31,20 @@ void listPush(struct comp_list_t_t **head, int data){
 	
 	
 }
+void listDelete(struct comp_list_t_t *head)
+{
+	
+	comp_list_t *next, *deleteMe;
+  	deleteMe = head;
+  	while (deleteMe) {
+    		next = deleteMe->next;
+    		free(deleteMe);
+    		deleteMe = next;
+ 	 }	
 
-struct comp_list_t_t *listDelete(struct comp_list_t_t *currP, int data){
+}
+
+struct comp_list_t_t *listDeleteElement(struct comp_list_t_t *currP, int data){
 	/* See if we are at end of list. */
 	if (currP == NULL)
 	return NULL;
@@ -62,7 +74,7 @@ struct comp_list_t_t *listDelete(struct comp_list_t_t *currP, int data){
 	* Check the rest of the list, fixing the next pointer in case the 
 	* next node is the one removed.
 	*/
-	currP->next = listDelete(currP->next, data);
+	currP->next = listDeleteElement(currP->next, data);
 
 	/*
 	* Return the pointer to where we were called from.  Since we did not

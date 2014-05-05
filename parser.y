@@ -124,7 +124,7 @@
                                 else                                   
                                   $2->scope = NULL;
                                 
-													      if(semanticAnalysisDeclarationVerification($2,1))
+			        if(semanticAnalysisDeclarationVerification($2,1)&&!local_scope->scope)
                                   $2->symbol->is_declared = 1; 
                                     
                                 $2->type = IKS_VARIABLE;                               
@@ -145,7 +145,7 @@
                                 else                                   
                                   $2->scope = NULL;
                                 
-													      if(semanticAnalysisDeclarationVerification($2,1))
+				if(semanticAnalysisDeclarationVerification($2,1)&&!local_scope->scope)
                                   $2->symbol->is_declared = 1; 
                                     
                                 $2->type = IKS_VECTOR;		
@@ -260,13 +260,12 @@
 	statement :           non_void_command | { $$ = NULL; };
 	non_void_command :    command_block | func_call | control_flow | assignment | input | output | return ;       
 	assignment : 	        TK_IDENTIFICADOR '=' expression 
-				                  {
-									  
+				                  {		  
 					                  $$ = treeCreateNode(IKS_AST_ATRIBUICAO, NULL);								  
 					                  treeAppendNode($$,$1);	
 					                  treeAppendNode($$,$3);
 
-                            $1->scope = local_scope->children[local_scope->nbChildren-1];                         
+                            $1->scope = local_scope->children[local_scope->nbChildren-1];                        
                             semanticAnalysisDeclarationVerification($1,0);
                             semanticAnalysisIdentifierVerification($1,IKS_VARIABLE);
                             semanticAnalysisAssignmentCoercion($$);
@@ -291,6 +290,7 @@
 					                  $1->scope = local_scope->children[local_scope->nbChildren-1];
 									  semanticAnalysisDeclarationVerification($1,0);
 									  semanticAnalysisIdentifierVerification($1,IKS_VECTOR);
+									  semanticAnalysisVerifyVectorIndex($3);
                                       semanticAnalysisAssignmentCoercion($$);
 					                  
 					                  gv_declare(IKS_AST_ATRIBUICAO, (const void*)$$, NULL);
@@ -301,12 +301,14 @@
 					                  gv_connect(child, $1);
 					                  gv_connect(child, $3);
 				                  };
-	input :             TK_PR_INPUT TK_IDENTIFICADOR 
+	input :             TK_PR_INPUT expression
 		                      {
 			                      $$ = treeCreateNode(IKS_AST_INPUT, NULL);
 			                      treeAppendNode($$,$2);
 			                      
-			                      semanticAnalysisCommandVerification($$);
+                                              if($2->type != IKS_VARIABLE && $2->type != IKS_VECTOR && $2->type != IKS_PARAMETER)
+						  semanticAnalysisPrintError(IKS_ERROR_WRONG_PAR_INPUT, 0);
+  			                      semanticAnalysisCommandVerification($$);
 			                      
 			                      gv_declare(IKS_AST_INPUT, (const void*)$$, NULL);
 			                      gv_declare(IKS_AST_IDENTIFICADOR, (const void*)$2, ($2->symbol)->data.identifier_type);
@@ -342,14 +344,14 @@
 		                      };
 	
 	func_call : 	      TK_IDENTIFICADOR '(' arg_list ')'
-				                  {
-									  
+				                  {		  
 					                    $$ = treeCreateNode(IKS_AST_CHAMADA_DE_FUNCAO, NULL);
 					                    treeAppendNode($$,$1);
 					                    if($3 != NULL) 
-					                      treeAppendNode($$,$3);		
-					                
-				                      $1->scope = local_scope->children[local_scope->nbChildren-1];				                                           
+					                      treeAppendNode($$,$3);	
+
+				                      $1->scope = local_scope->children[local_scope->nbChildren-1];				    
+                                     
                               semanticAnalysisDeclarationVerification($1,0);
                               semanticAnalysisIdentifierVerification($1,IKS_FUNCTION);
                               semanticAnalysisGivenArguments($1, $3);
@@ -431,6 +433,7 @@
 					                $1->scope = local_scope->children[local_scope->nbChildren-1];				                                           
                           semanticAnalysisDeclarationVerification($1,0);
                           semanticAnalysisIdentifierVerification($1,IKS_VECTOR);
+			  semanticAnalysisVerifyVectorIndex($3);
                           $$->dataType = $1->dataType;
 								          
 					                gv_declare(IKS_AST_VETOR_INDEXADO, (const void*)$$, NULL);
