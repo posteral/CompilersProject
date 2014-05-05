@@ -1,9 +1,9 @@
+int vector2order[20];
 int bubble(int qtd)
 int i;
 int j;
 int aux;
 int k;
-int v[20];
 {
   k = qtd - 1;
 
@@ -25,5 +25,5 @@ int v[20];
      i=i+1
   };
   
-  return vector2order
+  //return vector2order
 }

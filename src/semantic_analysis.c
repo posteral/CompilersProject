@@ -47,7 +47,7 @@ int semanticAnalysisIdentifierVerification(comp_tree_t* node, int type){
 	}
 	else
 	{
-		fprintf(stderr, "\nIdentifier verification [%s]: OK", node->symbol->data.identifier_type);
+		//fprintf(stderr, "\nIdentifier verification [%s]: OK", node->symbol->data.identifier_type);
         return IKS_SUCCESS;
 	}
 }
@@ -80,7 +80,7 @@ int  semanticAnalysisTypeInference(comp_tree_t* node)
     }
     else
     {
-        fprintf(stderr,"\n>>>>>tipo 1: %d, tipo 2: %d", node->children[0]->dataType, node->children[1]->dataType);	
+        //fprintf(stderr,"\n>>>>>tipo 1: %d, tipo 2: %d", node->children[0]->dataType, node->children[1]->dataType);	
         semanticAnalysisPrintError(IKS_ERROR_WRONG_TYPE,0);
     }
     return node->dataType;
@@ -213,18 +213,18 @@ int semanticAnalysisParameterVerification(comp_tree_t* node)
 {
 	if(!node)
 		return 0; 
-    fprintf(stderr,"\nenter in parameter verification!");
+    //fprintf(stderr,"\nenter in parameter verification!");
     comp_tree_t *aux1, *aux2;
     if(node->children)
       {
         aux1 = node;
         while(aux1->children)
         {
-            printf("\ncomparing %s: ", aux1->children[0]->symbol->data.identifier_type); 
+            //printf("\ncomparing %s: ", aux1->children[0]->symbol->data.identifier_type); 
             aux2 = aux1->children[0];
             while(aux2->children) 
             {
-              printf(" with %s: , ", aux2->children[0]->symbol->data.identifier_type); 
+              //printf(" with %s: , ", aux2->children[0]->symbol->data.identifier_type); 
               if(aux1->children[0]->symbol == aux2->children[0]->symbol)
                 semanticAnalysisPrintError(IKS_ERROR_DECLARED,aux2->children[0]->symbol->line_occurrences[0].data);
               aux2 = aux2->children[0];
@@ -232,7 +232,7 @@ int semanticAnalysisParameterVerification(comp_tree_t* node)
             aux1 = aux1->children[0];
         }
       }
-    fprintf(stderr,"\nleaves in parameter verification!");
+    //fprintf(stderr,"\nleaves in parameter verification!");
     return 1;
 }
 
@@ -310,7 +310,7 @@ int semanticAnalysisDeclarationVerification(comp_tree_t* node, int is_declaratio
           return 0;
 		  }
 	}
-  fprintf(stderr, "\nDeclaration verification [%s]: OK", node->symbol->data.identifier_type);
+  //fprintf(stderr, "\nDeclaration verification [%s]: OK", node->symbol->data.identifier_type);
   return 1;
 }
 
@@ -336,7 +336,7 @@ int  semanticAnalysisInsertLocalVariables(comp_tree_t* scope, comp_tree_t* local
      comp_tree_t* aux = scope;
      while(aux->children) 
       {   
-        fprintf(stderr, "\nn filhos: %d, %s ", aux->nbChildren, aux->children[0]->symbol->data.identifier_type);
+        //fprintf(stderr, "\nn filhos: %d, %s ", aux->nbChildren, aux->children[0]->symbol->data.identifier_type);
         aux = aux->children[0];  
       }
      treeAppendNode(aux, local_variables);    
@@ -354,9 +354,9 @@ int semanticAnalysisSetArgumentList(comp_dict_item_t* symbol, comp_tree_t* node)
         symbol->nb_arguments++;   
         aux = aux->children[0];
       }
-    fprintf(stderr, "\ntudo certo ate aqui!");
+    //fprintf(stderr, "\ntudo certo ate aqui!");
     symbol->arguments = node;
-    fprintf(stderr, "\nnb arguments = %d\n",symbol->nb_arguments); 
+    //fprintf(stderr, "\nnb arguments = %d\n",symbol->nb_arguments); 
 } 
 
 int semanticAnalysisPrintScope(comp_tree_t* scope)
@@ -364,7 +364,7 @@ int semanticAnalysisPrintScope(comp_tree_t* scope)
     comp_tree_t* aux = scope;
     while(aux->children) 
       {   
-        fprintf(stderr, "\nnode: %s ", aux->children[0]->symbol->data.identifier_type);
+        //fprintf(stderr, "\nnode: %s ", aux->children[0]->symbol->data.identifier_type);
         aux = aux->children[0];  
       }
 } 
@@ -378,16 +378,16 @@ int  semanticAnalysisGivenArguments(comp_tree_t* function, comp_tree_t* call_arg
   if(function->symbol->arguments)
   {    
     right_argument = function->symbol->arguments->children[0];
-    printf("\n NUMBER OF EXPECTED ARGUMENTS: %d\n", function->symbol->nb_arguments);
+    //printf("\n NUMBER OF EXPECTED ARGUMENTS: %d\n", function->symbol->nb_arguments);
 
     while(argument_index < function->symbol->nb_arguments)
     {
       if(!call_argument)
         semanticAnalysisPrintError(IKS_ERROR_MISSING_ARGS,0);
-		fprintf(stderr,"\nargument verification func %d e call %d",right_argument->dataType, call_argument->dataType);
+		//fprintf(stderr,"\nargument verification func %d e call %d",right_argument->dataType, call_argument->dataType);
       if(right_argument->dataType == call_argument->dataType || right_argument->dataType == call_argument->coercionType)
       {
-		printf("\nARGUMENT OK\n");
+		//printf("\nARGUMENT OK\n");
 		 
         argument_index++;
         if(right_argument->children)
@@ -411,14 +411,14 @@ int  semanticAnalysisGivenArguments(comp_tree_t* function, comp_tree_t* call_arg
     }
     if(call_argument){
 	  if (semanticAnalysisIsArithmeticExpression(call_argument->parent->type)){
-		  printf("\nparametro é expressao aritmetica\n");
+		  //printf("\nparametro é expressao aritmetica\n");
 	  }
 			
-	  fprintf(stderr,"\nMais argumentos... arg->type: %d arg->dataType: %d\n", call_argument->parent->type, call_argument->parent->dataType);
+	  //fprintf(stderr,"\nMais argumentos... arg->type: %d arg->dataType: %d\n", call_argument->parent->type, call_argument->parent->dataType);
       semanticAnalysisPrintError(IKS_ERROR_EXCESS_ARGS,0);
 	}
   }
-  fprintf(stderr, "\nArgument list verification: OK");
+  //fprintf(stderr, "\nArgument list verification: OK");
 }
 
 

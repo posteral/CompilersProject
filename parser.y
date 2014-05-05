@@ -90,7 +90,7 @@
   // ---------------------------------------- PROGRAM:
 	s: program 
 		  {	
-			  fprintf(stderr,"\nprograma!");
+			  //fprintf(stderr,"\nprograma!");
 
 			  $$ = treeCreateNode(IKS_AST_PROGRAMA, NULL);
 			  treeAppendNode($$, $1);
@@ -109,14 +109,14 @@
 					        }
 				        $$ = $1;		
 			        }
-		        |	{ fprintf(stderr,"\nvoid program"); $$ = NULL;};
+		        |	{ $$ = NULL;};
 	// ------------------------------------------------
 	
 	// ------------------------- VARIABLES DECLARATION:
 	global_var_declaration : 	var_declaration ';' | vector_declaration ';';
 	var_declaration :	        var_type TK_IDENTIFICADOR 
                               { 
-                                fprintf(stderr,"\nvariable declaration of: %s\n", $2->symbol->data.identifier_type);
+                                //fprintf(stderr,"\nvariable declaration of: %s\n", $2->symbol->data.identifier_type);
                                 // not global    
                                 if(local_scope->scope)  
                                   $2->scope = local_scope->children[local_scope->nbChildren-1];                             
@@ -170,11 +170,10 @@
                                                           semanticAnalysisInsertLocalVariables(local_scope->children[local_scope->nbChildren-1], $2);
                                                           semanticAnalysisPrintScope(local_scope->children[local_scope->nbChildren-1]);
                                                           semanticAnalysisParameterVerification(local_scope->children[local_scope->nbChildren-1]);
-                                                          fprintf(stderr,"IS IT HERE?");
+                                                          
                                                         }
                            commands_function
-                                                        {	
-															fprintf(stderr,"DOES IT EVER GET HERE?");														
+                                                        {													
 	                                                        $$ = $1;
 	                                                        gv_declare(IKS_AST_FUNCAO, (const void*)$$, ($1->symbol)->data.identifier_type);
 	                                                        if($4!=NULL)
@@ -185,7 +184,7 @@
                                                         };
   header :                  var_type TK_IDENTIFICADOR '(' parameter_list ')' 
 								              {	
-                                fprintf(stderr,"\nfunction declaration of: %s\n", $2->symbol->data.identifier_type);
+                                //fprintf(stderr,"\nfunction declaration of: %s\n", $2->symbol->data.identifier_type);
                                 // set local scope
                                 local_scope->scope = local_scope;
 
@@ -211,16 +210,16 @@
                                   treeAppendNode($$, $1);
                                   semanticAnalysisSetGroupScope($$);                                                                
                                } 
-                            | {fprintf(stderr,"\nno parameters!"); $$ = treeCreateNode(IKS_SCOPE, NULL); };
+                            | {$$ = treeCreateNode(IKS_SCOPE, NULL); };
 	non_void_parameter_list : parameter ',' non_void_parameter_list 
                                { 
                                   treeAppendNode($1, $3);
                                   $$ = $1;
                                } 
-                            | parameter {$$ = $1; fprintf(stderr,"\nultimo parametro!");};  
+                            | parameter {$$ = $1;};  
 	parameter :               var_type TK_IDENTIFICADOR 
                                {  
-                                fprintf(stderr,"\nparametro!");
+                                //fprintf(stderr,"\nparametro!");
                                 $2->type = IKS_PARAMETER;									                                             
                                 $2->dataType = $1;
                                 treeSetSize($2, $1);
@@ -233,8 +232,8 @@
                                   treeAppendNode($1, $3);
                                   $$ = $1;                                                               
                                }
-                            | {fprintf(stderr,"\nend of local scope declaration!"); $$ = NULL;};	
-	commands_function: 	      '{' command_sequence '}' {fprintf(stderr,"\nswitch for global scope!"); $$=$2; local_scope->scope=NULL;};
+                            | {$$ = NULL;};	
+	commands_function: 	      '{' command_sequence '}' { $$=$2; local_scope->scope=NULL;};
 	// ------------------------------------------------
 	
 	// -------------------------------------- COMMANDS:
@@ -354,7 +353,7 @@
                               semanticAnalysisDeclarationVerification($1,0);
                               semanticAnalysisIdentifierVerification($1,IKS_FUNCTION);
                               semanticAnalysisGivenArguments($1, $3);
-                              fprintf(stderr, "\nFUNC_CALL");
+                            
                               $$->type = $1->type;
                               $$->dataType = $1->dataType;
                           
@@ -371,7 +370,7 @@
 					                  gv_connect($1, $3);
 					                  $$ = $1;		
 				                  }
-			                | expression {$$ = $1; printf("\nEXPRESSION %d\n", $$->type);};
+			                | expression {$$ = $1; };
 	control_flow :	    TK_PR_IF '(' expression ')' TK_PR_THEN non_void_command 
 				                {
 					                $$ = treeCreateNode(IKS_AST_IF_ELSE, NULL);							
@@ -444,7 +443,7 @@
 					                $$ = $1;
 					                $1->dataType = IKS_INT;
 					                char int_literal[15];
-					                fprintf(stderr,int_literal, "%d", ($1->symbol)->data.int_type);						
+					                //fprintf(stderr,int_literal, "%d", ($1->symbol)->data.int_type);						
 					                gv_declare(IKS_AST_LITERAL, (const void*)$1, int_literal);
 				                }
 			                | TK_LIT_FLOAT
@@ -452,7 +451,7 @@
 					                $$ = $1;
 					                $1->dataType = IKS_FLOAT;
 					                char float_literal[15];
-					                fprintf(stderr,float_literal, "%.2f", ($1->symbol)->data.float_type);						
+					                //fprintf(stderr,float_literal, "%.2f", ($1->symbol)->data.float_type);						
 					                gv_declare(IKS_AST_LITERAL, (const void*)$1, float_literal);
 				                }
                   		| TK_LIT_FALSE  
@@ -460,7 +459,7 @@
 					                $$ = $1;
 					                $1->dataType = IKS_BOOL;
 					                char false_literal[15];
-					                fprintf(stderr,false_literal, "%d", ($1->symbol)->data.bool_type);							
+					                //fprintf(stderr,false_literal, "%d", ($1->symbol)->data.bool_type);							
 					                gv_declare(IKS_AST_LITERAL, (const void*)$1, false_literal);				
 				                }
 			                | TK_LIT_TRUE   
@@ -468,7 +467,7 @@
 					                $$ = $1;
 					                $1->dataType = IKS_BOOL;
 					                char true_literal[15];
-					                fprintf(stderr,true_literal, "%d", ($1->symbol)->data.bool_type);							
+					                //fprintf(stderr,true_literal, "%d", ($1->symbol)->data.bool_type);							
 					                gv_declare(IKS_AST_LITERAL, (const void*)$1, true_literal);
 				                }
 			                | TK_LIT_CHAR
@@ -476,7 +475,7 @@
 					                $$ = $1;
 					                $1->dataType = IKS_CHAR;
 					                char char_literal[15];
-					                fprintf(stderr,char_literal, "%c", ($1->symbol)->data.char_type);							
+					                //fprintf(stderr,char_literal, "%c", ($1->symbol)->data.char_type);							
 					                gv_declare(IKS_AST_LITERAL, (const void*)$1, char_literal);
 				                }   
 			                | TK_LIT_STRING 
@@ -487,16 +486,16 @@
 				                }
 			                | expression '+' expression 
 				                {			
-				                  fprintf(stderr,"\ntipo 1: %d, tipo 2: %d", $1->dataType, $3->dataType);						
+				                  //fprintf(stderr,"\ntipo 1: %d, tipo 2: %d", $1->dataType, $3->dataType);						
 					                $$ = treeCreateNode(IKS_AST_ARIM_SOMA, NULL);
 					                treeAppendNode($$,$1);	
 					                treeAppendNode($$,$3);
 					                
 					                $$->scope = local_scope->children[local_scope->nbChildren-1];				                                           
 											    semanticAnalysisTypeInference($$);
-											    fprintf(stderr," tipo 3: %d", $$->dataType);
+											    //fprintf(stderr," tipo 3: %d", $$->dataType);
 								          semanticAnalysisArithmeticCoercion($$);
-								          fprintf(stderr,"\nafter coersion tipo 1: %d, tipo 2: %d", $1->coercionType, $3->coercionType);	
+								          //fprintf(stderr,"\nafter coersion tipo 1: %d, tipo 2: %d", $1->coercionType, $3->coercionType);	
 
 					                gv_declare(IKS_AST_ARIM_SOMA, (const void*)$$, NULL);
 					                gv_connect($$, $1);
@@ -632,7 +631,7 @@
 					                gv_connect($$, $1);
 					                gv_connect($$, $3);	
 				                }
-			                | func_call {fprintf(stderr, "\nPROBLEM\n");} ;
+			                | func_call;
 	// ------------------------------------------------
 	
 %%

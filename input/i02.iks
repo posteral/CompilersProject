@@ -10,4 +10,6 @@ int funca(int b, bool a, int p) int c; char l; int d; string ingrid; string x;
   //l = ingrid;
   return d}
 int lala(int e, bool f)int g;
-{ e=funca(e+e+e+e,f+f,in+in)}
+{ e=funca(e,f+f,in+in);
+  in=in+e+in;
+}
