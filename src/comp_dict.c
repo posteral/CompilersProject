@@ -216,7 +216,7 @@ void dictPrint(struct comp_dict_t *dictionary)
      {
       printf("\nKEY: %s\t VALUE: %d\t TYPE: %d\t DATA: ", printed_item->key, printed_item->code, printed_item->type);
       dictPrintElementData(dictionary, printed_item->key, printed_item->type);
-      struct comp_list_t_t *line_list = printed_item->line_occurrences;
+      comp_list_t *line_list = printed_item->line_occurrences;
       printf("\t LINES:");
       while(line_list)
       {

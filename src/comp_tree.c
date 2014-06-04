@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "comp_tree.h"
+#include "iloc.h"
 
 comp_tree_t* treeCreateNode(int type, comp_dict_item_t* symbol){
 	comp_tree_t *newNode  = (comp_tree_t*)malloc(sizeof(comp_tree_t));
@@ -105,18 +106,20 @@ void treePrint(comp_tree_t *tree)
 int	treeSetSize(comp_tree_t *node, int type){
 
 	switch(type)
-  {
-		case IKS_INT 	  :	node->size = IKS_INT_SIZE; break;
-		case IKS_FLOAT 	:	node->size = IKS_FLOAT_SIZE; break;
-		case IKS_CHAR 	:	node->size = IKS_CHAR_SIZE; break;
-		case IKS_STRING	:	node->size = IKS_STRING_SIZE; break;
-		case IKS_BOOL	  :	node->size = IKS_BOOL_SIZE; break;
+	{
+		case IKS_INT 	  	:	node->size = IKS_INT_SIZE; break;
+		case IKS_FLOAT 		:	node->size = IKS_FLOAT_SIZE; break;
+		case IKS_CHAR 		:	node->size = IKS_CHAR_SIZE; break;
+		case IKS_STRING		:	node->size = IKS_STRING_SIZE; break;
+		case IKS_BOOL	  	:	node->size = IKS_BOOL_SIZE; break;
 	}
 	
-  return node->size;
+	node->symbol->offset = offsetGlobal;
+    offsetGlobal += node->size;
+	return node->size;
 }
 
-treeSetSizeVector(comp_tree_t *node, int type, int length){
+int treeSetSizeVector(comp_tree_t *node, int type, int length){
   switch(type)
   {
 		case IKS_INT 	  :	node->size = IKS_INT_SIZE*length; break;
@@ -128,4 +131,47 @@ treeSetSizeVector(comp_tree_t *node, int type, int length){
 	
   return node->size;
 
+}
+
+int treeDepthSearch(comp_tree_t *node){
+	if(node == NULL)
+		fprintf(stderr,"Error: The tree is null.");
+	if(node->nbChildren >0){
+	int i;
+	for(i=0; i<node->nbChildren;i++)
+		treeDepthSearch(node->children[i]);
+	if(node->symbol)	
+		treePrintElementData(node->symbol);
+	fprintf(stderr," comando: %d ",node->type);
+	}
+	else
+		if(node->symbol)
+			treePrintElementData(node->symbol);
+	return 0;
+}
+
+void          treePrintElementData(comp_dict_item_t *symbol){
+	switch(symbol->type){
+                              case IKS_SIMBOLO_INDEFINIDO: 
+                                   fprintf(stderr," %s ", symbol->data.undefined_type);
+                                   break; 
+                              case IKS_SIMBOLO_LITERAL_INT:
+                                   fprintf(stderr," %d ", symbol->data.int_type);
+                                   break;   
+                              case IKS_SIMBOLO_LITERAL_FLOAT:
+                                   fprintf(stderr," %f ", symbol->data.float_type);
+                                   break;
+                              case IKS_SIMBOLO_LITERAL_CHAR:
+                                   fprintf(stderr," %c ", symbol->data.char_type);
+                                   break;
+                              case IKS_SIMBOLO_LITERAL_STRING:
+                                   fprintf(stderr," %s ", symbol->data.string_type);
+                                   break;
+                              case IKS_SIMBOLO_LITERAL_BOOL: 
+                                   fprintf(stderr," %d ", symbol->data.int_type);
+                                   break;
+                              case IKS_SIMBOLO_IDENTIFICADOR:
+                                   fprintf(stderr," %s ", symbol->data.identifier_type);
+                                   break;
+     }                       
 }

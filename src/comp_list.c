@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include "comp_list.h"
 
 struct comp_list_t_t* listCreate(){
@@ -94,3 +95,43 @@ void listPrint(struct comp_list_t_t *head){
 	printf("\n");
 }
 
+comp_list_t* listAdd(const char* code, comp_list_t* head){
+	comp_list_t* newItem = malloc(sizeof(comp_list_t*));
+	strcpy(newItem->code, code);
+	if(head != NULL)
+	{
+		head->prev->next = newItem;
+		newItem->prev = head->prev;
+		head->prev = newItem;
+		newItem->next = head;
+		return head;
+	}
+	else
+	{
+		newItem->next = newItem;
+		newItem->prev = newItem;
+		return newItem;
+	}
+}
+
+comp_list_t* listConcatenate(comp_list_t* list1, comp_list_t* list2){
+
+	if(list1 != NULL && list2 != NULL)
+	{
+	    comp_list_t* last1 = list1->prev;
+        last1->next = list2;
+        list2->prev->next = list1;
+        list1->prev = list2->prev;
+        list2->prev = last1;
+
+        return list1;
+	}
+	else if(list1 == NULL)
+	{
+	    return list2;
+	}
+	else if(list2 == NULL)
+	{
+	    return list1;
+	}
+}

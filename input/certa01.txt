@@ -1,3 +1,12 @@
-float variavel_flutuante;
-int variavel_inteira;
-char variavel_caractere;
+float variavel_flutuante[2];
+int variavel_inteira[4];
+int x;
+char variavel_caractere(){
+	x = 3; 
+	variavel_inteira[1]=3;
+	variavel_flutuante[1]=1+2*3;
+	
+	if(variavel_inteira[2+3]>4)then
+		variavel_inteira[2]=3; 
+}
+

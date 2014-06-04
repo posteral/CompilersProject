@@ -60,7 +60,8 @@ typedef struct comp_dict_item_t {
         union  data_type         data;
         int                      type;
         int                      code;  
-        int                      is_declared;          
+        int                      is_declared;
+        int 					 offset;          
         char                     key[MAX_KEY_SIZE];
 } comp_dict_item_t;
 

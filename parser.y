@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include "main.h"
 #include "semantic_analysis.h"
+#include "iloc.h"
 %}
 %require "2.5"
 %error-verbose
@@ -66,7 +67,7 @@
 %type<tree_node> parameter
 %type<tree_node> local_var_declaration
 %type<tree_node> var_declaration
-%type<tree_node> vector_declaration
+%type<tree_node> array_declaration
 
 %type<identifier_type> var_type
 
@@ -96,7 +97,10 @@
 			  treeAppendNode($$, $1);
 			  gv_declare(IKS_AST_PROGRAMA, (const void*)$$, NULL);
 			  if($1!=NULL)
-				  gv_connect($$, $1);		
+				  gv_connect($$, $1);	
+			  //ler em profundidade
+			  treeDepthSearch($$);
+			  ilocAstCode($$);
 		  };
 
 	program : global_var_declaration program { $$ = $2;} 
@@ -113,7 +117,7 @@
 	// ------------------------------------------------
 	
 	// ------------------------- VARIABLES DECLARATION:
-	global_var_declaration : 	var_declaration ';' | vector_declaration ';';
+	global_var_declaration : 	var_declaration ';' | array_declaration ';' ;
 	var_declaration :	        var_type TK_IDENTIFICADOR 
                               { 
                                 //fprintf(stderr,"\nvariable declaration of: %s\n", $2->symbol->data.identifier_type);
@@ -136,7 +140,7 @@
 
                                 $$ = $2;
                              };
-	vector_declaration :		  var_type TK_IDENTIFICADOR '[' TK_LIT_INT ']'
+	array_declaration :		  var_type TK_IDENTIFICADOR '[' TK_LIT_INT ']'dim_list
                               { 
                                 // not global    
                                 if(local_scope->scope)  
@@ -145,7 +149,7 @@
                                 else                                   
                                   $2->scope = NULL;
                                 
-				if(semanticAnalysisDeclarationVerification($2,1)&&!local_scope->scope)
+								if(semanticAnalysisDeclarationVerification($2,1)&&!local_scope->scope)
                                   $2->symbol->is_declared = 1; 
                                     
                                 $2->type = IKS_VECTOR;		
@@ -153,10 +157,11 @@
                                   $2->symbol->global = $2; 
 
                                 $2->dataType = $1;
-                                treeSetSizeVector($2, $1, $4);
+                                treeSetSizeVector($2, $1, $4->symbol->data.int_type);
 
                                 $$ = $2;
                              };
+    dim_list: '['TK_LIT_INT']'dim_list|; 
 	var_type :    TK_PR_INT  {$$ = IKS_INT; } | TK_PR_FLOAT {$$ = IKS_FLOAT;} 
 	            | TK_PR_BOOL {$$ = IKS_BOOL;} | TK_PR_CHAR  {$$ = IKS_CHAR; } | TK_PR_STRING { $$ = IKS_STRING;};
 	// ------------------------------------------------
@@ -275,7 +280,7 @@
 					                  gv_connect($$, $1);
 					                  gv_connect($$, $3);
 				                  }
-			                  | TK_IDENTIFICADOR '[' expression ']' '=' expression 
+			                  | TK_IDENTIFICADOR '[' expression ']'use_dim_list '=' expression 
 				                  {
 					                  $$ = treeCreateNode(IKS_AST_ATRIBUICAO, NULL);
 					                  comp_tree_t* child = treeCreateNode(IKS_AST_VETOR_INDEXADO, NULL);	
@@ -285,7 +290,7 @@
 					                  treeAppendNode(child,$1);	
 					                  treeAppendNode(child,$3);
 					                  treeAppendNode($$,child);	
-					                  treeAppendNode($$,$6);
+					                  treeAppendNode($$,$7);
 					         
 					                  $1->scope = local_scope->children[local_scope->nbChildren-1];
 									  semanticAnalysisDeclarationVerification($1,0);
@@ -297,10 +302,11 @@
 					                  gv_declare(IKS_AST_VETOR_INDEXADO, (const void*)child, NULL);
 					                  gv_declare(IKS_AST_IDENTIFICADOR, (const void*)$1, ($1->symbol)->data.identifier_type);
 					                  gv_connect($$, child);
-					                  gv_connect($$, $6);
+					                  gv_connect($$, $7);
 					                  gv_connect(child, $1);
 					                  gv_connect(child, $3);
 				                  };
+	use_dim_list: '['expression']'use_dim_list|;			                  
 	input :             TK_PR_INPUT expression
 		                      {
 			                      $$ = treeCreateNode(IKS_AST_INPUT, NULL);
@@ -381,6 +387,8 @@
 					                treeAppendNode($$,$6);
 					                gv_connect($$,$3);
 					                gv_connect($$,$6);	
+					                $3->labelTrue = ilocCreateLabel(); 
+					                $3->labelFalse = ilocCreateLabel();
 				                } 
 			                | TK_PR_IF '(' expression ')' TK_PR_THEN non_void_command TK_PR_ELSE non_void_command 
 				                {
@@ -392,6 +400,8 @@
 					                gv_connect($$,$3);
 					                gv_connect($$,$6);
 					                gv_connect($$,$8);	
+					                $3->labelTrue = ilocCreateLabel(); 
+					                $3->labelFalse = ilocCreateLabel();
 				                } 
 			                | TK_PR_WHILE '(' expression ')' TK_PR_DO non_void_command 
 				                {
@@ -401,6 +411,8 @@
 					                treeAppendNode($$,$6);
 					                gv_connect($$,$3);
 					                gv_connect($$,$6);	
+					                $3->labelTrue = ilocCreateLabel(); 
+					                $3->labelFalse = ilocCreateLabel();
 				                } 
 			                | TK_PR_DO non_void_command TK_PR_WHILE '(' expression ')' 
 				                {
@@ -409,7 +421,9 @@
 					                treeAppendNode($$,$2);
 					                treeAppendNode($$,$5);
 					                gv_connect($$,$2);
-					                gv_connect($$,$5);	
+					                gv_connect($$,$5);
+					                $5->labelTrue = ilocCreateLabel(); 
+					                $5->labelFalse = ilocCreateLabel();	
 				                };
 	// ------------------------------------------------
 	
@@ -424,7 +438,7 @@
 								          		
 					                gv_declare(IKS_AST_IDENTIFICADOR, (const void*)$1, ($1->symbol)->data.identifier_type);
 				                } 	
-			                | TK_IDENTIFICADOR '[' expression ']'
+			                | TK_IDENTIFICADOR '[' expression ']'use_dim_list
 				                {
 					                $$ = treeCreateNode(IKS_AST_VETOR_INDEXADO, NULL);
 					                treeAppendNode($$,$1);	
