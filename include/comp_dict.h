@@ -3,17 +3,17 @@
 
 #include "comp_list.h"
 
-#define HASH_FUNCTION 1537
+#define HASH_FUNCTION       1537
 #define MAX_HASH_TABLE_SIZE 10000
-#define MAX_KEY_SIZE 10000
+#define MAX_KEY_SIZE        10000
 
-#define IKS_SIMBOLO_INDEFINIDO 0
-#define IKS_SIMBOLO_LITERAL_INT 1
-#define IKS_SIMBOLO_LITERAL_FLOAT 2
-#define IKS_SIMBOLO_LITERAL_CHAR 3
-#define IKS_SIMBOLO_LITERAL_STRING 4
-#define IKS_SIMBOLO_LITERAL_BOOL 5
-#define IKS_SIMBOLO_IDENTIFICADOR 6
+#define IKS_SIMBOLO_INDEFINIDO      0
+#define IKS_SIMBOLO_LITERAL_INT     1
+#define IKS_SIMBOLO_LITERAL_FLOAT   2
+#define IKS_SIMBOLO_LITERAL_CHAR    3
+#define IKS_SIMBOLO_LITERAL_STRING  4
+#define IKS_SIMBOLO_LITERAL_BOOL    5
+#define IKS_SIMBOLO_IDENTIFICADOR   6
 
 #define IKS_INT		  258
 #define IKS_FLOAT	  259
@@ -27,12 +27,12 @@
 #define IKS_STRING_SIZE	1	
 #define IKS_BOOL_SIZE	1
 
-#define IKS_VARIABLE	0
-#define IKS_VECTOR		1
-#define IKS_FUNCTION	2
-#define IKS_PARAMETER 4
-#define IKS_SCOPE     5
-#define IKS_UNDEFINED 6
+#define IKS_VARIABLE	100
+#define IKS_VECTOR		200
+#define IKS_FUNCTION	300
+#define IKS_PARAMETER   400
+#define IKS_SCOPE       500
+#define IKS_UNDEFINED   600
 
 /*
     brief: This variable stores a literal with the correponding type.
@@ -63,6 +63,7 @@ typedef struct comp_dict_item_t {
         int                      is_declared;
         int 					 offset;          
         char                     key[MAX_KEY_SIZE];
+        int                      vectorTypeSize;
 } comp_dict_item_t;
 
 /*

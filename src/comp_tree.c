@@ -115,20 +115,32 @@ int	treeSetSize(comp_tree_t *node, int type){
 	}
 	
 	node->symbol->offset = offsetGlobal;
-    offsetGlobal += node->size;
+  offsetGlobal += node->size;
 	return node->size;
 }
 
 int treeSetSizeVector(comp_tree_t *node, int type, int length){
   switch(type)
   {
-		case IKS_INT 	  :	node->size = IKS_INT_SIZE*length; break;
-		case IKS_FLOAT 	:	node->size = IKS_FLOAT_SIZE*length; break;
-		case IKS_CHAR 	:	node->size = IKS_CHAR_SIZE*length; break;
-		case IKS_STRING	:	node->size = IKS_STRING_SIZE*length; break;
-		case IKS_BOOL	  :	node->size = IKS_BOOL_SIZE*length; break;
+		case IKS_INT 	  :	{ node->size = IKS_INT_SIZE*length; 
+                        node->symbol->vectorTypeSize = IKS_INT_SIZE;
+                        break;}
+		case IKS_FLOAT 	:	{ node->size = IKS_FLOAT_SIZE*length; 
+                        node->symbol->vectorTypeSize = IKS_FLOAT_SIZE;
+                        break;}
+		case IKS_CHAR 	:	{ node->size = IKS_CHAR_SIZE*length; 
+                        node->symbol->vectorTypeSize = IKS_CHAR_SIZE;
+                        break;}
+		case IKS_STRING	:	{ node->size = IKS_STRING_SIZE*length; 
+                        node->symbol->vectorTypeSize = IKS_STRING_SIZE;
+                        break;}
+		case IKS_BOOL	  :	{ node->size = IKS_BOOL_SIZE*length; 
+                        node->symbol->vectorTypeSize = IKS_BOOL_SIZE;
+                        break;}
 	}
 	
+  node->symbol->offset = offsetGlobal;
+  offsetGlobal += node->size;
   return node->size;
 
 }
@@ -173,5 +185,19 @@ void          treePrintElementData(comp_dict_item_t *symbol){
                               case IKS_SIMBOLO_IDENTIFICADOR:
                                    fprintf(stderr," %s ", symbol->data.identifier_type);
                                    break;
+                              default:
+                                  fprintf(stderr," other type ");
+                                   
      }                       
 }
+
+
+
+
+
+
+
+
+
+
+

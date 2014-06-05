@@ -12,8 +12,7 @@ int	listEmpty(struct comp_list_t_t *head){
 }
 
 
-void listPush(struct comp_list_t_t **head, int data){
-	
+void listPush(struct comp_list_t_t **head, int data){	
 	comp_list_t* current = *head;
 	
 	if(*head==NULL){
@@ -28,10 +27,27 @@ void listPush(struct comp_list_t_t **head, int data){
 		current->next = (comp_list_t*)malloc(sizeof(comp_list_t));
 		current->next->data = data;
 		current->next->next = NULL;
-	}
-	
-	
+	}	
 }
+void listPushCode(struct comp_list_t_t **head, const char *code){
+	
+	comp_list_t* current = *head;
+	
+	if(*head==NULL){
+		*head = (comp_list_t*)malloc(sizeof(comp_list_t));
+		strcpy((*head)->code,code);
+		(*head)->next = NULL;
+	}
+	else{
+		while (current->next!=NULL){
+			current = current->next;
+		}			
+		current->next = (comp_list_t*)malloc(sizeof(comp_list_t));
+		strcpy(current->next->code,code);
+		current->next->next = NULL;
+	}	
+}
+
 void listDelete(struct comp_list_t_t *head)
 {
 	
@@ -86,10 +102,13 @@ struct comp_list_t_t *listDeleteElement(struct comp_list_t_t *currP, int data){
 
 void listPrint(struct comp_list_t_t *head){
 	comp_list_t* current = head;
-	
+	if(current!=NULL){
+		fprintf(stdout, "%s\n", current->code);
+		current = current->next;
+	}
 	printf("\n");
 	while (current != NULL){
-		printf("%d ", current->data);
+		fprintf(stdout, "%s\n", current->code);
 		current = current->next;
 	}
 	printf("\n");
@@ -114,24 +133,22 @@ comp_list_t* listAdd(const char* code, comp_list_t* head){
 	}
 }
 
-comp_list_t* listConcatenate(comp_list_t* list1, comp_list_t* list2){
-
+comp_list_t* listConcatenate(comp_list_t* list1, comp_list_t* list2){	
 	if(list1 != NULL && list2 != NULL)
 	{
-	    comp_list_t* last1 = list1->prev;
-        last1->next = list2;
-        list2->prev->next = list1;
-        list1->prev = list2->prev;
-        list2->prev = last1;
-
-        return list1;
+		comp_list_t* last = list1;
+		while (last->next != NULL)
+			last = last->next;
+		last->next=list2;
+		list2->prev=last;
+		return list1;
 	}
 	else if(list1 == NULL)
 	{
-	    return list2;
+		return list2;
 	}
 	else if(list2 == NULL)
 	{
-	    return list1;
+		return list1;
 	}
 }

@@ -3,6 +3,8 @@
 #include "main.h"
 #include "semantic_analysis.h"
 #include "iloc.h"
+
+extern comp_dict_t *dictionary;
 %}
 %require "2.5"
 %error-verbose
@@ -98,8 +100,6 @@
 			  gv_declare(IKS_AST_PROGRAMA, (const void*)$$, NULL);
 			  if($1!=NULL)
 				  gv_connect($$, $1);	
-			  //ler em profundidade
-			  treeDepthSearch($$);
 			  ilocAstCode($$);
 		  };
 
@@ -128,7 +128,7 @@
                                 else                                   
                                   $2->scope = NULL;
                                 
-			        if(semanticAnalysisDeclarationVerification($2,1)&&!local_scope->scope)
+			        			if(semanticAnalysisDeclarationVerification($2,1)&&!local_scope->scope)
                                   $2->symbol->is_declared = 1; 
                                     
                                 $2->type = IKS_VARIABLE;                               
@@ -178,12 +178,12 @@
                                                           
                                                         }
                            commands_function
-                                                        {													
+                                                        {		
 	                                                        $$ = $1;
 	                                                        gv_declare(IKS_AST_FUNCAO, (const void*)$$, ($1->symbol)->data.identifier_type);
 	                                                        if($4!=NULL)
 	                                                        {
-	                                                          treeAppendNode($$,$4);
+	                                                            treeAppendNode($$,$4);
 		                                                        gv_connect($$,$4);
 	                                                        }
                                                         };
@@ -202,13 +202,12 @@
                                 // new scope
                                 treeAppendNode(local_scope, $4); 
 
-                                $2->type = IKS_FUNCTION;									                                             
+                                $2->type = IKS_AST_FUNCAO;									                                             
                                 $2->dataType = $1;
-                                treeSetSize($2, $1);
 
-									              $$ = $2;
-									              function_return_type = $1;
-								              };
+				                $$ = $2;
+				                function_return_type = $1;
+			              	  };
 	parameter_list :          non_void_parameter_list 
                                {
                                   $$ = treeCreateNode(IKS_SCOPE, NULL); 
@@ -270,10 +269,10 @@
 					                  treeAppendNode($$,$1);	
 					                  treeAppendNode($$,$3);
 
-                            $1->scope = local_scope->children[local_scope->nbChildren-1];                        
-                            semanticAnalysisDeclarationVerification($1,0);
-                            semanticAnalysisIdentifierVerification($1,IKS_VARIABLE);
-                            semanticAnalysisAssignmentCoercion($$);
+		                            $1->scope = local_scope->children[local_scope->nbChildren-1];                        
+		                            semanticAnalysisDeclarationVerification($1,0);
+		                            semanticAnalysisIdentifierVerification($1,IKS_VARIABLE);
+		                            semanticAnalysisAssignmentCoercion($$);
 									
 					                  gv_declare(IKS_AST_ATRIBUICAO, (const void*)$$, NULL);
 					                  gv_declare(IKS_AST_IDENTIFICADOR, (const void*)$1, ($1->symbol)->data.identifier_type);
@@ -359,7 +358,7 @@
 				                      $1->scope = local_scope->children[local_scope->nbChildren-1];				    
                                      
                               semanticAnalysisDeclarationVerification($1,0);
-                              semanticAnalysisIdentifierVerification($1,IKS_FUNCTION);
+                              semanticAnalysisIdentifierVerification($1,IKS_AST_FUNCAO);
                               semanticAnalysisGivenArguments($1, $3);
                             
                               $$->type = $1->type;
@@ -433,8 +432,8 @@
 					                $$ = $1;		
 					                
 				                  $1->scope = local_scope->children[local_scope->nbChildren-1];				                                           
-                          semanticAnalysisDeclarationVerification($1,0);
-                          semanticAnalysisIdentifierVerification($1,IKS_VARIABLE);		
+		                          semanticAnalysisDeclarationVerification($1,0);
+		                          semanticAnalysisIdentifierVerification($1,IKS_VARIABLE);		
 								          		
 					                gv_declare(IKS_AST_IDENTIFICADOR, (const void*)$1, ($1->symbol)->data.identifier_type);
 				                } 	
@@ -509,10 +508,10 @@
 					                treeAppendNode($$,$3);
 					                
 					                $$->scope = local_scope->children[local_scope->nbChildren-1];				                                           
-											    semanticAnalysisTypeInference($$);
-											    //fprintf(stderr," tipo 3: %d", $$->dataType);
-								          semanticAnalysisArithmeticCoercion($$);
-								          //fprintf(stderr,"\nafter coersion tipo 1: %d, tipo 2: %d", $1->coercionType, $3->coercionType);	
+									semanticAnalysisTypeInference($$);
+									//fprintf(stderr," tipo 3: %d", $$->dataType);
+								    semanticAnalysisArithmeticCoercion($$);
+								    //fprintf(stderr,"\nafter coersion tipo 1: %d, tipo 2: %d", $1->coercionType, $3->coercionType);	
 
 					                gv_declare(IKS_AST_ARIM_SOMA, (const void*)$$, NULL);
 					                gv_connect($$, $1);

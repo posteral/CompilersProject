@@ -40,7 +40,7 @@ int semanticAnalysisIdentifierVerification(comp_tree_t* node, int type){
 		{
 		    semanticAnalysisPrintError(IKS_ERROR_VECTOR, node->symbol->line_occurrences->data);
 		}
-		else if(node->type == IKS_FUNCTION)
+		else if(node->type == IKS_AST_FUNCAO)
 		{
 		    semanticAnalysisPrintError(IKS_ERROR_FUNCTION, node->symbol->line_occurrences->data);
 		}

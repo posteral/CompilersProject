@@ -9,6 +9,7 @@
                 dataType      - IKS_INT, IKS_FLOAT, IKS_CHAR, IKS_STRING or IKS_BOOL.
                 coercionType  - indicates a coercion to IKS_INT or IKS_FLOAT.
                 nbCildren     - number of childrens of the node.
+                vectorTypeSize- if the type is IKS_VECTOR, this attribute tells what the size of each element is.
                 scope         - tree containing children with variables and parameters of the scope.
                 symbol        - input to the symbol table containing the symbol node.
                 children      - the children of the node.     
@@ -19,7 +20,8 @@ typedef struct comp_tree_t {
 	int dataType;  
 	int coercionType;
 	int nbChildren;
-	
+	int vectorTypeSize;
+
 	const char* labelTrue;
 	const char* labelFalse;
 	comp_list_t* code;

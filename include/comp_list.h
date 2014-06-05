@@ -18,6 +18,7 @@ typedef struct comp_list_t_t {
 comp_list_t *listCreate();
 int			listEmpty(struct comp_list_t_t *head);
 void		listPush(struct comp_list_t_t  **head, int data);
+void listPushCode(struct comp_list_t_t **head, const char *code);
 comp_list_t *listDeleteElement(struct comp_list_t_t *head, int data);
 void 		listDelete(struct comp_list_t_t *head);
 void		listPrint(struct comp_list_t_t *head);
