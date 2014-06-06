@@ -27,7 +27,7 @@
 #define IKS_STRING_SIZE	1	
 #define IKS_BOOL_SIZE	1
 
-#define IKS_VARIABLE	100
+#define IKS_VARIABLE	10
 #define IKS_VECTOR		200
 #define IKS_FUNCTION	300
 #define IKS_PARAMETER   400

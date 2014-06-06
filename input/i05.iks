@@ -1,5 +1,6 @@
 /* comando if sem else */
+int a;
 int f()
 {
-  if ( 10 ) then {}
+  if ( 10 ) then {a=5}
 }

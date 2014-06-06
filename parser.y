@@ -100,6 +100,7 @@ extern comp_dict_t *dictionary;
 			  gv_declare(IKS_AST_PROGRAMA, (const void*)$$, NULL);
 			  if($1!=NULL)
 				  gv_connect($$, $1);	
+			treeDepthSearch($$);
 			  ilocAstCode($$);
 		  };
 
@@ -311,7 +312,7 @@ extern comp_dict_t *dictionary;
 			                      $$ = treeCreateNode(IKS_AST_INPUT, NULL);
 			                      treeAppendNode($$,$2);
 			                      
-                                              if($2->type != IKS_VARIABLE && $2->type != IKS_VECTOR && $2->type != IKS_PARAMETER)
+                                  if($2->type != IKS_VARIABLE && $2->type != IKS_VECTOR && $2->type != IKS_PARAMETER)
 						  semanticAnalysisPrintError(IKS_ERROR_WRONG_PAR_INPUT, 0);
   			                      semanticAnalysisCommandVerification($$);
 			                      

@@ -20,7 +20,6 @@ typedef struct comp_tree_t {
 	int dataType;  
 	int coercionType;
 	int nbChildren;
-	int vectorTypeSize;
 
 	const char* labelTrue;
 	const char* labelFalse;

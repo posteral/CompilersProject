@@ -103,15 +103,15 @@ struct comp_list_t_t *listDeleteElement(struct comp_list_t_t *currP, int data){
 void listPrint(struct comp_list_t_t *head){
 	comp_list_t* current = head;
 	if(current!=NULL){
-		fprintf(stdout, "%s\n", current->code);
+		fprintf(stderr, "%s\n", current->code);
 		current = current->next;
 	}
-	printf("\n");
+	fprintf(stderr,"\n");
 	while (current != NULL){
-		fprintf(stdout, "%s\n", current->code);
+		fprintf(stderr, "%s\n", current->code);
 		current = current->next;
 	}
-	printf("\n");
+	fprintf(stderr,"\n");
 }
 
 comp_list_t* listAdd(const char* code, comp_list_t* head){

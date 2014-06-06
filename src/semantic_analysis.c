@@ -32,7 +32,7 @@ int semanticAnalysisIdentifierVerification(comp_tree_t* node, int type){
 
 	if(node->type != type)
 	{
-		if(node->type == IKS_VARIABLE)
+		if(node->type == IKS_AST_IDENTIFICADOR)
 		{
 		    semanticAnalysisPrintError(IKS_ERROR_VARIABLE, node->symbol->line_occurrences->data);
 		}
