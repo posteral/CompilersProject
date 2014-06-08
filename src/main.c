@@ -15,7 +15,6 @@ extern comp_dict_t *dictionary;
 void yyerror (char const *mensagem)
 {
 	fprintf (stderr, "%s on line %d\n", mensagem,yylineno);
-	//IMPROVE 
 }
 
 /*int main (int argc, char **argv)
