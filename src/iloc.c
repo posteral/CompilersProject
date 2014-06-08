@@ -231,15 +231,14 @@ comp_list_t* ilocAstCode(comp_tree_t* ast){
 	//processando nodo atual
 	switch(aux->type){//gera codigo para nodo atual
 		case  IKS_AST_PROGRAMA: {
-								//fprintf(stderr, "\nPrograma");
+								//fprintf(stderr, "\nProgram");
 								//fprintf(stderr, "\nnbChildren: %d", aux->nbChildren);
 								param = NULL;
-								parentCode =  ilocCreateCode(parentCode, ILOC_LOAD_I, 2, "0", "fp"); //inicializa fp com zero
-								parentCode =  ilocCreateCode(parentCode, ILOC_LOAD_I, 2, "0", "sp"); //inicializa sp com zero
+								parentCode =  ilocCreateCode(parentCode, ILOC_LOAD_I, 2, "0", "bss"); //inicializa bss com zero (alocada estaticamente)
 								if(aux->children!= NULL)
 									parentCode =  listConcatenate(parentCode, aux->children[0]->code); //concatena com o codigo do corpo da funcao
 								listPrint(parentCode);
-								//fprintf(stderr, "\nFim programa");
+								//fprintf(stderr, "\nEnd program");
 								break;
 								}
 		case IKS_AST_FUNCAO: {
@@ -248,67 +247,28 @@ comp_list_t* ilocAstCode(comp_tree_t* ast){
 								parentCode =  ilocCreateCode(parentCode, ILOC_LABEL, 1, aux->symbol->data.identifier_type); //gera label com nome da funcao
 								if(aux->children!= NULL)
 									parentCode =  listConcatenate(parentCode, aux->children[0]->code); //concatena com o codigo do corpo da funcao
-								listPrint(parentCode);
-								//fprintf(stderr, "\nFim funcao");
+								//listPrint(parentCode);
+								//fprintf(stderr, "\nEnd function");
 								break;
 								}
 		case IKS_AST_RETURN: {
-								fprintf(stderr, "\nReturn");
+								//fprintf(stderr, "\nReturn");
 								param = ilocCreateRegister();
 								parentCode =  listConcatenate(parentCode, aux->children[0]->code); //concatena com o codigo da expressao a ser retornada
-								parentCode =  ilocCreateCode(parentCode, ILOC_I2I, 2, aux->children[0]->code->reg, "rt"); //carrega valor produzido pela expressao para o registrador de retorno de funcao
-								parentCode =  ilocCreateCode(parentCode, ILOC_LOAD, 2, "fp", param); //carrega o endereco de retorno salvo no primeiro endereco do RA
-								parentCode =  ilocCreateCode(parentCode, ILOC_I2I, 2, "fp", "sp"); //restaura o valor de sp para o valor antigo, marcado por fp
-								parentCode =  ilocCreateCode(parentCode, ILOC_LOAD_AI, 3, "fp", "4", "fp"); //carrega o valor de fp antigo salvo no segundo endereco do RA
-								parentCode =  ilocCreateCode(parentCode, ILOC_JUMP, 1, param);
-								listPrint(parentCode);
-								fprintf(stderr, "\nFim return");
 								if(aux->nbChildren > 1)
-											parentCode = listConcatenate(parentCode, aux->children[2]->code);
+											parentCode = listConcatenate(parentCode, aux->children[1]->code);
+								//listPrint(parentCode);
+								//fprintf(stderr, "\nEnd return");
 								break;
 								}
 		case IKS_AST_CHAMADA_DE_FUNCAO: {
 								//fprintf(stderr, "\nCall");
-								next = ilocCreateRegister();
-								param = "rt";
-								if(aux->children[1] != NULL)
-									parentCode =  listConcatenate(parentCode, aux->children[1]->code); //concatena com o codigo das expressoes calculadas nos parametros da funcao
-								parentCode =  ilocCreateCode(parentCode, ILOC_STORE_AI, 3, "fp", "sp", "4"); //salva o fp atual em sp+4
-								parentCode =  ilocCreateCode(parentCode, ILOC_I2I, 2, "sp", "fp"); //substitui o antigo fp pelo sp
-								int sp = 8;
-								comp_tree_t* args = aux->children[0]->symbol->arguments; //lista de identificadores dos argumentos declarados para a funcao
-								comp_tree_t* regList = NULL;
-								if(aux->children[1] != NULL)
-									regList = aux->children[1];
-								while(args != NULL){ //para cada argumento declarado, salva o valor produzido na expressao
-									if(args->children[0] != NULL)
-									{
-										sp += args->children[0]->symbol->offset; //a cada store incrementa o valor que sp vai assumir apos a insercao do registro de ativacao
-										char offset[132];
-										sprintf(offset, "%d", args->children[0]->symbol->offset);
-										if(regList!=NULL){
-											parentCode =  ilocCreateCode(parentCode, ILOC_STORE_AI, 3, regList->code->reg, "fp", offset); //reg: registrador que armazena o resultado da expressao
-											//regList = regList->parent->child;
-										}
-										args = args->children[0];
-									}
-									else
-										args = NULL;
-								}
-								sp += 10; //aloca espaco para "salvar o estado da maquina"
-								char stack[32];
-								sprintf(stack, "%d", sp);
-								parentCode = ilocCreateCode(parentCode, ILOC_LOAD_I, 2, stack, "sp"); //aponta o final da pilha para depois do registro de ativacao
-								parentCode = ilocCreateCode(parentCode, ILOC_I2I, 2, "PC", next); //salva o PC
-								parentCode = ilocCreateCode(parentCode, ILOC_ADD_I, 3, next, "3", next); //soma 3
-								parentCode = ilocCreateCode(parentCode, ILOC_STORE, 2, next, "fp"); //salva o endereco da proxima instrucao no registro de ativacao
-								parentCode = ilocCreateCode(parentCode, ILOC_JUMP_I, 1, aux->children[0]->symbol->data.identifier_type); //salto para a funcao
-								listPrint(parentCode);
-								//fprintf(stderr, "\nFim call");
+								//listPrint(parentCode);
+								//fprintf(stderr, "\nEnd call");
 								break;								
 								}
 		case IKS_AST_IDENTIFICADOR: {
-										fprintf(stderr, "\nIdentificador");
+										//fprintf(stderr, "\nIdentifier");
 										if(aux->parent != NULL)
 										{
 											if(aux->parent->type != IKS_AST_ATRIBUICAO || (aux->parent->type == IKS_AST_ATRIBUICAO && aux->parent->children[0] != aux)){ //nao esta do lado esquerdo de uma atribuicao
@@ -325,12 +285,12 @@ comp_list_t* ilocAstCode(comp_tree_t* ast){
 											sprintf(offset, "%d", aux->symbol->offset);
 											parentCode =  ilocCreateCode(parentCode, ILOC_LOAD_AI, 3, "bss", offset, param);		
 										}
-										listPrint(parentCode);							
-										fprintf(stderr, "\nFim ID");
+										//listPrint(parentCode);							
+										//fprintf(stderr, "\nEnd Identifier");
 										break;
 									}
 		case IKS_AST_VETOR_INDEXADO:{
-									fprintf(stderr, "\nVetor");
+									//fprintf(stderr, "\nVector");
 									parentCode =  listConcatenate(parentCode, aux->children[1]->code);
 									if(aux->parent->type != IKS_AST_ATRIBUICAO || (aux->parent->type == IKS_AST_ATRIBUICAO && aux->parent->children[0] != aux)){ //nao esta do lado esquerdo de uma atribuicao
 										param = ilocCreateRegister();
@@ -347,44 +307,44 @@ comp_list_t* ilocAstCode(comp_tree_t* ast){
 											parentCode =  ilocCreateCode(parentCode, ILOC_LOAD_AO, 3, "bss", param, param);
 										}
 									}
-									listPrint(parentCode);
-									fprintf(stderr, "\nFim vetor");
+									//listPrint(parentCode);
+									//fprintf(stderr, "\nEnd vector");
 									break;
 									}
 
 		case IKS_AST_ARIM_SOMA: 	{
-										fprintf(stderr, "\nSoma");
+										//fprintf(stderr, "\nSum");
 										param = ilocCreateRegister();
 										parentCode =  listConcatenate(parentCode, aux->children[0]->code);
 										parentCode =  listConcatenate(parentCode, aux->children[1]->code);
 										parentCode = ilocCreateCode(parentCode, ILOC_ADD, 3, aux->children[0]->code->reg, aux->children[1]->code->reg, param);
-										listPrint(parentCode);
-										fprintf(stderr, "\nFim soma");
 										if(aux->nbChildren > 2)
-											parentCode = listConcatenate(parentCode, aux->children[2]->code);
+											parentCode = listConcatenate(parentCode, aux->children[2]->code);	
+										//listPrint(parentCode);
+										//fprintf(stderr, "\nEnd sum");
 										break;
 									}
 		case IKS_AST_ARIM_SUBTRACAO: 	{
-											fprintf(stderr, "\nSubtracao");
+											//fprintf(stderr, "\nSubtraction");
 											param = ilocCreateRegister();
 											parentCode =  listConcatenate(parentCode, aux->children[0]->code);
 											parentCode =  listConcatenate(parentCode, aux->children[1]->code);
 											parentCode = ilocCreateCode(parentCode, ILOC_SUB, 3, aux->children[0]->code->reg, aux->children[1]->code->reg, param);
-											listPrint(parentCode);
-											fprintf(stderr, "\nFim subtracao");
 											if(aux->nbChildren > 2)
 												parentCode = listConcatenate(parentCode, aux->children[2]->code);
+											//listPrint(parentCode);
+											//fprintf(stderr, "\nEnd subtraction");
 											break;
 										}
 		case IKS_AST_ARIM_MULTIPLICACAO: {
-											fprintf(stderr, "\nMultiplicacao");
+											//fprintf(stderr, "\nMultiplication");
 											param = ilocCreateRegister();
 											parentCode =  listConcatenate(parentCode, aux->children[0]->code);
 											parentCode =  listConcatenate(parentCode, aux->children[1]->code);
 											parentCode = ilocCreateCode(parentCode, ILOC_MULT, 3, aux->children[0]->code->reg, aux->children[1]->code->reg, param);
-											listPrint(parentCode);
 											if(aux->nbChildren > 2)
-												parentCode = listConcatenate(parentCode, aux->children[2]->code);
+												parentCode = listConcatenate(parentCode, aux->children[2]->code);	
+											//listPrint(parentCode);
 											break;
 										}
 		case IKS_AST_ARIM_DIVISAO: {
@@ -458,30 +418,30 @@ comp_list_t* ilocAstCode(comp_tree_t* ast){
 										break;
 									}
 		case IKS_AST_LOGICO_COMP_L: {
-										fprintf(stderr, "\nLess than");
+										//fprintf(stderr, "\nLess than");
 										param = ilocCreateRegister();
 										parentCode =  listConcatenate(parentCode, aux->children[0]->code);
 										parentCode =  listConcatenate(parentCode, aux->children[1]->code);
 										parentCode = ilocCreateCode(parentCode, ILOC_CMP_LT, 3, aux->children[0]->code->reg, aux->children[1]->code->reg, param);
 										if(aux->nbChildren > 2)
 											parentCode = listConcatenate(parentCode, aux->children[2]->code);	
-										fprintf(stderr, "\nEnd less than");
+										//fprintf(stderr, "\nEnd less than");
 										break;
 									}
 		case IKS_AST_LOGICO_COMP_G: {
-										fprintf(stderr, "\nGreater");
+										//fprintf(stderr, "\nGreater than");
 										param = ilocCreateRegister();
 										parentCode =  listConcatenate(parentCode, aux->children[0]->code);
 										parentCode =  listConcatenate(parentCode, aux->children[1]->code);
 										parentCode = ilocCreateCode(parentCode, ILOC_CMP_GT, 3, aux->children[0]->code->reg, aux->children[1]->code->reg, param);
-										listPrint(parentCode);
 										if(aux->nbChildren > 2)
 											parentCode = listConcatenate(parentCode, aux->children[2]->code);
-										fprintf(stderr, "\nFim greater");
+										//listPrint(parentCode);
+										//fprintf(stderr, "\nEnd greater than");
 										break;
 									}
 		case IKS_AST_IF_ELSE: {
-								fprintf(stderr, "\nIF");
+								//fprintf(stderr, "\nIF");
 								label = ilocCreateLabel();
 								parentCode =  listConcatenate(parentCode, aux->children[0]->code);
 								parentCode =  ilocCreateCode(parentCode, ILOC_CBR, 3, aux->children[0]->code->reg, aux->children[0]->labelTrue, label);
@@ -493,8 +453,8 @@ comp_list_t* ilocAstCode(comp_tree_t* ast){
 									parentCode =  listConcatenate(parentCode, aux->children[2]->code);
 								}
 								parentCode =  ilocCreateCode(parentCode, ILOC_LABEL, 1, label);
-								listPrint(parentCode);
-								fprintf(stderr, "\nFim IF");
+								//listPrint(parentCode);
+								//fprintf(stderr, "\nEnd IF");
 								break;
 							}
 		case IKS_AST_DO_WHILE: {
@@ -510,7 +470,7 @@ comp_list_t* ilocAstCode(comp_tree_t* ast){
 								break;
 							}
 		case IKS_AST_WHILE_DO: {
-								fprintf(stderr, "\nWhile");
+								//fprintf(stderr, "\nWhile");
 								label = ilocCreateLabel(); 	//before test expression
 								next = ilocCreateLabel();	//enter while
 								next2 = ilocCreateLabel();	//leave while
@@ -523,11 +483,11 @@ comp_list_t* ilocAstCode(comp_tree_t* ast){
 								parentCode =  ilocCreateCode(parentCode, ILOC_LABEL, 1, next2);
 								if(aux->nbChildren > 2)
 										parentCode = listConcatenate(parentCode, aux->children[2]->code);
-								fprintf(stderr, "\nEnd while");
+								//fprintf(stderr, "\nEnd while");
 								break;
 							}
 		case IKS_AST_ATRIBUICAO: {
-									fprintf(stderr, "\nASSIGN");
+									//printf(stderr, "\nassign");
 									param = aux->children[1]->code->reg;
 									parentCode = listConcatenate(parentCode, aux->children[1]->code);
 									char offset[132];
@@ -535,18 +495,19 @@ comp_list_t* ilocAstCode(comp_tree_t* ast){
 									{
 
 										if(aux->children[0]->children[1]->type == IKS_AST_LITERAL)
-										{									
+										{	
+											//parentCode = listConcatenate(parentCode, aux->children[0]->children[1]->code);								
 											sprintf(offset, "%d", (aux->children[0]->children[0]->symbol->offset+(aux->children[0]->children[1]->symbol->data.int_type*aux->children[0]->children[0]->symbol->vectorTypeSize)));
 											parentCode = ilocCreateCode(parentCode, ILOC_STORE_AO, 3, param, "bss", offset);
 										}										
 										else
 										{
-											if(aux->children[0]->children[1]->type == IKS_AST_ARIM_MULTIPLICACAO)
-												fprintf(stderr, "\n>>>>>>>>>>>>>>>>MULTIPLICACAO: %s", aux->children[0]->code->reg);
+											const char* shift;
+											shift=ilocCreateRegister();
 											parentCode = listConcatenate(parentCode, aux->children[0]->children[1]->code);
 											sprintf(offset,"%d",aux->children[0]->children[0]->symbol->offset);
-											parentCode = ilocCreateCode(parentCode, ILOC_ADD_I, 3, aux->children[0]->children[1]->code->reg, offset, param);
-											parentCode = ilocCreateCode(parentCode, ILOC_STORE_AO, 3, param, "bss", param);
+											parentCode = ilocCreateCode(parentCode, ILOC_ADD_I, 3, aux->children[0]->children[1]->code->reg, offset, shift);
+											parentCode = ilocCreateCode(parentCode, ILOC_STORE_AO, 3, param, "bss", shift);
 										}
 									}
 									else
@@ -556,25 +517,20 @@ comp_list_t* ilocAstCode(comp_tree_t* ast){
 									}
 									if(aux->nbChildren > 2)
 										parentCode = listConcatenate(parentCode, aux->children[2]->code);
-									listPrint(parentCode);
-									fprintf(stderr, "\nFIM ASSIGN");
+									//listPrint(parentCode);
+									//fprintf(stderr, "\nEnd assign");
 									break;
 								}
 		case IKS_AST_LITERAL:{
-								fprintf(stderr, "\nLiteral ");
-								treePrintElementData(aux->symbol);
+								//fprintf(stderr, "\nLiteral ");
 								param = ilocCreateRegister();
 								parentCode = ilocCreateCode(parentCode, ILOC_LOAD_I, 2, ilocCreateLiteral(aux->symbol), param);
-								listPrint(parentCode);
-								fprintf(stderr, "\nFim literal");
+								//listPrint(parentCode);
+								//fprintf(stderr, "\nEnd literal");
 								break;
 							}
 	}
 
-	/*if(aux->broList!=NULL){//percorre o irmao
-		broCode = ilocAstCode(aux->broList);
-		parentCode = listConcatenate(parentCode, broCode);
-	}*/
 	if(parentCode != NULL)
 	{
 		if(param != NULL)
@@ -582,11 +538,7 @@ comp_list_t* ilocAstCode(comp_tree_t* ast){
 		ast->code = parentCode;
 	}
 	else 
-		ast->code = childCode;
-
-	if(ast->type == IKS_AST_ARIM_MULTIPLICACAO)
-		fprintf(stderr, "\n----------------------REGISTROOOOOOO: %s", ast->code->reg);
-											
+		ast->code = childCode;										
 
 	return ast->code;
 }

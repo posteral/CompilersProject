@@ -100,7 +100,7 @@ extern comp_dict_t *dictionary;
 			  gv_declare(IKS_AST_PROGRAMA, (const void*)$$, NULL);
 			  if($1!=NULL)
 				  gv_connect($$, $1);	
-			treeDepthSearch($$);
+			  //treeDepthSearch($$);
 			  ilocAstCode($$);
 		  };
 

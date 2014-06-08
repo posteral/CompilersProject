@@ -36,7 +36,7 @@ int main (int argc, char **argv)
 
   gv_init("teste.dot");
 	int resultado = yyparse();
-	printf("Result: %d\n", resultado);
+	//printf("Result: %d\n", resultado);
 	gv_close();
 	
 	if(resultado)
