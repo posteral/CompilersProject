@@ -70,6 +70,8 @@ extern comp_dict_t *dictionary;
 %type<tree_node> local_var_declaration
 %type<tree_node> var_declaration
 %type<tree_node> array_declaration
+%type<tree_node> dim_list
+%type<tree_node> use_dim_list
 
 %type<identifier_type> var_type
 
@@ -143,7 +145,22 @@ extern comp_dict_t *dictionary;
                              };
 	array_declaration :		  var_type TK_IDENTIFICADOR '[' TK_LIT_INT ']'dim_list
                               { 
-                                // not global    
+								if($6)
+								{
+									$2->symbol->dim = $2->dim = $6->dim+1;								
+									treeAppendNode($2,$6);	
+								}
+								else
+								{
+									$2->symbol->dim = $2->dim = 1;																
+								}
+												
+								int* dimensions = treeGetArrayDimensions($2);
+								$2->symbol->capacity = dimensions; 	 
+								int i;
+								for(i=0;i<4;i++)
+									fprintf(stderr,"\ncapacity: %d", $2->symbol->capacity[i]); 
+
                                 if(local_scope->scope)  
                                   $2->scope = local_scope->children[local_scope->nbChildren-1];                             
                                 // global
@@ -151,18 +168,39 @@ extern comp_dict_t *dictionary;
                                   $2->scope = NULL;
                                 
 								if(semanticAnalysisDeclarationVerification($2,1)&&!local_scope->scope)
-                                  $2->symbol->is_declared = 1; 
+                                  $2->symbol->is_declared = 1; 		
                                     
                                 $2->type = IKS_VECTOR;		
                                 if(!$2->scope)		
                                   $2->symbol->global = $2; 
 
                                 $2->dataType = $1;
-                                treeSetSizeVector($2, $1, $4->symbol->data.int_type);
+                                
+                                //fprintf(stderr, "\n capacity: %d", $2->capacity);
+                                
+                                treeSetSizeVector($2, $1, $4->symbol->data.int_type);                                
 
                                 $$ = $2;
                              };
-    dim_list: '['TK_LIT_INT']'dim_list|; 
+    dim_list: '['TK_LIT_INT']'dim_list {	//fprintf(stderr, "\n new dimension");
+											$$ = $2;
+											if ( $4 == NULL)
+											{											
+												$$->dim++;						
+																																			
+											}
+											else
+											{
+												$$->dim = $4->dim + 1;
+												treeAppendNode($$,$4);	
+											}
+											$$->capacity = $2->symbol->data.int_type;											
+											//fprintf(stderr, "\n capacity: %d", $$->capacity);
+		
+										}| {	//fprintf(stderr, "\nterminou o vetor");
+											$$ = NULL;
+										}; 
+	
 	var_type :    TK_PR_INT  {$$ = IKS_INT; } | TK_PR_FLOAT {$$ = IKS_FLOAT;} 
 	            | TK_PR_BOOL {$$ = IKS_BOOL;} | TK_PR_CHAR  {$$ = IKS_CHAR; } | TK_PR_STRING { $$ = IKS_STRING;};
 	// ------------------------------------------------
@@ -289,9 +327,21 @@ extern comp_dict_t *dictionary;
 					                  
 					                  treeAppendNode(child,$1);	
 					                  treeAppendNode(child,$3);
+									  if($5)
+										{
+											$1->dim = $5->dim+1;
+											treeAppendNode($1,$5);
+										}
+									  else
+										{
+											$1->dim = 1;
+										}
+									  if ($1->dim != $1->symbol->dim)
+										   semanticAnalysisPrintError(IKS_ERROR_VECTOR,0);
+										
 					                  treeAppendNode($$,child);	
 					                  treeAppendNode($$,$7);
-					         
+												         
 					                  $1->scope = local_scope->children[local_scope->nbChildren-1];
 									  semanticAnalysisDeclarationVerification($1,0);
 									  semanticAnalysisIdentifierVerification($1,IKS_VECTOR);
@@ -306,7 +356,25 @@ extern comp_dict_t *dictionary;
 					                  gv_connect(child, $1);
 					                  gv_connect(child, $3);
 				                  };
-	use_dim_list: '['expression']'use_dim_list|;			                  
+	use_dim_list: '['expression']'use_dim_list 
+											{
+												$$ = $2;
+												
+												if ( $4== NULL)
+												{
+													$$->dim ++;
+													
+												}
+												else
+												{
+													$$->dim = $4->dim + 1;
+													treeAppendNode($$,$4);
+												}
+												
+			
+											}| {
+												$$ = NULL;
+											};		                  
 	input :             TK_PR_INPUT expression
 		                      {
 			                      $$ = treeCreateNode(IKS_AST_INPUT, NULL);
@@ -443,12 +511,23 @@ extern comp_dict_t *dictionary;
 					                $$ = treeCreateNode(IKS_AST_VETOR_INDEXADO, NULL);
 					                treeAppendNode($$,$1);	
 					                treeAppendNode($$,$3);
-					                
+									if($5)
+										{
+											$1->dim = $5->dim+1;
+											treeAppendNode($1,$5);
+										}
+									  else
+										{
+											$1->dim = 1;
+										}
+									  if ($1->dim != $1->symbol->dim)
+										   semanticAnalysisPrintError(IKS_ERROR_VECTOR,0);					                
+
 					                $1->scope = local_scope->children[local_scope->nbChildren-1];				                                           
-                          semanticAnalysisDeclarationVerification($1,0);
-                          semanticAnalysisIdentifierVerification($1,IKS_VECTOR);
-			  semanticAnalysisVerifyVectorIndex($3);
-                          $$->dataType = $1->dataType;
+				                  	semanticAnalysisDeclarationVerification($1,0);
+				                  	semanticAnalysisIdentifierVerification($1,IKS_VECTOR);
+					  				semanticAnalysisVerifyVectorIndex($3);
+				                  	$$->dataType = $1->dataType;
 								          
 					                gv_declare(IKS_AST_VETOR_INDEXADO, (const void*)$$, NULL);
 					                gv_declare(IKS_AST_IDENTIFICADOR, (const void*)$1, ($1->symbol)->data.identifier_type);

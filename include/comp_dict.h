@@ -64,6 +64,8 @@ typedef struct comp_dict_item_t {
         int 					 offset;          
         char                     key[MAX_KEY_SIZE];
         int                      vectorTypeSize;
+		int						 dim;
+		int*					 capacity;
 } comp_dict_item_t;
 
 /*

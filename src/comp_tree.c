@@ -191,12 +191,20 @@ void          treePrintElementData(comp_dict_item_t *symbol){
      }                       
 }
 
-int	treeCheckArray(comp_tree_t *node1, comp_tree_t * node2)
-{
+int* treeGetArrayDimensions(comp_tree_t *tree){
 	
-	fprintf(stderr, "\nHELLO");
-	
-	
+	int* dimensions;
+	dimensions= (int*)malloc(sizeof(int*)*tree->symbol->dim);
+	int i = 0;
+
+	while (tree->nbChildren != 0 ){
+		dimensions[i] = tree->capacity;	
+		tree = tree->children[0];
+		i++;	
+	}
+	dimensions[i]=tree->capacity;	
+
+	return dimensions;		
 }
 
 

@@ -87,6 +87,7 @@ int 		  treeDepthSearch(comp_tree_t *node);
 
 void          treePrintElementData(comp_dict_item_t *symbol);
 
-int 		  treeCheckArray(comp_tree_t *node1, comp_tree_t * node2);
+int* 		  treeGetArrayDimensions(comp_tree_t *tree);
+
 
 #endif

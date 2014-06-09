@@ -68,4 +68,5 @@ comp_list_t* ilocAstCode(comp_tree_t* ast);//cria o codigo ILOC para uma arvore 
 const char* ilocCreateRegister();
 const char* ilocCreateLabel();
 const char* ilocCreateLiteral(comp_dict_item_t *symbol);
+int 		ilocComputeArrayOffset(int* dim1, int* dim2, int dims);
 #endif

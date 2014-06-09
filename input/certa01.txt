@@ -1,13 +1,12 @@
 float variavel_flutuante[8];
 int variavel_inteira[4];
-int filipe[2][3][4][5];
+int filipe[2][3][7][5];
 int x;
 int y;
 char variavel_caractere(){
   x=2*2;
   y=65;
-filipe[1][2][3][4] = 5;
-	variavel_inteira[x*1] = 3+33; 
+	variavel_inteira[x] = filipe[1][2][3][3]; 
 	/*variavel_inteira[25]=3+33;
 	variavel_flutuante[15+12]=1+2/2;
 	

@@ -197,7 +197,7 @@ comp_list_t* ilocAstCode(comp_tree_t* ast){
 	const char* next;
 	const char* next2;
 
-	//inicializacao dos atributos herdados para os filhos
+
 	switch(aux->type){
 		case IKS_AST_IF_ELSE:{
 			aux->labelTrue = ilocCreateLabel();
@@ -225,11 +225,11 @@ comp_list_t* ilocAstCode(comp_tree_t* ast){
 	
 	int i;
 
-	for(i=0; i<aux->nbChildren;i++)//processando todos os filhos
+	for(i=0; i<aux->nbChildren;i++)
 		childCode = ilocAstCode(aux->children[i]);
 
-	//processando nodo atual
-	switch(aux->type){//gera codigo para nodo atual
+	
+	switch(aux->type){
 		case  IKS_AST_PROGRAMA: {
 								//fprintf(stderr, "\nProgram");
 								//fprintf(stderr, "\nnbChildren: %d", aux->nbChildren);
@@ -296,7 +296,22 @@ comp_list_t* ilocAstCode(comp_tree_t* ast){
 										param = ilocCreateRegister();
 										if(aux->children[1]->type == IKS_AST_LITERAL){
 											char offset[132];
-											sprintf(offset, "%d", aux->children[0]->symbol->offset+(aux->children[1]->symbol->data.int_type*aux->children[0]->symbol->vectorTypeSize));//calculo do offset para vetor unidimensional
+											sprintf(offset,"%d",aux->children[0]->symbol->offset+(aux->children[1]->symbol->data.int_type*aux->children[0]->symbol->vectorTypeSize));//calculo do offset para vetor unidimensional
+											comp_tree_t* node = aux->children[0];
+											if(node->nbChildren!=0)
+											{
+												int i = 1;
+												node = node->children[0];
+												parentCode = ilocCreateCode(parentCode, ILOC_MULT, 3, node->code->reg, aux->children[0]->symbol->capacity[i], param);
+												i++;												
+												while(node->nbChildren!=0)
+												{
+													fprintf(stderr,"\n->>>>>>>first element: %d", aux->children[0]->symbol->capacity[0]);
+													treePrintElementData(aux->children[0]->symbol);
+													parentCode = ilocCreateCode(parentCode, ILOC_MULT, 3, node->children[0]->code->reg, aux->children[0]->symbol->capacity[i], param);										
+													i++;
+												}
+											}
 											parentCode =  ilocCreateCode(parentCode, ILOC_LOAD_AI, 3, "bss", offset, param);
 										}
 										else
@@ -541,5 +556,22 @@ comp_list_t* ilocAstCode(comp_tree_t* ast){
 		ast->code = childCode;										
 
 	return ast->code;
+}
+
+int 		ilocComputeArrayOffset(int* dim1, int* dim2, int dims){
+	//dim1 contains the capacity of each dimension
+	//dim2 contains the position of the element being accessed 
+	//dims is the number of dimensions
+
+	int i;
+	int offset = dim2[0];
+	
+	for (i = 1; i < dims ; i ++){
+		
+		offset += dim1[i]*dim2[i];
+	}
+
+	return offset; 
+
 }
 
