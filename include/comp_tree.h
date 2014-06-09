@@ -24,6 +24,9 @@ typedef struct comp_tree_t {
 	const char* labelTrue;
 	const char* labelFalse;
 	comp_list_t* code;
+	
+	int dim; 
+	int capacity; 
 
 	struct comp_dict_item_t*  symbol;
 	struct comp_tree_t*       scope; 
@@ -83,5 +86,7 @@ int 		  treeSetSizeVector(comp_tree_t *node, int type, int length);
 int 		  treeDepthSearch(comp_tree_t *node);
 
 void          treePrintElementData(comp_dict_item_t *symbol);
+
+int 		  treeCheckArray(comp_tree_t *node1, comp_tree_t * node2);
 
 #endif

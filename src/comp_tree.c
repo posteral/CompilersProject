@@ -122,7 +122,7 @@ int	treeSetSize(comp_tree_t *node, int type){
 int treeSetSizeVector(comp_tree_t *node, int type, int length){
   switch(type)
   {
-		case IKS_INT 	  :	{ node->size = IKS_INT_SIZE*length; 
+		case IKS_INT 	:	{ node->size = IKS_INT_SIZE*length; 
                         node->symbol->vectorTypeSize = IKS_INT_SIZE;
                         break;}
 		case IKS_FLOAT 	:	{ node->size = IKS_FLOAT_SIZE*length; 
@@ -189,6 +189,14 @@ void          treePrintElementData(comp_dict_item_t *symbol){
                                   fprintf(stderr," other type ");
                                    
      }                       
+}
+
+int	treeCheckArray(comp_tree_t *node1, comp_tree_t * node2)
+{
+	
+	fprintf(stderr, "\nHELLO");
+	
+	
 }
 
 
